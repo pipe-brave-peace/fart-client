@@ -12,7 +12,9 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
 		MAX
 	}
 	readonly private static int MAX_SE_AUDIOSOURCE_NUM = 20;
-	public AudioClip[] m_SE;
+    [Header("効果音追加するとき、効果音の命名が必要")]
+    [Header("（SoundManagerに入ってSE_TYPEに項目を追加）")]
+    public AudioClip[] m_SE;
 	private AudioSource[] m_SEAudioSource = new AudioSource[MAX_SE_AUDIOSOURCE_NUM];
 
 	public void Awake()
