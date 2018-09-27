@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4130908682775694}
   - component: {fileID: 114040750367451784}
   m_Layer: 0
-  m_Name: Effekseer_Effect
+  m_Name: Effekseer_Sample
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
