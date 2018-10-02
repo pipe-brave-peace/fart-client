@@ -4,7 +4,6 @@ using System.Collections;
 using System;
 using System.Text;
 
-
 public class HIDapi {
 
     [DllImport("hidapi")]
