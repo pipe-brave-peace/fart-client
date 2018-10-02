@@ -4,7 +4,12 @@
 TagManager:
   serializedVersion: 2
   tags:
+<<<<<<< HEAD
   - Enemy
+=======
+  - Number
+  - Crops
+>>>>>>> origin/kayuusan
   layers:
   - Default
   - TransparentFX
