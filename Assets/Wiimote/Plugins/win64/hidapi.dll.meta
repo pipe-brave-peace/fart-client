@@ -1,5 +1,6 @@
 fileFormatVersion: 2
 guid: 212fb7dffa1af79458813902bce8316e
+<<<<<<< HEAD
 PluginImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -48,11 +49,30 @@ PluginImporter:
   - first:
       Editor: Editor
     second:
+=======
+timeCreated: 1428204958
+licenseType: Free
+PluginImporter:
+  serializedVersion: 1
+  iconMap: {}
+  executionOrder: {}
+  isPreloaded: 0
+  platformData:
+    Android:
+      enabled: 0
+      settings:
+        CPU: AnyCPU
+    Any:
+      enabled: 0
+      settings: {}
+    Editor:
+>>>>>>> ponta
       enabled: 1
       settings:
         CPU: x86_64
         DefaultValueInitialized: true
         OS: Windows
+<<<<<<< HEAD
   - first:
       Facebook: Win
     second:
@@ -104,15 +124,64 @@ PluginImporter:
   - first:
       Windows Store Apps: WindowsStoreApps
     second:
+=======
+    Linux:
+      enabled: 1
+      settings:
+        CPU: x86
+    Linux64:
+      enabled: 1
+      settings:
+        CPU: x86_64
+    LinuxUniversal:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+    OSXIntel:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+    OSXIntel64:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+    OSXUniversal:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+    SamsungTV:
+      enabled: 0
+      settings:
+        STV_MODEL: STANDARD_13
+    WP8:
+      enabled: 0
+      settings:
+        CPU: AnyCPU
+        DontProcess: False
+        PlaceholderPath: 
+    Win:
+      enabled: 0
+      settings:
+        CPU: None
+    Win64:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+    WindowsStoreApps:
+>>>>>>> ponta
       enabled: 0
       settings:
         CPU: AnyCPU
         DontProcess: False
         PlaceholderPath: 
         SDK: AnySDK
+<<<<<<< HEAD
   - first:
       iPhone: iOS
     second:
+=======
+    iOS:
+>>>>>>> ponta
       enabled: 0
       settings:
         CompileFlags: 
