@@ -3,15 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-<<<<<<< HEAD
-  tags: []
-=======
   tags:
-  - Number
-  - Crops
   - Enemy
-  - NaviPoint
->>>>>>> origin/kayuusan
+  - Crops
   layers:
   - Default
   - TransparentFX
