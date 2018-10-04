@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 114803842127862970}
   - component: {fileID: 114752616744227456}
   m_Layer: 5
-  m_Name: UI_Farm
+  m_Name: UI_FarmAll
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -292,8 +292,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0563676855aab1f41b013e1442524441, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Debug_HP_Text: {fileID: 114380709858072470}
-  Debug_HP_MAX_Text: {fileID: 114278362788380492}
   m_Farm_UI: {fileID: 114803842127862970}
   m_PercentHP_Text: {fileID: 114345952432234952}
 --- !u!114 &114803842127862970
