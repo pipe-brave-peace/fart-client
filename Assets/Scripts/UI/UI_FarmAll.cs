@@ -5,8 +5,10 @@ using UnityEngine.UI;
 
 public class UI_FarmAll : MonoBehaviour {
 
-    public Slider m_Farm_UI;        // 畑ゲージ
-    public Text m_PercentHP_Text;   // パーセントのテキスト
+    [SerializeField]
+    Slider m_Farm_UI;        // 畑ゲージ
+    [SerializeField]
+    Text m_PercentHP_Text;   // パーセントのテキスト
 
     float m_HP = 100;        // 畑HP
     float m_MAX_HP = 100;     // MAX HP

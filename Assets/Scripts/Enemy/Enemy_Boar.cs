@@ -10,12 +10,17 @@ public class Enemy_Boar : MonoBehaviour {
         NORMAL = 0,
         MOVE,
         ATTACK,
+        DEATH,
         MAX
     }
 
+    [SerializeField]
+    TextMesh Debug_Mode_Text;
+    [SerializeField]
+    int m_Life = 1;
+
     GameObject m_NearObj;
     MODE m_Mode;
-    public TextMesh Debug_Mode_Text;
     NavMeshAgent m_Nav;
 
     // Use this for initialization
@@ -27,7 +32,6 @@ public class Enemy_Boar : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
         switch (m_Mode)
         {
             case MODE.NORMAL:
@@ -35,6 +39,7 @@ public class Enemy_Boar : MonoBehaviour {
                 m_NearObj = SerchTag(gameObject, "Crops");
                 m_Mode = MODE.MOVE;
                 break;
+
             case MODE.MOVE:
                 Debug_Mode_Text.text = "MODE:Move";
                 if (m_NearObj == null)
@@ -43,18 +48,18 @@ public class Enemy_Boar : MonoBehaviour {
                 }
                 //対象の位置の方向を向く
                 m_Nav.SetDestination(m_NearObj.transform.position);
-                //transform.LookAt(m_NearObj.transform);
-
-                //自分自身の位置から相対的に移動する
-                //transform.Translate(Vector3.forward * 0.01f);
-
                 break;
+
             case MODE.ATTACK:
                 Debug_Mode_Text.text = "MODE:Attack";
                 if ( m_NearObj == null)
                 {
                     m_Mode = MODE.NORMAL;
                 }
+                break;
+            case MODE.DEATH:
+                Debug_Mode_Text.text = "MODE:Death";
+                Destroy(gameObject);
                 break;
         }
 	}
@@ -85,16 +90,35 @@ public class Enemy_Boar : MonoBehaviour {
         return targetObj;
     }
 
+    // ライフの取得
+    public int GetLife()
+    {
+        return m_Life;
+    }
+    // ダメージを受ける
+    public void SubLife(int Damage = 1)
+    {
+        m_Life -= Damage;
+        if( m_Life <= 0)
+        {
+            m_Mode = MODE.DEATH;
+        }
+    }
+
+    // 当たり判定に侵入した時
     void OnTriggerEnter(Collider other)
     {
+        // 対象は農作物？
         if (other.gameObject.tag == "Crops")
         {
+            // 農作物を食べる
             m_Mode = MODE.ATTACK;
         }
     }
+    // 当たり判定から離れた時
     void OnTriggerExit(Collider other)
     {
-        m_NearObj = SerchTag(gameObject, "Crops");
+        // 通常状態に変更
         m_Mode = MODE.NORMAL;
     }
 }

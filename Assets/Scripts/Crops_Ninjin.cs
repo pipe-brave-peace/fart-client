@@ -5,10 +5,14 @@ using UnityEngine.UI;
 
 public class Crops_Ninjin : MonoBehaviour {
 
-    public int m_Life = 5;
-    public float m_DamageTime = 2.0f;
-    public TextMesh Debug_HP_Text;      // 残りの農作物
-    public float m_DamageCnt = 0.0f;
+    [SerializeField]
+    int m_Life = 5;
+    [SerializeField]
+    float m_DamageTime = 2.0f;
+    [SerializeField]
+    TextMesh Debug_HP_Text;      // 残りの農作物
+    [SerializeField]
+    float m_DamageCnt = 0.0f;
 
     // Use this for initialization
     void Start () {
