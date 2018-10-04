@@ -4,10 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class UI_Farm : MonoBehaviour {
-
-    public Text m_HP_Text;      // 残りの農作物
-    public Text m_HP_MAX_Text;  // 農作物の総数
-    public Phase[] m_Phase;     // フェーズ情報の代入
+    [SerializeField]
+    Text m_HP_Text;      // 残りの農作物
+    [SerializeField]
+    Text m_HP_MAX_Text;  // 農作物の総数
+    [SerializeField]
+    Phase[] m_Phase;     // フェーズ情報の代入
 
     float m_HP = 100;           // 畑HP
     float m_MAX_HP = 100;       // MAX HP
