@@ -3,10 +3,8 @@ using WiimoteApi;
 using UnityEngine.UI;
 
 public class WiimoteSharing : MonoBehaviour {
-    private Wiimote wiimote;
 
-    [SerializeField]
-    Image image;
+    private Wiimote wiimote;
 
     private int counter = 0;
     private int sendWiimoteCount = 3;
@@ -40,10 +38,10 @@ public class WiimoteSharing : MonoBehaviour {
 
         float[] pointer = wiimote.Ir.GetPointingPosition();
         var point = new Vector2(pointer[0], pointer[1]);
+    }
 
-        image.rectTransform.anchorMax = Vector2.Lerp(image.rectTransform.anchorMax, point, 0.5f);;
-        image.rectTransform.anchorMin = Vector2.Lerp(image.rectTransform.anchorMin, point, 0.5f); ;
-
-        Debug.Log(point);
+    public Wiimote GetWiimote()
+    {
+        return wiimote;
     }
 }

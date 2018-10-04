@@ -655,7 +655,8 @@ public class Wiimote
                             ActivateExtension();
                             RequestIdentifyExtension();         // Identify what extension was connected.
                         }
-                        else
+                        else                    Debug.LogWarning("Recived Register Read Report when none was expected.  Ignoring.");
+
                             ExpectingWiiMotionPlusSwitch = false;
                     }
                     else
@@ -672,7 +673,6 @@ public class Wiimote
 
                 if (CurrentReadData == null)
                 {
-                    Debug.LogWarning("Recived Register Read Report when none was expected.  Ignoring.");
                     return status;
                 }
 
