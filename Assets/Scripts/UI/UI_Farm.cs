@@ -5,44 +5,71 @@ using UnityEngine.UI;
 
 public class UI_Farm : MonoBehaviour {
 
-    // デバッグ用変数
-    public Text Debug_HP_Text;      // 残りの農作物
-    public Text Debug_HP_MAX_Text;  // 農作物の総数
+    public Text m_HP_Text;      // 残りの農作物
+    public Text m_HP_MAX_Text;  // 農作物の総数
+    public Phase[] m_Phase;     // フェーズ情報の代入
 
-    public Slider m_Farm_UI;        // 畑ゲージ
-    public Text m_PercentHP_Text;   // パーセントのテキスト
+    float m_HP = 100;           // 畑HP
+    float m_MAX_HP = 100;       // MAX HP
+    Phase m_NowPhase;           // 現在のフェーズ情報
 
-    float m_HP = 100;        // 畑HP
-    float m_MAX_HP = 100;     // MAX HP
+    // Use this for initialization
+    void Start () {
+        // 初期フェーズ情報の代入
+        m_NowPhase = m_Phase[0];
 
-    void Start()
-    {
         // 農作物をカウントし、代入
-        m_HP = GameObject.FindGameObjectsWithTag("Crops").Length;
-        m_MAX_HP = m_HP;
+        m_HP = m_NowPhase.GetCropsChildCount();
+        m_MAX_HP = m_NowPhase.GetMaxCropsChildCount();
+
         // 残数表示
-        Debug_HP_Text.text = Mathf.FloorToInt(m_HP).ToString();
-        // 残数代入
-        m_Farm_UI.value = m_HP;
-
+        m_HP_Text.text = Mathf.FloorToInt(m_HP).ToString();
         // 農作物総数の表示
-        Debug_HP_MAX_Text.text = Mathf.FloorToInt(m_MAX_HP).ToString() + "/";
-        // 畑ゲージのMAXゲージの代入
-        m_Farm_UI.maxValue = m_MAX_HP;
-
-        // パーセントの初期化
-        m_PercentHP_Text.text = "100%";
+        m_HP_MAX_Text.text = "/"+ Mathf.FloorToInt(m_MAX_HP).ToString();
     }
 
-    void Update()
-    {
-        // 
-        m_HP = GameObject.FindGameObjectsWithTag("Crops").Length;
-        Debug_HP_Text.text = Mathf.FloorToInt(m_HP).ToString();
-        m_Farm_UI.value = m_HP;
+    // Update is called once per frame
+    void Update () {
+        // 残り数のカウント
+        m_HP = m_NowPhase.GetCropsChildCount();
+        m_HP_Text.text = Mathf.FloorToInt(m_HP).ToString();
 
-        // パーセントの算出
-        int percentHP = Mathf.FloorToInt(m_HP / m_MAX_HP * 100.0f);
-        m_PercentHP_Text.text = percentHP.ToString() + "%";
+        // デバッグ用キー押し判定
+        if( Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            SetPhase(0);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            SetPhase(1);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            SetPhase(2);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            SetPhase(3);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            SetPhase(4);
+        }
+    }
+
+    // 
+    public void SetPhase( int Phase)
+    {
+        // フェーズ情報の代入
+        m_NowPhase = m_Phase[Phase];
+
+        // 農作物をカウントし、代入
+        m_HP = m_NowPhase.GetCropsChildCount();
+        m_MAX_HP = m_NowPhase.GetMaxCropsChildCount();
+
+        // 残数表示
+        m_HP_Text.text = Mathf.FloorToInt(m_HP).ToString();
+        // 農作物総数の表示
+        m_HP_MAX_Text.text = "/" + Mathf.FloorToInt(m_MAX_HP).ToString();
     }
 }
