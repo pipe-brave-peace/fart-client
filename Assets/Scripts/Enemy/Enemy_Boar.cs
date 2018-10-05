@@ -7,59 +7,90 @@ using UnityEngine.AI;
 public class Enemy_Boar : MonoBehaviour {
     enum MODE
     {
-        NORMAL = 0,
-        MOVE,
-        ATTACK,
-        DEATH,
+        NORMAL = 0, // 通常
+        MOVE,       // 移動
+        EAT,        // 食べる
+        ATTACK,     // 攻撃
+        SATIETY,    // 満腹
+        ESCAPE,     // 逃げる
         MAX
     }
 
     [SerializeField]
     TextMesh Debug_Mode_Text;
     [SerializeField]
-    int m_Life = 1;
+    int m_Life = 1;             // 体力
 
-    GameObject m_NearObj;
-    MODE m_Mode;
-    NavMeshAgent m_Nav;
+    GameObject m_NearObj;       // 一番近いオブジェクト
+    MODE m_Mode;                // 状態
+    NavMeshAgent m_Nav;         // ナビメッシュ
+    Vector3 m_PosOld;           // 満腹後向かう座標
 
     // Use this for initialization
     void Start () {
-        m_Mode = MODE.NORMAL;
-        m_NearObj = SerchTag(gameObject, "Crops");
-        m_Nav = GetComponent<NavMeshAgent>();
+        m_Mode = MODE.NORMAL;                               // 状態の初期化
+        m_NearObj = SerchTag(gameObject, "Crops");          // 一番近い農作物をサーチ
+        m_Nav = GetComponent<NavMeshAgent>();               // ナビメッシュの取得
+        m_PosOld = transform.position;                      // 満腹後向かう座標のセット
     }
 	
 	// Update is called once per frame
 	void Update () {
+        // 状態判定
         switch (m_Mode)
         {
-            case MODE.NORMAL:
+            case MODE.NORMAL:   // 通常
                 Debug_Mode_Text.text = "MODE:Normal";
-                m_NearObj = SerchTag(gameObject, "Crops");
                 m_Mode = MODE.MOVE;
                 break;
 
-            case MODE.MOVE:
+            case MODE.MOVE:     // 移動
                 Debug_Mode_Text.text = "MODE:Move";
+                // 目標がなくなった？
                 if (m_NearObj == null)
                 {
+                    // 再検索
+                    m_NearObj = SerchTag(gameObject, "Crops");
                     break;
                 }
-                //対象の位置の方向を向く
+                //対象の位置の方向に移動
                 m_Nav.SetDestination(m_NearObj.transform.position);
                 break;
 
-            case MODE.ATTACK:
+            case MODE.EAT:      // 食べる
+                Debug_Mode_Text.text = "MODE:Eat";
+                // 食べ終わった？
+                if (m_NearObj == null)
+                {
+                    // 満腹になる
+                    m_Mode = MODE.SATIETY;
+                    // 移動速度が減る
+                    m_Nav.speed = m_Nav.speed * 0.5f;
+                }
+                break;
+
+            case MODE.ATTACK:   // 攻撃
                 Debug_Mode_Text.text = "MODE:Attack";
                 if ( m_NearObj == null)
                 {
                     m_Mode = MODE.NORMAL;
                 }
                 break;
-            case MODE.DEATH:
-                Debug_Mode_Text.text = "MODE:Death";
-                Destroy(gameObject);
+
+            case MODE.SATIETY:  // 満腹
+                Debug_Mode_Text.text = "MODE:満腹";
+                // 離脱の位置の方向に移動
+                m_Nav.SetDestination(m_PosOld);
+                // 目標に着いた？
+                if(Vector3.Distance(m_PosOld, transform.position) <= 1.0f)
+                {
+                    // 自分を消す
+                    Destroy(gameObject);
+                }
+                break;
+
+            case MODE.ESCAPE:   // 逃げる
+                Debug_Mode_Text.text = "MODE:FadeOut";
                 break;
         }
 	}
@@ -101,7 +132,7 @@ public class Enemy_Boar : MonoBehaviour {
         m_Life -= Damage;
         if( m_Life <= 0)
         {
-            m_Mode = MODE.DEATH;
+            m_Mode = MODE.ESCAPE;
         }
     }
 
@@ -112,13 +143,7 @@ public class Enemy_Boar : MonoBehaviour {
         if (other.gameObject.tag == "Crops")
         {
             // 農作物を食べる
-            m_Mode = MODE.ATTACK;
+            m_Mode = MODE.EAT;
         }
-    }
-    // 当たり判定から離れた時
-    void OnTriggerExit(Collider other)
-    {
-        // 通常状態に変更
-        m_Mode = MODE.NORMAL;
     }
 }
