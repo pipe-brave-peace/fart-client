@@ -711,7 +711,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4891320097674626}
   m_Layer: 0
-  m_Name: Phase1
+  m_Name: Debug_Phase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2686,6 +2686,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Debug_Mode_Text: {fileID: 102386812684557242}
+  m_Life: 1
 --- !u!114 &114658601354972346
 MonoBehaviour:
   m_ObjectHideFlags: 1
