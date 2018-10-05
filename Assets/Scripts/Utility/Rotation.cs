@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Rotation : MonoBehaviour {
 
-    public Vector3 m_MoveRot;
+    [SerializeField]
+    Vector3 m_MoveRot;
     Quaternion m_Quaternion;
     Vector3 m_Rot;
 
