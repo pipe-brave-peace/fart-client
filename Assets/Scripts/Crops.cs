@@ -12,16 +12,7 @@ public class Crops : MonoBehaviour {
         // 最大数の代入
         m_MaxChildCount = transform.childCount;
     }
-
-    // Update is called once per frame
-    void Update () {
-        // 農作物がなくなった？
-        if (transform.childCount <= 0)
-        {
-            // 自分を消す
-            Destroy(gameObject);
-        }
-    }
+    
     // 農作物の数を取得
     public int GetChildCount()
     {
