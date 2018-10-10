@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - Crops
+  - Point
   layers:
   - Default
   - TransparentFX

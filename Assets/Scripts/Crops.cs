@@ -5,7 +5,7 @@ using UnityEngine;
 public class Crops : MonoBehaviour {
 
     // 最大数
-    int m_MaxChildCount = 0;
+    private int m_MaxChildCount = 0;
 
     void Start()
     {

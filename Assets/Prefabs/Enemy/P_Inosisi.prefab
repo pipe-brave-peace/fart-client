@@ -359,7 +359,7 @@ GameObject:
   - component: {fileID: 114023285259145128}
   - component: {fileID: 195999161888601880}
   m_Layer: 0
-  m_Name: Boar
+  m_Name: P_Inosisi
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
