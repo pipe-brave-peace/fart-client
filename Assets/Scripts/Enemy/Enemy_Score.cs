@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy_Score : MonoBehaviour {
-
-    [SerializeField]
-    int m_Score;
+    
+    private int m_Score = 0;
 
     public void SetScore(int Score)
     {

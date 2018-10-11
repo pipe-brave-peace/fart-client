@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Life))]
+[RequireComponent(typeof(Enemy_State))]
+[RequireComponent(typeof(Enemy_Score))]
+
 public class Enemy_Karasu : MonoBehaviour {
 
     [SerializeField]
@@ -98,7 +102,7 @@ public class Enemy_Karasu : MonoBehaviour {
                 if (m_TargetObj == null)
                 {
                     // カラスを消す
-                    Destroy(gameObject.transform.parent.gameObject);
+                    Destroy(gameObject);
                     return;
                 }
 

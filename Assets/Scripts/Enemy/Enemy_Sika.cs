@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(Life))]
+[RequireComponent(typeof(Enemy_State))]
+[RequireComponent(typeof(Enemy_Score))]
+
 public class Enemy_Sika : MonoBehaviour {
 
     [SerializeField]
