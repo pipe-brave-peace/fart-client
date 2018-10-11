@@ -75,6 +75,8 @@ GameObject:
   - component: {fileID: 54373596444894644}
   - component: {fileID: 65044575570726118}
   - component: {fileID: 114000620839154924}
+  - component: {fileID: 114692781310558460}
+  - component: {fileID: 114508698662797150}
   m_Layer: 0
   m_Name: P_Karasu
   m_TagString: Enemy
@@ -335,9 +337,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f12daf717dd21f14b93c1c6d76fd63ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Debug_Mode_Text: {fileID: 102314776805194598}
+  Debug_State_Text: {fileID: 102314776805194598}
   m_NavObj:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  m_Speed: 0.1
+  m_Speed: 1
+  m_EatSpeed: 1
+--- !u!114 &114508698662797150
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1964694999468088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50279423d7f10d44b9586b8529a103b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Life: 3
+--- !u!114 &114692781310558460
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1964694999468088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 698126b92f7888944bd5cfde22aa6c79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Score: 200

@@ -152,6 +152,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114769583075836240, guid: 3be342f02973ed74b9ebff1391840461,
+        type: 2}
+      propertyPath: targetCamera
+      value: 
+      objectReference: {fileID: 75601473}
     - target: {fileID: 114575245320640204, guid: 3be342f02973ed74b9ebff1391840461,
         type: 2}
       propertyPath: m_NavCrops.Array.data[0]
@@ -167,21 +172,6 @@ Prefab:
       propertyPath: m_NavCrops.Array.data[2]
       value: 
       objectReference: {fileID: 564102907}
-    - target: {fileID: 114769583075836240, guid: 3be342f02973ed74b9ebff1391840461,
-        type: 2}
-      propertyPath: targetCamera
-      value: 
-      objectReference: {fileID: 75601473}
-    - target: {fileID: 65345858993504520, guid: 3be342f02973ed74b9ebff1391840461,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114575245320640204, guid: 3be342f02973ed74b9ebff1391840461,
-        type: 2}
-      propertyPath: Debug_State_Text
-      value: 
-      objectReference: {fileID: 319251312}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3be342f02973ed74b9ebff1391840461, type: 2}
   m_IsPrefabParent: 0
@@ -499,11 +489,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d1e23ff88f36844f974ad9dcc0a88eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!102 &319251312 stripped
-TextMesh:
-  m_PrefabParentObject: {fileID: 102130441611326742, guid: 3be342f02973ed74b9ebff1391840461,
-    type: 2}
-  m_PrefabInternal: {fileID: 31069639}
 --- !u!1 &353951690
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,6 +642,36 @@ Prefab:
     - target: {fileID: 4282211417034546, guid: 0403a541b419be44a8ed9e5bb18d73f9, type: 2}
       propertyPath: m_RootOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114570049029895296, guid: 0403a541b419be44a8ed9e5bb18d73f9,
+        type: 2}
+      propertyPath: Score_Enemy_Sika
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 114570049029895296, guid: 0403a541b419be44a8ed9e5bb18d73f9,
+        type: 2}
+      propertyPath: Score_Enemy_Inosisi
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 114570049029895296, guid: 0403a541b419be44a8ed9e5bb18d73f9,
+        type: 2}
+      propertyPath: Score_Enemy_Inago
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 114570049029895296, guid: 0403a541b419be44a8ed9e5bb18d73f9,
+        type: 2}
+      propertyPath: Score_Enemy_Kamemusi
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 114570049029895296, guid: 0403a541b419be44a8ed9e5bb18d73f9,
+        type: 2}
+      propertyPath: Score_Enemy_Kuma
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 114570049029895296, guid: 0403a541b419be44a8ed9e5bb18d73f9,
+        type: 2}
+      propertyPath: Score_Enemy_Karasu
+      value: 300
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0403a541b419be44a8ed9e5bb18d73f9, type: 2}
@@ -1482,23 +1497,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 697594260}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &703426439 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1030942607394966, guid: 3be342f02973ed74b9ebff1391840461,
-    type: 2}
-  m_PrefabInternal: {fileID: 31069639}
---- !u!114 &703426446
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 703426439}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50279423d7f10d44b9586b8529a103b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Life: 5
 --- !u!1 &730777943
 GameObject:
   m_ObjectHideFlags: 0
@@ -1877,11 +1875,6 @@ Prefab:
       propertyPath: targetCamera
       value: 
       objectReference: {fileID: 75601473}
-    - target: {fileID: 114941973980025374, guid: b38aa72c824b55947994b8f8e48ec86c,
-        type: 2}
-      propertyPath: UI_HP
-      value: 
-      objectReference: {fileID: 1293121104}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b38aa72c824b55947994b8f8e48ec86c, type: 2}
   m_IsPrefabParent: 0
@@ -2300,11 +2293,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114045462646609282, guid: 84f648bc8a0998f43b35fbe84639a3fb,
-        type: 2}
-      propertyPath: targetCamera
-      value: 
-      objectReference: {fileID: 75601473}
     - target: {fileID: 114241602765488780, guid: 84f648bc8a0998f43b35fbe84639a3fb,
         type: 2}
       propertyPath: m_NavObj.Array.data[0]
@@ -2320,21 +2308,11 @@ Prefab:
       propertyPath: m_NavObj.Array.data[2]
       value: 
       objectReference: {fileID: 564102907}
-    - target: {fileID: 114241602765488780, guid: 84f648bc8a0998f43b35fbe84639a3fb,
+    - target: {fileID: 114045462646609282, guid: 84f648bc8a0998f43b35fbe84639a3fb,
         type: 2}
-      propertyPath: m_Speed
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114241602765488780, guid: 84f648bc8a0998f43b35fbe84639a3fb,
-        type: 2}
-      propertyPath: Debug_State_Text
+      propertyPath: targetCamera
       value: 
-      objectReference: {fileID: 1326136683}
-    - target: {fileID: 114241602765488780, guid: 84f648bc8a0998f43b35fbe84639a3fb,
-        type: 2}
-      propertyPath: m_EatSpeed
-      value: 1
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 75601473}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 84f648bc8a0998f43b35fbe84639a3fb, type: 2}
   m_IsPrefabParent: 0
@@ -2518,16 +2496,6 @@ Transform:
   m_Father: {fileID: 1440635853}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!102 &1293121104 stripped
-TextMesh:
-  m_PrefabParentObject: {fileID: 102967589449838474, guid: b38aa72c824b55947994b8f8e48ec86c,
-    type: 2}
-  m_PrefabInternal: {fileID: 864502397}
---- !u!102 &1326136683 stripped
-TextMesh:
-  m_PrefabParentObject: {fileID: 102314776805194598, guid: 84f648bc8a0998f43b35fbe84639a3fb,
-    type: 2}
-  m_PrefabInternal: {fileID: 1230778581}
 --- !u!1 &1350236479
 GameObject:
   m_ObjectHideFlags: 0

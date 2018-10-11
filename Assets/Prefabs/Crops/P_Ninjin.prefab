@@ -250,7 +250,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DamageTime: 1
-  UI_HP: {fileID: 0}
+  UI_HP: {fileID: 102967589449838474}
 --- !u!114 &114986294092366474
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Life : MonoBehaviour {
 
-    public float m_Life;
+    [SerializeField]
+    float m_Life;
 
     public void SetLife(float Life)
     {

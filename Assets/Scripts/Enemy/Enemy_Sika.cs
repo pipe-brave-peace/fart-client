@@ -29,6 +29,9 @@ public class Enemy_Sika : MonoBehaviour {
         m_TargetObj = SerchCrops();                         // 農作物をサーチ
         m_Nav = GetComponent<NavMeshAgent>();               // ナビメッシュの取得
         m_PosOld = transform.position;                      // 満腹後向かう座標のセット
+        // スコアセット
+        Enemy_Score score = GetComponent<Enemy_Score>();
+        score.SetScore(Score_List.Enemy.Sika);
     }
 
     // Update is called once per frame
@@ -72,7 +75,7 @@ public class Enemy_Sika : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.EAT:      // 食べる
-                Debug_State_Text.text = "STATE:Eat";
+                Debug_State_Text.text = "STATE:食べているよ";
                 // 食べ終わった？
                 if (m_TargetObj == null)
                 {
