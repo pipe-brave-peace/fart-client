@@ -6,23 +6,26 @@ using UnityEngine.AI;
 public class Enemy_Sika : MonoBehaviour {
 
     [SerializeField]
-    TextMesh Debug_Mode_Text;
-    [SerializeField]
-    int m_Life = 1;             // 体力
+    TextMesh Debug_State_Text;
     [SerializeField]
     GameObject[] m_NavCrops;    // 農作物リスト
     [SerializeField]
     float m_Satiety;            // 満腹度
+    [SerializeField]
+    float m_EatSpeed = 1.0f;    // 食べるスピード
+    
 
     private GameObject m_TargetObj;     // ターゲットオブジェクト
-    private Enemy_Mode m_Mode;          // 状態
+    private Enemy_State m_State;        // 状態
     private NavMeshAgent m_Nav;         // ナビメッシュ
     private Vector3 m_PosOld;           // 満腹後向かう座標
+    private Life m_Life;
 
     // Use this for initialization
     void Start()
     {
-        m_Mode = GetComponent<Enemy_Mode>();
+        m_Life = GetComponent<Life>();
+        m_State = GetComponent<Enemy_State>();
         m_TargetObj = SerchCrops();                         // 農作物をサーチ
         m_Nav = GetComponent<NavMeshAgent>();               // ナビメッシュの取得
         m_PosOld = transform.position;                      // 満腹後向かう座標のセット
@@ -31,16 +34,21 @@ public class Enemy_Sika : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        // 状態判定
-        switch (m_Mode.GetMode())
+        // 死亡した？
+        if (m_Life.GetLife() <= 0)
         {
-            case Enemy_Mode.MODE.NORMAL:   // 通常
-                Debug_Mode_Text.text = "MODE:Normal";
-                m_Mode.SetMode(Enemy_Mode.MODE.MOVE);
+            m_State.SetState(Enemy_State.STATE.ESCAPE);     // 逃げるモード
+        }
+        // 状態判定
+        switch (m_State.GetState())
+        {
+            case Enemy_State.STATE.NORMAL:   // 通常
+                Debug_State_Text.text = "STATE:Normal";
+                m_State.SetState(Enemy_State.STATE.MOVE);
                 break;
 
-            case Enemy_Mode.MODE.MOVE:     // 移動
-                Debug_Mode_Text.text = "MODE:Move";
+            case Enemy_State.STATE.MOVE:     // 移動
+                Debug_State_Text.text = "STATE:Move";
                 // 目標がなくなった？
                 if (m_TargetObj == null)
                 {
@@ -58,13 +66,13 @@ public class Enemy_Sika : MonoBehaviour {
                 if (Vector2.Distance(this_pos, target_pos) <= 1.0f)
                 {
                     // 食べる状態に変更
-                    m_Mode.SetMode(Enemy_Mode.MODE.EAT);
+                    m_State.SetState(Enemy_State.STATE.EAT);
                     m_Nav.SetDestination(transform.position);       // 移動を止める
                 }
                 break;
 
-            case Enemy_Mode.MODE.EAT:      // 食べる
-                Debug_Mode_Text.text = "MODE:Eat";
+            case Enemy_State.STATE.EAT:      // 食べる
+                Debug_State_Text.text = "STATE:Eat";
                 // 食べ終わった？
                 if (m_TargetObj == null)
                 {
@@ -72,13 +80,19 @@ public class Enemy_Sika : MonoBehaviour {
                     if( m_Satiety <= 0.5f)
                     {
                         // 満腹になる
-                        m_Mode.SetMode(Enemy_Mode.MODE.SATIETY);
+                        m_State.SetState(Enemy_State.STATE.SATIETY);
                         // 移動速度が減る
                         m_Nav.speed = m_Nav.speed * 0.5f;
                         break;
                     }
                     // 次を探す
-                    m_Mode.SetMode(Enemy_Mode.MODE.NORMAL);
+                    m_State.SetState(Enemy_State.STATE.NORMAL);
+                }
+                Life target_life = m_TargetObj.GetComponent<Life>();
+                target_life.SubLife(Time.deltaTime * m_EatSpeed);
+                if (target_life.GetLife() <= 0)
+                {
+                    Destroy(m_TargetObj.gameObject);
                 }
                 // 満腹までのカウント
                 m_Satiety -= Time.deltaTime;
@@ -86,14 +100,14 @@ public class Enemy_Sika : MonoBehaviour {
                 if (m_Satiety <= 0.0f)
                 {
                     // 満腹になる
-                    m_Mode.SetMode(Enemy_Mode.MODE.SATIETY);
+                    m_State.SetState(Enemy_State.STATE.SATIETY);
                     // 移動速度が減る
                     m_Nav.speed = m_Nav.speed * 0.5f;
                 }
                 break;
 
-            case Enemy_Mode.MODE.SATIETY:  // 満腹
-                Debug_Mode_Text.text = "MODE:満腹";
+            case Enemy_State.STATE.SATIETY:  // 満腹
+                Debug_State_Text.text = "STATE:満腹";
                 // 離脱の位置の方向に移動
                 m_Nav.SetDestination(m_PosOld);
                 // 目標に着いた？
@@ -104,8 +118,8 @@ public class Enemy_Sika : MonoBehaviour {
                 }
                 break;
 
-            case Enemy_Mode.MODE.ESCAPE:   // 逃げる
-                Debug_Mode_Text.text = "MODE:FadeOut";
+            case Enemy_State.STATE.ESCAPE:   // 逃げる
+                Debug_State_Text.text = "STATE:FadeOut";
                 break;
         }
     }
@@ -125,21 +139,5 @@ public class Enemy_Sika : MonoBehaviour {
         }
         // リストがなくなったらnull
         return null;
-    }
-
-    // ライフの取得
-    public int GetLife()
-    {
-        return m_Life;
-    }
-
-    // ダメージを受ける
-    public void SubLife(int Damage = 1)
-    {
-        m_Life -= Damage;
-        if (m_Life <= 0)
-        {
-            m_Mode.SetMode(Enemy_Mode.MODE.ESCAPE);
-        }
     }
 }

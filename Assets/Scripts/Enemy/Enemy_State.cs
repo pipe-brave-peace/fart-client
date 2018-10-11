@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy_Mode : MonoBehaviour {
+public class Enemy_State : MonoBehaviour {
 
-    public enum MODE
+    public enum STATE
     {
         NORMAL = 0, // 通常
         MOVE,       // 移動
@@ -15,15 +15,15 @@ public class Enemy_Mode : MonoBehaviour {
         MAX
     }
 
-    private MODE m_Mode;
+    private STATE m_State;
    
-    public void SetMode( MODE Mode)
+    public void SetState(STATE State)
     {
-        m_Mode = Mode;
+        m_State = State;
     }
 
-    public MODE GetMode()
+    public STATE GetState()
     {
-        return m_Mode;
+        return m_State;
     }
 }

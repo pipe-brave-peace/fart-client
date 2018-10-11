@@ -5,13 +5,15 @@ using UnityEngine;
 public class Enemy_Karasu : MonoBehaviour {
 
     [SerializeField]
-    TextMesh Debug_Mode_Text;
+    TextMesh Debug_State_Text;
     [SerializeField]
     GameObject[] m_NavObj;      // 目標オブジェクト
     [SerializeField]
     float m_Speed = 0.05f;      // スピード
+    [SerializeField]
+    float m_EatSpeed = 1.0f;      // 食べるスピード
 
-    private Enemy_Mode m_Mode;
+    private Enemy_State m_State;
     private GameObject m_TargetObj;
 
     // Use this for initialization
@@ -20,7 +22,7 @@ public class Enemy_Karasu : MonoBehaviour {
         // ターゲットの代入
         m_TargetObj = m_NavObj[0];
         // モードの取得
-        m_Mode = GetComponent<Enemy_Mode>();
+        m_State = GetComponent<Enemy_State>();
     }
 
     // Update is called once per frame
@@ -29,15 +31,15 @@ public class Enemy_Karasu : MonoBehaviour {
         Vector3 move;
 
         // 状態判定
-        switch (m_Mode.GetMode())
+        switch (m_State.GetState())
         {
-            case Enemy_Mode.MODE.NORMAL:   // 通常
-                Debug_Mode_Text.text = "MODE:Normal";
-                m_Mode.SetMode(Enemy_Mode.MODE.MOVE);
+            case Enemy_State.STATE.NORMAL:   // 通常
+                Debug_State_Text.text = "STATE:Normal";
+                m_State.SetState(Enemy_State.STATE.MOVE);
                 break;
 
-            case Enemy_Mode.MODE.MOVE:     // 移動
-                Debug_Mode_Text.text = "MODE:Move";
+            case Enemy_State.STATE.MOVE:     // 移動
+                Debug_State_Text.text = "STATE:Move";
                 // 目標がなくなった？
                 if (m_TargetObj == null)
                 {
@@ -60,29 +62,36 @@ public class Enemy_Karasu : MonoBehaviour {
                 if (Vector3.Distance(transform.position, m_TargetObj.transform.position) <= 1.0f)
                 {
                     // 食べる状態に変更
-                    m_Mode.SetMode(Enemy_Mode.MODE.EAT);
+                    m_State.SetState(Enemy_State.STATE.EAT);
                 }
                 break;
 
-            case Enemy_Mode.MODE.EAT:      // 食べる
-                Debug_Mode_Text.text = "MODE:Eat";
-                // 食べ終わった？
+            case Enemy_State.STATE.EAT:      // 食べる
+                Debug_State_Text.text = "STATE:Eat";
                 if (m_TargetObj == null)
                 {
+                    break;
+                }
+                Life target_life = m_TargetObj.GetComponent<Life>();
+                target_life.SubLife(Time.deltaTime * m_EatSpeed);
+                // 食べ終わった？
+                if ( target_life.GetLife() <= 0)
+                {
+                    Destroy(m_TargetObj.gameObject);
                     // 満腹になる
-                    m_Mode.SetMode(Enemy_Mode.MODE.SATIETY);
+                    m_State.SetState(Enemy_State.STATE.SATIETY);
                     // 退却座標の代入
                     m_TargetObj = m_NavObj[1];
                 }
                 break;
 
-            case Enemy_Mode.MODE.SATIETY:  // 満腹
-                Debug_Mode_Text.text = "MODE:満腹";
+            case Enemy_State.STATE.SATIETY:  // 満腹
+                Debug_State_Text.text = "STATE:満腹";
                 // 目標に着いた？
                 if (m_TargetObj == null)
                 {
-                    // 自分を消す
-                    Destroy(gameObject);
+                    // カラスを消す
+                    Destroy(gameObject.transform.parent.gameObject);
                     return;
                 }
 
@@ -96,8 +105,8 @@ public class Enemy_Karasu : MonoBehaviour {
                 transform.position += move * m_Speed * 0.5f;
                 break;
 
-            case Enemy_Mode.MODE.ESCAPE:   // 逃げる
-                Debug_Mode_Text.text = "MODE:FadeOut";
+            case Enemy_State.STATE.ESCAPE:   // 逃げる
+                Debug_State_Text.text = "STATE:FadeOut";
                 break;
         }
     }
