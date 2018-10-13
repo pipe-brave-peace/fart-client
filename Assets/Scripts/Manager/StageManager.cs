@@ -6,6 +6,18 @@ using UnityEngine.UI;
 public class StageManager : MonoBehaviour {
     
     public AudioSource m_Bgm;           // BGM
+    [SerializeField]
+    int Score_Enemy_Sika;
+    [SerializeField]
+    int Score_Enemy_Inosisi;
+    [SerializeField]
+    int Score_Enemy_Karasu;
+    [SerializeField]
+    int Score_Enemy_Inago;
+    [SerializeField]
+    int Score_Enemy_Kamemusi;
+    [SerializeField]
+    int Score_Enemy_Kuma;
 
     // ステージモード定義
     enum STAGE_MODE
@@ -15,6 +27,7 @@ public class StageManager : MonoBehaviour {
         TO_RESULT,  // ゲーム終了
         MAX
     }
+
     STAGE_MODE Mode;            // 現在のモード
 
     // ゲームモードの取得
@@ -82,5 +95,30 @@ public class StageManager : MonoBehaviour {
 
         // 次のモードに移行
         Mode = STAGE_MODE.MAX;
+    }
+
+    public int GetScoreEnemySika()
+    {
+        return Score_Enemy_Sika;
+    }
+    public int GetScoreEnemyInosisi()
+    {
+        return Score_Enemy_Inosisi;
+    }
+    public int GetScoreEnemyKarasu()
+    {
+        return Score_Enemy_Karasu;
+    }
+    public int GetScoreEnemyInago()
+    {
+        return Score_Enemy_Inago;
+    }
+    public int GetScoreEnemyKamemusi()
+    {
+        return Score_Enemy_Kamemusi;
+    }
+    public int GetScoreEnemyKuma()
+    {
+        return Score_Enemy_Kuma;
     }
 }

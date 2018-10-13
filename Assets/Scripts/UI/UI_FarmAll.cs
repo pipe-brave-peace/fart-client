@@ -10,8 +10,8 @@ public class UI_FarmAll : MonoBehaviour {
     [SerializeField]
     Text m_PercentHP_Text;   // パーセントのテキスト
 
-    float m_HP = 100;        // 畑HP
-    float m_MAX_HP = 100;     // MAX HP
+    private float m_HP = 100;        // 畑HP
+    private float m_MAX_HP = 100;     // MAX HP
 
     void Start()
     {
