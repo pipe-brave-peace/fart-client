@@ -1,9 +1,7 @@
 fileFormatVersion: 2
-guid: b959911fe31c6b84d913dd708503ca65
+guid: e4d3cba760f6f8b4bb05526dae02414f
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: UI_player_0
-    21300002: UI_player_2
+  fileIDToRecycleName: {}
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -40,7 +38,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -99,35 +97,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: UI_player_0
-      rect:
-        serializedVersion: 2
-        x: 27
-        y: 163
-        width: 206
-        height: 56
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: UI_player_2
-      rect:
-        serializedVersion: 2
-        x: 28
-        y: 35
-        width: 206
-        height: 56
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
+    sprites: []
     outline: []
     physicsShape: []
   spritePackingTag: 

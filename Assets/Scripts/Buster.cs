@@ -46,12 +46,12 @@ public class Buster : MonoBehaviour
         }
         else
         {
-            Cursor.visible = false;
-            var position = Input.mousePosition;
-            m_ReticleUI.rectTransform.position = position;
+            //Cursor.visible = false;
+            //var position = Input.mousePosition;
+            //m_ReticleUI.rectTransform.position = position;
         }
 
-        Vector3 rayPos = new Vector3(m_ReticleUI.rectTransform.position.x * 0.999f, m_ReticleUI.rectTransform.position.y, m_ReticleUI.rectTransform.position.z);
+        Vector3 rayPos = new Vector3(m_ReticleUI.rectTransform.position.x, m_ReticleUI.rectTransform.position.y, m_ReticleUI.rectTransform.position.z);
 
         Ray ray = Camera.main.ScreenPointToRay(rayPos);
         transform.rotation = Quaternion.LookRotation(ray.direction);
