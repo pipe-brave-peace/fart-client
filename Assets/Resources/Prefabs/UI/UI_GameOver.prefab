@@ -26,7 +26,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1836340193903932
 GameObject:
   m_ObjectHideFlags: 0
@@ -79,7 +79,7 @@ MonoBehaviour:
   delay: 0
   style: 0
   playOnAwake: 1
-  m_progress: 0.26863843
+  m_progress: 0.13333334
   usePosition: 1
   useRotation: 1
   useScale: 0
@@ -287,6 +287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa749ea9a64c32042920578654d1ebcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_StageManager: {fileID: 0}
   m_Background: {fileID: 1876414033788536}
   m_BG_SizeMove: {x: 0.05, y: 0.01}
   m_Text: {fileID: 114584379262131692}

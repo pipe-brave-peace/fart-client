@@ -73,6 +73,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 245c5727a82608245bd3c6a090eda5f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_StageManager: {fileID: 0}
   m_Background: {fileID: 1386461329077012}
   m_BG_SizeMove: {x: 0.05, y: 0.01}
   m_Text: {fileID: 114681242452969624}
@@ -93,7 +94,7 @@ MonoBehaviour:
   delay: 0
   style: 0
   playOnAwake: 1
-  m_progress: 1
+  m_progress: 0.33333334
   usePosition: 1
   useRotation: 0
   useScale: 1

@@ -6,16 +6,18 @@ using UnityEngine.UI;
 public class UI_GameOver : MonoBehaviour {
 
     [SerializeField]
-    GameObject m_Background;
+    StageManager m_StageManager;    // シーン遷移用
     [SerializeField]
-    Vector2 m_BG_SizeMove;
+    GameObject m_Background;        // 背景
     [SerializeField]
-    Text m_Text;
+    Vector2 m_BG_SizeMove;          // 背景を現すスピード
+    [SerializeField]
+    Text m_Text;                    // 文字
 
-    Vector3 m_BG_Size;
-    float m_FontSize;
-    Color m_FontColor;
-    int m_Mode;
+    Vector3 m_BG_Size;      // 背景サイズ
+    float m_FontSize;       // 文字サイズ
+    Color m_FontColor;      // 文字色
+    int m_Mode;             // モード
 
     // Use this for initialization
     void Start()
@@ -48,36 +50,85 @@ public class UI_GameOver : MonoBehaviour {
     {
         switch (m_Mode)
         {
-            case 0:
+            case 0:     // 背景幅を徐々に伸ばす
+                // キー押した？
+                InputAnyKey();
+
+                // 背景処理
                 m_BG_Size.x = Mathf.Min(m_BG_Size.x + m_BG_SizeMove.x, 1.0f);
                 m_Background.transform.localScale = m_BG_Size;
-                if (m_BG_Size.x >= 0.5f)
+
+                // 一定の幅が来た？
+                if (m_BG_Size.x >= 0.5f) 
                 {
                     m_Mode++;
                 }
                 break;
-            case 1:
+
+            case 1:     // 背景、文字を徐々に現す
+                // キー押した？
+                InputAnyKey();
+
+                // 背景処理
                 m_BG_Size.x = Mathf.Min(m_BG_Size.x + m_BG_SizeMove.x, 1.0f);
                 m_BG_Size.y = Mathf.Min(m_BG_Size.y + m_BG_SizeMove.y, 1.0f);
                 m_Background.transform.localScale = m_BG_Size;
 
+                // 文字処理
                 m_FontColor.a = Mathf.Min(m_FontColor.a + 0.01f, 1.0f);
                 m_Text.color = m_FontColor;
 
+                // 背景が全部現した？
                 if (m_BG_Size.y >= 1.0f)
                 {
                     m_Mode++;
                 }
                 break;
-            case 2:
+
+            case 2:     // 文字を徐々に現す
+                // キー押した？
+                InputAnyKey();
+
+                // 文字処理
                 m_FontColor.a = Mathf.Min(m_FontColor.a + 0.01f, 1.0f);
                 m_Text.color = m_FontColor;
+
+                // 文字が全部現した？
                 if (m_FontColor.a >= 1.0f)
                 {
                     m_Mode++;
-                    m_Text.GetComponent<TypefaceAnimator>().enabled = true;
+                    m_Text.GetComponent<TypefaceAnimator>().enabled = true;     // アニメション有効
+                }
+                break;
+            case 3:
+                // キー押した？
+                if (Input.anyKeyDown)
+                {
+                    // シーン遷移
+                    m_StageManager.ModeToResult();
                 }
                 break;
         }
+    }
+
+    // キー押したら全てを表示
+    void InputAnyKey()
+    {
+        // キー押した？
+        if (!Input.anyKeyDown) { return; }
+
+        // モード変更
+        m_Mode = 3;
+
+        // 背景を全部現す
+        m_Background.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+
+        // 文字を全部現す
+        Color color = m_Text.color;
+        color.a = 1.0f;
+        m_Text.color = color;
+
+        // アニメションを有効
+        m_Text.GetComponent<TypefaceAnimator>().enabled = true;
     }
 }
