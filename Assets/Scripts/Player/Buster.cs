@@ -19,9 +19,6 @@ public class Buster : MonoBehaviour
     float m_FartsValue = 0.0f;
 
     [SerializeField]
-    Slider m_FartsUI = null;
-
-    [SerializeField]
     Image m_ReticleUI = null;
 
     [SerializeField]
