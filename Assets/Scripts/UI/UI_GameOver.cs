@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_GameClear : MonoBehaviour {
+public class UI_GameOver : MonoBehaviour {
 
     [SerializeField]
     GameObject m_Background;
@@ -14,10 +14,12 @@ public class UI_GameClear : MonoBehaviour {
 
     Vector3 m_BG_Size;
     float m_FontSize;
+    Color m_FontColor;
     int m_Mode;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         // 背景の初期化
         m_BG_Size.x = 0.0f;
         m_BG_Size.y = 0.5f;
@@ -25,9 +27,9 @@ public class UI_GameClear : MonoBehaviour {
         m_Background.transform.localScale = m_BG_Size;
 
         // フォントの初期化
-        Color color = m_Text.color;
-        color.a = 0.0f;
-        m_Text.color = color;
+        m_FontColor = m_Text.color;
+        m_FontColor.a = 0.0f;
+        m_Text.color = m_FontColor;
         m_Text.GetComponent<TypefaceAnimator>().enabled = false;
 
         // アニメション順番の初期化
@@ -40,9 +42,10 @@ public class UI_GameClear : MonoBehaviour {
             Destroy(UI);
         }
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         switch (m_Mode)
         {
             case 0:
@@ -56,22 +59,25 @@ public class UI_GameClear : MonoBehaviour {
             case 1:
                 m_BG_Size.x = Mathf.Min(m_BG_Size.x + m_BG_SizeMove.x, 1.0f);
                 m_BG_Size.y = Mathf.Min(m_BG_Size.y + m_BG_SizeMove.y, 1.0f);
-
                 m_Background.transform.localScale = m_BG_Size;
+
+                m_FontColor.a = Mathf.Min(m_FontColor.a + 0.01f, 1.0f);
+                m_Text.color = m_FontColor;
+
                 if (m_BG_Size.y >= 1.0f)
                 {
                     m_Mode++;
-                    Color color = m_Text.color;
-                    color.a = 1.0f;
-                    m_Text.color = color;
+                }
+                break;
+            case 2:
+                m_FontColor.a = Mathf.Min(m_FontColor.a + 0.01f, 1.0f);
+                m_Text.color = m_FontColor;
+                if (m_FontColor.a >= 1.0f)
+                {
+                    m_Mode++;
                     m_Text.GetComponent<TypefaceAnimator>().enabled = true;
                 }
                 break;
         }
-        TypefaceAnimator restart = m_Text.GetComponent<TypefaceAnimator>();
-        if( Input.GetKeyDown(KeyCode.R))
-        {
-            restart.Play();
-        }
-	}
+    }
 }
