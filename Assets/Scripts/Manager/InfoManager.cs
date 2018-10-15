@@ -44,6 +44,7 @@ public class InfoManager : SingletonMonoBehaviour<InfoManager>
     }
 
     private INFO[] m_Player = new INFO[2];
+    private int m_FarmGauge = 0;
 
     public void Awake()
     {
@@ -53,6 +54,7 @@ public class InfoManager : SingletonMonoBehaviour<InfoManager>
             return;
         }
         InitInfo();
+        m_FarmGauge = 97;
         DontDestroyOnLoad(this.gameObject);
     }
 
@@ -70,16 +72,42 @@ public class InfoManager : SingletonMonoBehaviour<InfoManager>
     {
         return m_Player[Index];
     }
-    public void SetPlayerScore(int Index,int var)
+
+    // 数値をセット
+    public void SetPlayerScore(int Index, int var) { m_Player[Index].SetScore(var); }
+    public void SetPlayerEnemy(int Index, int var) { m_Player[Index].SetEnemy(var); }
+    public void SetPlayerCombo(int Index, int var) { m_Player[Index].SetCombo(var); }
+
+    // 数値の計算
+    public void AddPlayerScore(int Index, int var = 1) { m_Player[Index].AddScore(var); }
+    public void AddPlayerEnemy(int Index, int var = 1) { m_Player[Index].AddEnemy(var); }
+    public void AddPlayerCombo(int Index, int var = 1) { m_Player[Index].AddCombo(var); }
+
+    // ランクの取得
+    public string GetPlayerRank(int Index)
     {
-        m_Player[Index].SetScore(var);
+        if(m_Player[Index].GetTotalScore() < 1000)
+        {
+            return "C";
+        }
+        if (m_Player[Index].GetTotalScore() < 2000)
+        {
+            return "B";
+        }
+        if (m_Player[Index].GetTotalScore() < 3000)
+        {
+            return "A";
+        }
+        return "S";
     }
-    public void SetPlayerEnemy(int Index, int var)
+
+    // 畑ゲージのセット
+    public void SetFarmGauge(int var)
     {
-        m_Player[Index].SetEnemy(var);
+        m_FarmGauge = var;
     }
-    public void SetPlayerCombo(int Index, int var)
+    public int GetFarmGauge()
     {
-        m_Player[Index].SetCombo(var);
+        return m_FarmGauge;
     }
 }

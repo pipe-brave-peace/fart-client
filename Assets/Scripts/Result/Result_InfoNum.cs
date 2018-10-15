@@ -23,22 +23,10 @@ public class Result_InfoNum : MonoBehaviour {
     Text m_Player1_TotalScore;
     [SerializeField]
     Text m_Player2_TotalScore;
-
-
     [SerializeField]
-    int Score1;
+    Text m_Player1_Rank;
     [SerializeField]
-    int Score2;
-    [SerializeField]
-    int Enemy1;
-    [SerializeField]
-    int Enemy2;
-    [SerializeField]
-    int Combo1;
-    [SerializeField]
-    int Combo2;
-
-
+    Text m_Player2_Rank;
 
     [SerializeField]
     float m_Time;
@@ -49,10 +37,10 @@ public class Result_InfoNum : MonoBehaviour {
         ENEMY,
         COMBO,
         TOTAL_SCORE,
+        RANK,
         MAX
     }
-
-
+    
     private float m_CntFrame;
     private MODE m_Mode;
 
@@ -70,6 +58,11 @@ public class Result_InfoNum : MonoBehaviour {
         m_Player2_Combo.text = " ";
         m_Player1_TotalScore.text = " ";
         m_Player2_TotalScore.text = " ";
+        m_Player1_Rank.text = " ";
+        m_Player2_Rank.text = " ";
+
+        // テスト
+        InfoManager.Instance.SetPlayerScore(0, 2000);
     }
 	
 	// Update is called once per frame
@@ -126,6 +119,12 @@ public class Result_InfoNum : MonoBehaviour {
                     m_CntFrame = 0.0f;
                     m_Mode++;
                 }
+                break;
+            case MODE.RANK:
+                m_Player1_Rank.text = InfoManager.Instance.GetPlayerRank(0);
+                m_Player2_Rank.text = InfoManager.Instance.GetPlayerRank(1);
+                m_CntFrame = 0.0f;
+                m_Mode++;
                 break;
         }
     }
