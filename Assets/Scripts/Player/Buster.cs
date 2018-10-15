@@ -7,6 +7,9 @@ using UnityEngine.UI;
 public class Buster : MonoBehaviour
 {
     [SerializeField]
+    Tank m_Tank = null;
+
+    [SerializeField]
     GameObject m_BulletObject;
 
     [SerializeField]
@@ -43,12 +46,17 @@ public class Buster : MonoBehaviour
             var point = new Vector2(pointer[0], pointer[1]);
             m_ReticleUI.rectTransform.anchorMax = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMax, point, 0.5f);
             m_ReticleUI.rectTransform.anchorMin = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMin, point, 0.5f);
+
+            if (m_WiimoteSharing.GetWiimote().Button.a)
+            {
+                GasShot();
+            }
         }
         else
         {
-            //Cursor.visible = false;
-            //var position = Input.mousePosition;
-            //m_ReticleUI.rectTransform.position = position;
+            Cursor.visible = false;
+            var position = Input.mousePosition;
+            m_ReticleUI.rectTransform.position = position;
         }
 
         Vector3 rayPos = new Vector3(m_ReticleUI.rectTransform.position.x, m_ReticleUI.rectTransform.position.y, m_ReticleUI.rectTransform.position.z);
@@ -62,20 +70,20 @@ public class Buster : MonoBehaviour
             {
                 m_joyconR.SetRumble(1000, 1000, 1.0f, 200);
 
-                Shot();
+                BulletShot();
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.B))
+        if (Input.GetKey(KeyCode.B))
         {
-            Shot();
+            GasShot();
         }
     }
 
     //　敵を撃つ
-    void Shot()
+    void BulletShot()
     {
-        if (m_FartsUI.value <= 0) { return; }
+        //if (m_FartsUI.value <= 0) { return; }
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -85,12 +93,19 @@ public class Buster : MonoBehaviour
             Destroy(hit.collider.gameObject);
         }
 
-        m_FartsUI.value -= m_FartsValue;
+        m_Tank.FartingFarts(-0.5f);
+
+        //m_FartsUI.value -= m_FartsValue;
 
         //GameObject newBullet = Instantiate(m_BulletObject, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
         //
         //Vector3 force = transform.forward * m_VecPow;
         //
         //newBullet.GetComponent<Rigidbody>().AddForce(force);
+    }
+
+    void GasShot()
+    {
+        m_Tank.FartingFarts(-0.01f);
     }
 }
