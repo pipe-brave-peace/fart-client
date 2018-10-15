@@ -1132,7 +1132,13 @@ MonoBehaviour:
   m_Player2_Combo: {fileID: 325009152}
   m_Player1_TotalScore: {fileID: 1832285252}
   m_Player2_TotalScore: {fileID: 194755282}
-  m_Time: 3
+  Score1: 2132
+  Score2: 435454
+  Enemy1: 242
+  Enemy2: 27
+  Combo1: 5336
+  Combo2: 531
+  m_Time: 1
 --- !u!1 &1183929724
 GameObject:
   m_ObjectHideFlags: 0

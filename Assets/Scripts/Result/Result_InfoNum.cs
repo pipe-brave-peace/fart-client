@@ -25,6 +25,20 @@ public class Result_InfoNum : MonoBehaviour {
     Text m_Player2_TotalScore;
 
 
+    [SerializeField]
+    int Score1;
+    [SerializeField]
+    int Score2;
+    [SerializeField]
+    int Enemy1;
+    [SerializeField]
+    int Enemy2;
+    [SerializeField]
+    int Combo1;
+    [SerializeField]
+    int Combo2;
+
+
 
     [SerializeField]
     float m_Time;
@@ -62,6 +76,7 @@ public class Result_InfoNum : MonoBehaviour {
 	void Update () {
         m_CntFrame += Time.deltaTime;
         int num = 0;
+
         switch(m_Mode)
         {
             case MODE.SCORE:
