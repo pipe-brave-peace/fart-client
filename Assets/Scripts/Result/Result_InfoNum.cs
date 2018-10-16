@@ -31,7 +31,7 @@ public class Result_InfoNum : MonoBehaviour {
     [SerializeField]
     float m_Time;
 
-    enum MODE
+    public enum MODE
     {
         SCORE = 0,
         ENEMY,
@@ -47,7 +47,6 @@ public class Result_InfoNum : MonoBehaviour {
     // Use this for initialization
     void Start () {
         m_CntFrame = 0.0f;
-        m_Mode = MODE.SCORE;
 
         // 数字の初期化
         m_Player1_Score.text = " ";
@@ -66,17 +65,16 @@ public class Result_InfoNum : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update () {
-        m_CntFrame += Time.deltaTime;
+	void Update ()
+    {
         int num = 0;
-
-        switch(m_Mode)
+        switch (m_Mode)
         {
             case MODE.SCORE:
                 num = Random.Range(10000, 99999);
                 m_Player1_Score.text = num.ToString();
                 m_Player2_Score.text = num.ToString();
-                if ( m_CntFrame >= m_Time)
+                if (m_CntFrame >= m_Time)
                 {
                     m_Player1_Score.text = InfoManager.Instance.GetPlayerInfo(0).GetScore().ToString();
                     m_Player2_Score.text = InfoManager.Instance.GetPlayerInfo(1).GetScore().ToString();
@@ -126,6 +124,14 @@ public class Result_InfoNum : MonoBehaviour {
                 m_CntFrame = 0.0f;
                 m_Mode++;
                 break;
+            case MODE.MAX:
+                return;
         }
+        m_CntFrame += Time.deltaTime;
+    }
+
+    public void SetMode(MODE mode)
+    {
+        m_Mode = mode;
     }
 }
