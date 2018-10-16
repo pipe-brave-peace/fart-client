@@ -133,11 +133,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Bgm: {fileID: 82288630888240618}
-  Score_Enemy_Sika: 100
-  Score_Enemy_Inosisi: 200
-  Score_Enemy_Karasu: 300
-  Score_Enemy_Inago: 200
-  Score_Enemy_Kamemusi: 300
-  Score_Enemy_Kuma: 1000
   m_GameClear: {fileID: 0}
   m_GameOver: {fileID: 0}

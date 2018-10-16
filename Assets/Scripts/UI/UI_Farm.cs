@@ -22,7 +22,7 @@ public class UI_Farm : MonoBehaviour {
 
         // 農作物をカウントし、代入
         m_HP = m_NowPhase.GetCropsChildCount();
-        m_MAX_HP = m_NowPhase.GetMaxCropsChildCount();
+        m_MAX_HP = m_HP;
 
         // 残数表示
         m_HP_Text.text = Mathf.FloorToInt(m_HP).ToString();

@@ -171,7 +171,6 @@ public class Enemy_Inago : MonoBehaviour
         Vector3 move = Target - transform.position;                     // 目的へのベクトル
         move = move.normalized;                                         // 正規化
         move.y += m_JumpHeight;
-        Debug.Log(move);
         m_Rigidbody.AddForce(move * Speed);
     }
 
