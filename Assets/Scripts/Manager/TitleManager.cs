@@ -18,7 +18,17 @@ public class TitleManager : MonoBehaviour {
 		Color color = new Color (m_Text.color.r, m_Text.color.g, m_Text.color.b, alpha);
 		m_Text.color = color;
 		m_Bgm.Play ();
-	}
+
+        // テスト 
+        InfoManager.Instance.SetPlayerScore(0, 11);
+        InfoManager.Instance.SetPlayerScore(1, 12);
+
+        InfoManager.Instance.SetPlayerEnemy(0, 21);
+        InfoManager.Instance.SetPlayerEnemy(1, 22);
+
+        InfoManager.Instance.SetPlayerCombo(0, 123);
+        InfoManager.Instance.SetPlayerCombo(1, 456);
+    }
 	
 	// Update is called once per frame
 	void Update () {

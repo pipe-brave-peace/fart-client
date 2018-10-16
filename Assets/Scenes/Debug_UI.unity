@@ -610,6 +610,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d1e23ff88f36844f974ad9dcc0a88eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &225010016 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114570049029895296, guid: 0403a541b419be44a8ed9e5bb18d73f9,
+    type: 2}
+  m_PrefabInternal: {fileID: 397734090}
+  m_Script: {fileID: 11500000, guid: 8626a4f7040ee404ca3cbf3c5180d411, type: 3}
 --- !u!1 &308824600
 GameObject:
   m_ObjectHideFlags: 0
@@ -900,34 +906,14 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 114570049029895296, guid: 0403a541b419be44a8ed9e5bb18d73f9,
         type: 2}
-      propertyPath: Score_Enemy_Sika
-      value: 100
-      objectReference: {fileID: 0}
+      propertyPath: m_GameClear
+      value: 
+      objectReference: {fileID: 746619080}
     - target: {fileID: 114570049029895296, guid: 0403a541b419be44a8ed9e5bb18d73f9,
         type: 2}
-      propertyPath: Score_Enemy_Inosisi
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 114570049029895296, guid: 0403a541b419be44a8ed9e5bb18d73f9,
-        type: 2}
-      propertyPath: Score_Enemy_Inago
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 114570049029895296, guid: 0403a541b419be44a8ed9e5bb18d73f9,
-        type: 2}
-      propertyPath: Score_Enemy_Kamemusi
-      value: 300
-      objectReference: {fileID: 0}
-    - target: {fileID: 114570049029895296, guid: 0403a541b419be44a8ed9e5bb18d73f9,
-        type: 2}
-      propertyPath: Score_Enemy_Kuma
-      value: 1000
-      objectReference: {fileID: 0}
-    - target: {fileID: 114570049029895296, guid: 0403a541b419be44a8ed9e5bb18d73f9,
-        type: 2}
-      propertyPath: Score_Enemy_Karasu
-      value: 300
-      objectReference: {fileID: 0}
+      propertyPath: m_GameOver
+      value: 
+      objectReference: {fileID: 1208770896}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0403a541b419be44a8ed9e5bb18d73f9, type: 2}
   m_IsPrefabParent: 0
@@ -2102,6 +2088,11 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 745937152}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &746619080 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1742485077326590, guid: 2f87f4266ff312240816b6a0e765908a,
+    type: 2}
+  m_PrefabInternal: {fileID: 1142877050}
 --- !u!1 &780555516
 GameObject:
   m_ObjectHideFlags: 0
@@ -2821,15 +2812,11 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 114546529133132074, guid: ecd56c8c34036634ba4640cc9adf0a95,
+    - target: {fileID: 114622285621876712, guid: ecd56c8c34036634ba4640cc9adf0a95,
         type: 2}
-      propertyPath: m_progress
-      value: 0.016382467
-      objectReference: {fileID: 0}
-    - target: {fileID: 1302437148738416, guid: ecd56c8c34036634ba4640cc9adf0a95, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
+      propertyPath: m_StageManager
+      value: 
+      objectReference: {fileID: 225010016}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ecd56c8c34036634ba4640cc9adf0a95, type: 2}
   m_IsPrefabParent: 0
@@ -2930,10 +2917,11 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 1742485077326590, guid: 2f87f4266ff312240816b6a0e765908a, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
+    - target: {fileID: 114214798049710898, guid: 2f87f4266ff312240816b6a0e765908a,
+        type: 2}
+      propertyPath: m_StageManager
+      value: 
+      objectReference: {fileID: 225010016}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2f87f4266ff312240816b6a0e765908a, type: 2}
   m_IsPrefabParent: 0
@@ -2981,6 +2969,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Life: 5
+--- !u!1 &1208770896 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1302437148738416, guid: ecd56c8c34036634ba4640cc9adf0a95,
+    type: 2}
+  m_PrefabInternal: {fileID: 1125373037}
 --- !u!1 &1240447683
 GameObject:
   m_ObjectHideFlags: 0

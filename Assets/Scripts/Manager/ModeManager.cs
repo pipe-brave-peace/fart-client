@@ -21,8 +21,6 @@ public class ModeManager : SingletonMonoBehaviour<ModeManager>{
 
 	private SCENE_TYPE m_NextScene;
 	private bool m_IsChangeing;
-    private int m_Player1Score;
-    private int m_Player2Score;
 
 	public void Awake()
 	{
@@ -33,8 +31,6 @@ public class ModeManager : SingletonMonoBehaviour<ModeManager>{
 		}
 		Application.targetFrameRate = 60;
 		m_IsChangeing = false;
-        m_Player1Score = 0;
-        m_Player2Score = 0;
         DontDestroyOnLoad(this.gameObject);
 	} 
 
@@ -74,23 +70,4 @@ public class ModeManager : SingletonMonoBehaviour<ModeManager>{
         SceneManager.LoadScene(m_SceneName[(int)m_NextScene]);
         FadeManager.Instance.FadeIn();
 	}
-
-    // プレイヤー１のスコアセット・ゲット
-    public void SetPlayer1Score(int score)
-    {
-        m_Player1Score = score;
-    }
-    public int GetPlayer1Score()
-    {
-        return m_Player1Score;
-    }
-    // プレイヤー２のスコアセット・ゲット
-    public void SetPlayer2Score(int score)
-    {
-        m_Player2Score = score;
-    }
-    public int GetPlayer2Score()
-    {
-        return m_Player2Score;
-    }
 }

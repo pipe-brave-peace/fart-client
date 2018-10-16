@@ -23,29 +23,30 @@ public class Result_InfoNum : MonoBehaviour {
     Text m_Player1_TotalScore;
     [SerializeField]
     Text m_Player2_TotalScore;
-
-
+    [SerializeField]
+    Text m_Player1_Rank;
+    [SerializeField]
+    Text m_Player2_Rank;
 
     [SerializeField]
     float m_Time;
 
-    enum MODE
+    public enum MODE
     {
         SCORE = 0,
         ENEMY,
         COMBO,
         TOTAL_SCORE,
+        RANK,
         MAX
     }
-
-
+    
     private float m_CntFrame;
     private MODE m_Mode;
 
     // Use this for initialization
     void Start () {
         m_CntFrame = 0.0f;
-        m_Mode = MODE.SCORE;
 
         // 数字の初期化
         m_Player1_Score.text = " ";
@@ -56,19 +57,24 @@ public class Result_InfoNum : MonoBehaviour {
         m_Player2_Combo.text = " ";
         m_Player1_TotalScore.text = " ";
         m_Player2_TotalScore.text = " ";
+        m_Player1_Rank.text = " ";
+        m_Player2_Rank.text = " ";
+
+        // テスト
+        InfoManager.Instance.SetPlayerScore(0, 2000);
     }
 	
 	// Update is called once per frame
-	void Update () {
-        m_CntFrame += Time.deltaTime;
+	void Update ()
+    {
         int num = 0;
-        switch(m_Mode)
+        switch (m_Mode)
         {
             case MODE.SCORE:
                 num = Random.Range(10000, 99999);
                 m_Player1_Score.text = num.ToString();
                 m_Player2_Score.text = num.ToString();
-                if ( m_CntFrame >= m_Time)
+                if (m_CntFrame >= m_Time)
                 {
                     m_Player1_Score.text = InfoManager.Instance.GetPlayerInfo(0).GetScore().ToString();
                     m_Player2_Score.text = InfoManager.Instance.GetPlayerInfo(1).GetScore().ToString();
@@ -112,6 +118,20 @@ public class Result_InfoNum : MonoBehaviour {
                     m_Mode++;
                 }
                 break;
+            case MODE.RANK:
+                m_Player1_Rank.text = InfoManager.Instance.GetPlayerRank(0);
+                m_Player2_Rank.text = InfoManager.Instance.GetPlayerRank(1);
+                m_CntFrame = 0.0f;
+                m_Mode++;
+                break;
+            case MODE.MAX:
+                return;
         }
+        m_CntFrame += Time.deltaTime;
+    }
+
+    public void SetMode(MODE mode)
+    {
+        m_Mode = mode;
     }
 }

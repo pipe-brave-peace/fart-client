@@ -6,19 +6,20 @@ using UnityEngine.UI;
 public class StageManager : MonoBehaviour {
     
     public AudioSource m_Bgm;           // BGM
-    [SerializeField]
-    int Score_Enemy_Sika;
-    [SerializeField]
-    int Score_Enemy_Inosisi;
-    [SerializeField]
-    int Score_Enemy_Karasu;
-    [SerializeField]
-    int Score_Enemy_Inago;
-    [SerializeField]
-    int Score_Enemy_Kamemusi;
-    [SerializeField]
-    int Score_Enemy_Kuma;
+    // 敵のスコア
+    [SerializeField] int Score_Enemy_Sika;
+    [SerializeField] int Score_Enemy_Inosisi;
+    [SerializeField] int Score_Enemy_Karasu;
+    [SerializeField] int Score_Enemy_Inago;
+    [SerializeField] int Score_Enemy_Kamemusi;
+    [SerializeField] int Score_Enemy_Kuma;
 
+    // ゲーム終了表示
+    [SerializeField]
+    GameObject m_GameClear;
+    [SerializeField]
+    GameObject m_GameOver;
+    
     // ステージモード定義
     enum STAGE_MODE
     {
@@ -40,12 +41,26 @@ public class StageManager : MonoBehaviour {
 	void Start () {
         Mode = STAGE_MODE.READY;
         m_Bgm.Play ();
+
+        m_GameClear.SetActive(false);
+        m_GameOver.SetActive(false);
     }
 	
 	// Update is called once per frame
 	void Update () {
+        // テスト
+        if( Input.GetKeyDown(KeyCode.C))
+        {
+            m_GameClear.SetActive(true);
+            m_GameOver.SetActive(false);
+        }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            m_GameOver.SetActive(true);
+            m_GameClear.SetActive(false);
+        }
         // 状態別処理
-        switch(Mode)
+        switch (Mode)
         {
             case STAGE_MODE.READY:
                 ModeStart();
@@ -86,7 +101,7 @@ public class StageManager : MonoBehaviour {
     }
 
     // リザルトへの処理
-    void ModeToResult()
+    public void ModeToResult()
     {
         // シーン遷移処理
         ModeManager.Instance.SetChangeScene(ModeManager.SCENE_TYPE.RESULT);
@@ -97,28 +112,11 @@ public class StageManager : MonoBehaviour {
         Mode = STAGE_MODE.MAX;
     }
 
-    public int GetScoreEnemySika()
-    {
-        return Score_Enemy_Sika;
-    }
-    public int GetScoreEnemyInosisi()
-    {
-        return Score_Enemy_Inosisi;
-    }
-    public int GetScoreEnemyKarasu()
-    {
-        return Score_Enemy_Karasu;
-    }
-    public int GetScoreEnemyInago()
-    {
-        return Score_Enemy_Inago;
-    }
-    public int GetScoreEnemyKamemusi()
-    {
-        return Score_Enemy_Kamemusi;
-    }
-    public int GetScoreEnemyKuma()
-    {
-        return Score_Enemy_Kuma;
-    }
+    // スコアの取得
+    public int GetScoreEnemySika()     { return Score_Enemy_Sika;     }
+    public int GetScoreEnemyInosisi()  { return Score_Enemy_Inosisi;  }
+    public int GetScoreEnemyKarasu()   { return Score_Enemy_Karasu;   }
+    public int GetScoreEnemyInago()    { return Score_Enemy_Inago;    }
+    public int GetScoreEnemyKamemusi() { return Score_Enemy_Kamemusi; }
+    public int GetScoreEnemyKuma()     { return Score_Enemy_Kuma;     }
 }
