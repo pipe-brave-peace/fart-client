@@ -71,6 +71,11 @@ public class Buster : MonoBehaviour
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            BulletShot();
+        }
+
         if (Input.GetKey(KeyCode.B))
         {
             GasShot();
@@ -85,9 +90,11 @@ public class Buster : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("Enemy")))
+        if (Physics.Raycast(ray, out hit, 600f, LayerMask.GetMask("Enemy")))
         {
+            hit.collider.gameObject.GetComponent<Enemy_Score>().GetScore();
             Destroy(hit.collider.gameObject);
+            //逃げるモードと差し替え
         }
 
         m_Tank.FartingFarts(-0.5f);

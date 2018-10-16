@@ -132,11 +132,6 @@ public class Tank : MonoBehaviour
         {
             Farmer(m_fStrength);
         }
-
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            FartingFarts(m_fLaunchVolume);
-        }
     }
 
     //UI幅調整
