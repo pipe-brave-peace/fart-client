@@ -37,5 +37,6 @@ public class UI_FarmAll : MonoBehaviour {
         // パーセントの算出
         int percentHP = Mathf.FloorToInt(m_HP / m_MAX_HP * 100.0f);
         m_PercentHP_Text.text = percentHP.ToString() + "%";
+        InfoManager.Instance.SetFarmGauge(percentHP);
     }
 }

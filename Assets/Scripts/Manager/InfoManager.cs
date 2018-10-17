@@ -54,14 +54,14 @@ public class InfoManager : SingletonMonoBehaviour<InfoManager>
             return;
         }
         InitInfo();
-        m_FarmGauge = 100;
         DontDestroyOnLoad(this.gameObject);
     }
 
     // 数値の初期化
     public void InitInfo()
     {
-        for(int i = 0; i < 2; ++i)
+        m_FarmGauge = 100;
+        for (int i = 0; i < 2; ++i)
         {
             m_Player[i].Init();
         }

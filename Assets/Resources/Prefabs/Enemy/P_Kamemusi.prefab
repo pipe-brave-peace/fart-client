@@ -360,7 +360,7 @@ GameObject:
   - component: {fileID: 195172739723619786}
   - component: {fileID: 114957306699314140}
   m_Layer: 8
-  m_Name: P_
+  m_Name: P_Kamemusi
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
