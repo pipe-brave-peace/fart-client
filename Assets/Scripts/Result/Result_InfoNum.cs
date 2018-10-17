@@ -59,9 +59,6 @@ public class Result_InfoNum : MonoBehaviour {
         m_Player2_TotalScore.text = " ";
         m_Player1_Rank.text = " ";
         m_Player2_Rank.text = " ";
-
-        // テスト
-        InfoManager.Instance.SetPlayerScore(0, 2000);
     }
 	
 	// Update is called once per frame

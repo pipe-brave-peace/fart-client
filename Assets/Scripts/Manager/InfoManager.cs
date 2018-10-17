@@ -29,7 +29,7 @@ public class InfoManager : SingletonMonoBehaviour<InfoManager>
         // 初期化
         public void Init()
         {
-            Score = 10;
+            Score = 0;
             Enemy = 0;
             Combo = 0;
             ComboMax = 0;
@@ -54,7 +54,7 @@ public class InfoManager : SingletonMonoBehaviour<InfoManager>
             return;
         }
         InitInfo();
-        m_FarmGauge = 97;
+        m_FarmGauge = 100;
         DontDestroyOnLoad(this.gameObject);
     }
 
