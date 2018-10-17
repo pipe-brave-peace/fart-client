@@ -45,7 +45,7 @@ public class StageManager : MonoBehaviour {
 	void Update () {
         // テスト
         if (GameObject.FindGameObjectsWithTag("Enemy").Length <= 0 &&
-            m_PhaseManager.GetNowPhaseIndex() == 2)
+            m_PhaseManager.GetNowPhaseIndex() >= 2)
         {
             m_GameClear.SetActive(true);
             m_GameOver.SetActive(false);

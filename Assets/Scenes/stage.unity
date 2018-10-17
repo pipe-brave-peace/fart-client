@@ -3855,11 +3855,6 @@ GameObject:
   m_PrefabParentObject: {fileID: 1904545834915522, guid: 74b3436e89f09b8499b93e4483aff1ba,
     type: 2}
   m_PrefabInternal: {fileID: 793839120}
---- !u!1 &1994627502 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1105808711628840, guid: 74b3436e89f09b8499b93e4483aff1ba,
-    type: 2}
-  m_PrefabInternal: {fileID: 793839120}
 --- !u!1 &1998682071 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 1210677857822496, guid: 74b3436e89f09b8499b93e4483aff1ba,
@@ -4326,7 +4321,7 @@ Prefab:
         type: 2}
       propertyPath: m_NavCrops.Array.data[0]
       value: 
-      objectReference: {fileID: 1994627502}
+      objectReference: {fileID: 461918072}
     - target: {fileID: 114195792864619750, guid: e78c9b28a2ec39140a9e37f96bf3d64d,
         type: 2}
       propertyPath: m_NavCrops.Array.data[1]
