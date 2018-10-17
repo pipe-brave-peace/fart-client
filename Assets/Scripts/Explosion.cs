@@ -30,7 +30,7 @@ public class Explosion : MonoBehaviour
     {
         if (col.gameObject.tag == "Enemy")
         {
-            Destroy(col.gameObject);
+            col.GetComponent<Enemy_State>().SetState(Enemy_State.STATE.ESCAPE);
         }
     }
 }

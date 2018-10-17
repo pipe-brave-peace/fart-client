@@ -12,7 +12,9 @@ public class StageManager : MonoBehaviour {
     GameObject m_GameClear;
     [SerializeField]
     GameObject m_GameOver;
-    
+    [SerializeField]
+    PhaseManager m_PhaseManager;
+
     // ステージモード定義
     enum STAGE_MODE
     {
@@ -42,7 +44,8 @@ public class StageManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         // テスト
-        if( Input.GetKeyDown(KeyCode.C))
+        if (GameObject.FindGameObjectsWithTag("Enemy").Length <= 0 &&
+            m_PhaseManager.GetNowPhaseIndex() == 2)
         {
             m_GameClear.SetActive(true);
             m_GameOver.SetActive(false);

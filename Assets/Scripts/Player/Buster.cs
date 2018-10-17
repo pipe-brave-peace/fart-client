@@ -124,7 +124,8 @@ public class Buster : MonoBehaviour
         {
             Instantiate(m_ExplosionObject, hit.collider.gameObject.transform.position, Quaternion.identity);
             InfoManager.Instance.AddPlayerScore(0, hit.collider.gameObject.GetComponent<Enemy_Score>().GetScore());
-            Destroy(hit.collider.gameObject);
+            //Destroy(hit.collider.gameObject);
+            hit.collider.gameObject.GetComponent<Enemy_State>().SetState(Enemy_State.STATE.ESCAPE);
             //逃げるモードと差し替え
         }
 
