@@ -25,6 +25,7 @@ public class TitleManager : MonoBehaviour {
 			ModeManager.Instance.SetChangeScene (ModeManager.SCENE_TYPE.GAME);
             SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.PUSH_BUTTON);
 			m_Bgm.Stop();
+            InfoManager.Instance.InitInfo();
 		}
 	}
 }

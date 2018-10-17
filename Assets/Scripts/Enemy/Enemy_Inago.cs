@@ -74,7 +74,7 @@ public class Enemy_Inago : MonoBehaviour
                 // ジャンプ
                 Jump(m_TargetObj.transform.position);
                 // 近い？
-                if (Vector3.Distance(transform.position, m_TargetObj.transform.position) <= 1.0f)
+                if (Vector3.Distance(transform.position, m_TargetObj.transform.position) <= 2.0f)
                 {
                     // 食べる状態に変更
                     m_State.SetState(Enemy_State.STATE.EAT);
