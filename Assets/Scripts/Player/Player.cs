@@ -13,6 +13,9 @@ public class Player : MonoBehaviour {
     GameObject[] m_NavPoint;
 
     [SerializeField]
+    PhaseManager m_PhaseManager;
+
+    [SerializeField]
     Text ScoreUI;
 
     int nNumber = 0;
@@ -34,8 +37,11 @@ public class Player : MonoBehaviour {
         }
         else
         {
-            //対象の位置の方向に移動
-            m_Navigate.SetDestination(m_NavPoint[nNumber].transform.position);
+            if (m_PhaseManager.GetNowPhaseIndex() == 1)
+            {
+                //対象の位置の方向に移動
+                m_Navigate.SetDestination(m_NavPoint[nNumber].transform.position);
+            }
 
             if (transform.position.x == m_NavPoint[nNumber].transform.position.x &&
                 transform.position.z == m_NavPoint[nNumber].transform.position.z)

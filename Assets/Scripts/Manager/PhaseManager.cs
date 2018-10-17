@@ -35,4 +35,6 @@ public class PhaseManager : MonoBehaviour {
         m_NowPhase = m_Phase[m_PhaseIndex];
         m_NowPhase.SetActive(true);
     }
+
+    public int GetNowPhaseIndex() { return m_PhaseIndex; }
 }

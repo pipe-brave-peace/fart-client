@@ -139,7 +139,7 @@ public class Buster : MonoBehaviour
 
         m_Tank.FartingFarts(-0.01f);
 
-        GameObject newBullet = Instantiate(m_GasBulletObject, new Vector3(transform.position.x, transform.position.y, transform.position.z + 2), Quaternion.identity);
+        GameObject newBullet = Instantiate(m_GasBulletObject, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
 
         Vector3 force = transform.forward * m_VecPow;
 
