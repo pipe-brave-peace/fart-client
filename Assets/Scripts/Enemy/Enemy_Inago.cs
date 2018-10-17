@@ -141,6 +141,7 @@ public class Enemy_Inago : MonoBehaviour
 
         }
         // リストがなくなったらnull
+        m_State.SetState(Enemy_State.STATE.SATIETY);
         return null;
     }
     

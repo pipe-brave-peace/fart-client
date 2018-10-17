@@ -9,35 +9,36 @@ public class UI_Farm : MonoBehaviour {
     [SerializeField]
     Text m_HP_MAX_Text;  // 農作物の総数
     [SerializeField]
-    Phase[] m_Phase;     // フェーズ情報の代入
+    GameObject[] m_AreaCrops;     // エリアごとの農作物情報の代入
 
-    float m_HP = 100;           // 畑HP
-    float m_MAX_HP = 100;       // MAX HP
-    Phase m_NowPhase;           // 現在のフェーズ情報
+    int m_HP = 100;           // 畑HP
+    int[] m_MAX_HP;       // MAX HP
+    int m_AreaIndex;
 
     // Use this for initialization
     void Start () {
-        // 初期フェーズ情報の代入
-        m_NowPhase = m_Phase[0];
-
         // 農作物をカウントし、代入
-        m_HP = m_NowPhase.GetCropsChildCount();
-        m_MAX_HP = m_HP;
-
+        m_MAX_HP = new int[m_AreaCrops.Length];
+        for (int i = 0; i < m_AreaCrops.Length; ++i)
+        {
+            m_MAX_HP[i] = m_AreaCrops[i].transform.childCount;
+        }
+        m_AreaIndex = 0;
+        m_HP = m_MAX_HP[m_AreaIndex];
         // 残数表示
-        m_HP_Text.text = Mathf.FloorToInt(m_HP).ToString();
+        m_HP_Text.text = m_HP.ToString();
         // 農作物総数の表示
-        m_HP_MAX_Text.text = "/"+ Mathf.FloorToInt(m_MAX_HP).ToString();
+        m_HP_MAX_Text.text = "/"+ m_MAX_HP[m_AreaIndex].ToString();
     }
 
     // Update is called once per frame
     void Update () {
         // 残り数のカウント
-        m_HP = m_NowPhase.GetCropsChildCount();
-        m_HP_Text.text = Mathf.FloorToInt(m_HP).ToString();
+        m_HP = m_AreaCrops[m_AreaIndex].transform.childCount;
+        m_HP_Text.text = m_HP.ToString();
 
         // デバッグ用キー押し判定
-        if( Input.GetKeyDown(KeyCode.Alpha1))
+        if ( Input.GetKeyDown(KeyCode.Alpha1))
         {
             SetPhase(0);
         }
@@ -60,18 +61,15 @@ public class UI_Farm : MonoBehaviour {
     }
 
     // 
-    public void SetPhase( int Phase)
+    public void SetPhase( int Index)
     {
-        // フェーズ情報の代入
-        m_NowPhase = m_Phase[Phase];
-
         // 農作物をカウントし、代入
-        m_HP = m_NowPhase.GetCropsChildCount();
-        m_MAX_HP = m_NowPhase.GetMaxCropsChildCount();
+        m_AreaIndex = Index;
+        m_HP = m_AreaCrops[m_AreaIndex].transform.childCount;
 
         // 残数表示
-        m_HP_Text.text = Mathf.FloorToInt(m_HP).ToString();
+        m_HP_Text.text = m_HP.ToString();
         // 農作物総数の表示
-        m_HP_MAX_Text.text = "/" + Mathf.FloorToInt(m_MAX_HP).ToString();
+        m_HP_MAX_Text.text = "/" + m_MAX_HP[m_AreaIndex].ToString();
     }
 }

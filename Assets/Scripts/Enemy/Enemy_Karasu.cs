@@ -102,7 +102,7 @@ public class Enemy_Karasu : MonoBehaviour {
                 if (m_TargetObj == null)
                 {
                     // カラスを消す
-                    Destroy(gameObject);
+                    Destroy(gameObject.transform.parent.gameObject);
                     return;
                 }
 
@@ -130,6 +130,10 @@ public class Enemy_Karasu : MonoBehaviour {
                 return obs;
             }
         }
+        // 満腹になる
+        m_State.SetState(Enemy_State.STATE.SATIETY);
+        // 退却座標の代入
+        m_TargetObj = m_NavObj[1];
         // リストがなくなったらnull
         return null;
     }

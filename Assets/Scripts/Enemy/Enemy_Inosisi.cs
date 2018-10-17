@@ -75,7 +75,7 @@ public class Enemy_Inosisi : MonoBehaviour {
                 MoveHoming(m_FadePoint);
 
                 // 近い？
-                if (DistanceNoneY(m_TargetObj, 1.0f))
+                if (DistanceNoneY(m_FadePoint, 1.0f))
                 {
                     Destroy(gameObject);    // 消去
                 }
@@ -102,6 +102,7 @@ public class Enemy_Inosisi : MonoBehaviour {
         Vector2 this_pos = new Vector2(transform.position.x, transform.position.z);
         Vector2 target_pos = new Vector2(Target.transform.position.x, Target.transform.position.z);
         // 近い？
+        Debug.Log(Vector2.Distance(this_pos, target_pos));
         if (Vector2.Distance(this_pos, target_pos) <= var)
         {
             return true;

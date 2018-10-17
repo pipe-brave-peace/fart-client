@@ -376,7 +376,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HP_Text: {fileID: 114897379288112726}
   m_HP_MAX_Text: {fileID: 114408581355709010}
-  m_Phase:
+  m_AreaCrops:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
