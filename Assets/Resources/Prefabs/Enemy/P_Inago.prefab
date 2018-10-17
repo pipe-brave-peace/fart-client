@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4316360768062898}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BackBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34,7 +34,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4977873259624148}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LegBackwardRight3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -49,7 +49,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4801852841225704}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LegForwardLeft4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64,7 +64,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4194618449895750}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FrontBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -79,7 +79,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4467842298767158}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EarRight3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4441398828813368}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ears_start
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -109,7 +109,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4602881649509246}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LegForwardLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4318581548079854}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EarRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +139,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4526306294364630}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LegBackwardLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -154,7 +154,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4672311951702808}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LegForwardRight3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -169,7 +169,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4675109924516318}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LegForwardLeft3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -184,7 +184,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4443443739994866}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LegForwardLeft2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +199,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4197367665347886}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LegForwardRight2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -214,7 +214,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4671699831460076}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FrontBody2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -229,7 +229,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4349146407772524}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LegBackwardLeft3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244,7 +244,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4676676307822582}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LegBackwardLeft4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -259,7 +259,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4920814193069972}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -274,7 +274,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4395075493842290}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EarLeft4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -289,7 +289,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4352919517223248}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EarLeft3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -304,7 +304,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4829442575768924}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LegBackwardRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -319,7 +319,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4888427571735150}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LegBackwardLeft2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -334,7 +334,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4304501951518592}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LegBackwardRight4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -349,7 +349,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4244334811372764}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LegBackwardRight2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -364,7 +364,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4096167825850802}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EarLeft2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -379,7 +379,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4992234848283732}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Neck1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -395,7 +395,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4799763836325214}
   - component: {fileID: 137682985271236500}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -410,7 +410,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4521048512969936}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EarLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -425,7 +425,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4384012289975556}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EarRight4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -443,7 +443,7 @@ GameObject:
   - component: {fileID: 23499141025011324}
   - component: {fileID: 102049580221077542}
   - component: {fileID: 114564552282030720}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Debug_Mode_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -458,7 +458,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4460770930274652}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LegForwardRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -473,7 +473,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4302228202763208}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EarRight2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -495,9 +495,9 @@ GameObject:
   - component: {fileID: 114311441124762038}
   - component: {fileID: 114828994557538344}
   - component: {fileID: 114195792864619750}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: P_Inago
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -510,7 +510,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4967108950505484}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Armature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -525,7 +525,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4419979373415900}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LegForwardRight4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -594,8 +594,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1923960267439402}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -27.33, y: 1.4, z: -3.89}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -23.279999, y: 1.4, z: 9.33}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children:
   - {fileID: 4967108950505484}

@@ -907,6 +907,12 @@ Transform:
   m_PrefabParentObject: {fileID: 4819333872318182, guid: b38aa72c824b55947994b8f8e48ec86c,
     type: 2}
   m_PrefabInternal: {fileID: 757670024}
+--- !u!114 &782002602 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114570049029895296, guid: 0403a541b419be44a8ed9e5bb18d73f9,
+    type: 2}
+  m_PrefabInternal: {fileID: 277200921}
+  m_Script: {fileID: 11500000, guid: 8626a4f7040ee404ca3cbf3c5180d411, type: 3}
 --- !u!1001 &793839120
 Prefab:
   m_ObjectHideFlags: 0
@@ -1288,6 +1294,11 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114214798049710898, guid: 2f87f4266ff312240816b6a0e765908a,
+        type: 2}
+      propertyPath: m_StageManager
+      value: 
+      objectReference: {fileID: 782002602}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2f87f4266ff312240816b6a0e765908a, type: 2}
   m_IsPrefabParent: 0
@@ -1555,6 +1566,11 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114622285621876712, guid: ecd56c8c34036634ba4640cc9adf0a95,
+        type: 2}
+      propertyPath: m_StageManager
+      value: 
+      objectReference: {fileID: 782002602}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ecd56c8c34036634ba4640cc9adf0a95, type: 2}
   m_IsPrefabParent: 0

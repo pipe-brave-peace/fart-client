@@ -75,7 +75,7 @@ public class Enemy_Kamemusi : MonoBehaviour {
                 MoveHoming(m_FadePoint);
 
                 // 近い？
-                if (DistanceNoneY(m_TargetObj, 1.0f))
+                if (DistanceNoneY(m_FadePoint, 1.0f))
                 {
                     Destroy(gameObject);    // 消去
                 }

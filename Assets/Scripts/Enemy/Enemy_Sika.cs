@@ -144,6 +144,7 @@ public class Enemy_Sika : MonoBehaviour {
             }
 
         }
+        m_State.SetState(Enemy_State.STATE.SATIETY);
         // リストがなくなったらnull
         return null;
     }
