@@ -54,7 +54,7 @@ public class InfoManager : SingletonMonoBehaviour<InfoManager>
             return;
         }
         InitInfo();
-        m_FarmGauge = 97;
+        m_FarmGauge = 100;
         DontDestroyOnLoad(this.gameObject);
     }
 
