@@ -8,6 +8,8 @@ TagManager:
   - Crops
   - Point
   - GameUI
+  - Explosion
+  - Gas
   layers:
   - Default
   - TransparentFX

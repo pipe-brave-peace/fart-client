@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
 
@@ -10,6 +11,9 @@ public class Player : MonoBehaviour {
 
     [SerializeField]
     GameObject[] m_NavPoint;
+
+    [SerializeField]
+    Text ScoreUI;
 
     int nNumber = 0;
 
@@ -21,7 +25,7 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        //InfoManager.Instance.GetPlayerInfo(0).SetScore(100);
+        ScoreUI.text = InfoManager.Instance.GetPlayerInfo(0).GetScore().ToString();
 
         if (m_NavPoint.Length - 1 < nNumber)
         {

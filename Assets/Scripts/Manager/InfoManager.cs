@@ -29,7 +29,7 @@ public class InfoManager : SingletonMonoBehaviour<InfoManager>
         // 初期化
         public void Init()
         {
-            Score = 10;
+            Score = 0;
             Enemy = 0;
             Combo = 0;
             ComboMax = 0;
