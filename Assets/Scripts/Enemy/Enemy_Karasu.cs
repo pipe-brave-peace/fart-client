@@ -114,6 +114,8 @@ public class Enemy_Karasu : MonoBehaviour {
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
                 Debug_State_Text.text = "STATE:FadeOut";
+                // カラスを消す
+                Destroy(gameObject.transform.parent.gameObject);
                 break;
         }
     }

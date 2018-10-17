@@ -127,6 +127,8 @@ public class Enemy_Sika : MonoBehaviour {
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
                 Debug_State_Text.text = "STATE:FadeOut";
+                // 自分を消す
+                Destroy(gameObject);
                 break;
         }
     }
