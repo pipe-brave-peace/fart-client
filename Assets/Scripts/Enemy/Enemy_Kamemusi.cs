@@ -83,6 +83,7 @@ public class Enemy_Kamemusi : MonoBehaviour {
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
                 Debug_State_Text.text = "STATE:FadeOut";
+                Destroy(gameObject);    // 消去
                 break;
         }
     }
