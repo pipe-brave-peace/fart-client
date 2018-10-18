@@ -10,6 +10,7 @@ TagManager:
   - GameUI
   - Explosion
   - Gas
+  - Boos
   layers:
   - Default
   - TransparentFX

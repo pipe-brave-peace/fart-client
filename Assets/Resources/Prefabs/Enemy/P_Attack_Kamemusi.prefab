@@ -362,7 +362,7 @@ GameObject:
   - component: {fileID: 54695430177378176}
   - component: {fileID: 65213423805682388}
   m_Layer: 8
-  m_Name: P_Kamemusi
+  m_Name: P_Attack_Kamemusi
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -965,6 +965,7 @@ MonoBehaviour:
   Debug_State_Text: {fileID: 102760507058244392}
   m_Color: {fileID: 137067457868900658}
   m_FadePoint: {fileID: 0}
+  m_TargetObj: {fileID: 0}
 --- !u!137 &137067457868900658
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

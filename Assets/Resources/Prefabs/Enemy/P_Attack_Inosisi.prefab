@@ -196,7 +196,7 @@ GameObject:
   - component: {fileID: 114302080861801608}
   - component: {fileID: 195532899493958138}
   m_Layer: 8
-  m_Name: P_Inosisi
+  m_Name: P_Attack_Inosisi
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -848,6 +848,7 @@ MonoBehaviour:
   Debug_State_Text: {fileID: 102677316984925660}
   m_Color: {fileID: 137957558580499670}
   m_FadePoint: {fileID: 0}
+  m_TargetObj: {fileID: 0}
 --- !u!137 &137957558580499670
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 114536823590094752}
   - component: {fileID: 114428527297963442}
   m_Layer: 8
-  m_Name: P_Sika
+  m_Name: P_Eat_Sika
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
