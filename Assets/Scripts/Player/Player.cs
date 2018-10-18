@@ -13,12 +13,22 @@ public class Player : MonoBehaviour {
     GameObject[] m_NavPoint;
 
     [SerializeField]
+    GameObject[] m_rotPoint;
+
+    [SerializeField]
     PhaseManager m_PhaseManager;
 
     [SerializeField]
     Text ScoreUI;
 
     int nNumber = 0;
+
+    private void Awake()
+    {
+        // updateを自動で行わないように設定する
+        //m_Navigate.updatePosition = false;
+        m_Navigate.updateRotation = false;
+    }
 
     // Use this for initialization
     void Start () {
@@ -33,14 +43,16 @@ public class Player : MonoBehaviour {
         if (m_NavPoint.Length - 1 < nNumber)
         {
             //対象の位置の方向に移動
-            m_Navigate.SetDestination(transform.position);
+            //m_Navigate.SetDestination(transform.position);
         }
         else
         {
             if (m_PhaseManager.GetNowPhaseIndex() == 1)
             {
+
                 //対象の位置の方向に移動
                 m_Navigate.SetDestination(m_NavPoint[nNumber].transform.position);
+                Vector();
             }
 
             if (transform.position.x == m_NavPoint[nNumber].transform.position.x &&
@@ -50,5 +62,24 @@ public class Player : MonoBehaviour {
             }
         }
 
+    }
+
+    void Vector()
+    {
+        // 次の位置への方向を求める
+        var dir = m_rotPoint[nNumber].transform.position - transform.position;
+
+        // 方向と現在の前方との角度を計算（スムーズに回転するように係数を掛ける）
+        float smooth = Mathf.Min(1.0f, Time.deltaTime / 0.5f);
+        var angle = Mathf.Acos(Vector3.Dot(transform.forward, dir.normalized)) * Mathf.Rad2Deg * smooth;
+
+        // 回転軸を計算
+        var axis = Vector3.Cross(transform.forward, dir);
+
+        // 回転の更新
+        var rot = Quaternion.AngleAxis(angle, axis);
+        transform.forward = rot * transform.forward;
+
+        //transform.position = m_Navigate.nextPosition;
     }
 }

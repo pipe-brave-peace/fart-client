@@ -88,7 +88,10 @@ public class Buster : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.A))
         {
-            BulletShot();
+            if (!m_Tank.GetFurzFlg())
+            {
+                BulletShot();
+            }
         }
 
         if (!m_bGasFlg)
@@ -115,18 +118,25 @@ public class Buster : MonoBehaviour
     //　敵を撃つ
     void BulletShot()
     {
-        if (m_FartsUI.uvRect.x >= 0.5f) { return; }
+        if (m_FartsUI.uvRect.x > 0.6f) { return; }
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, 600f, LayerMask.GetMask("Enemy")))
         {
-            Instantiate(m_ExplosionObject, hit.collider.gameObject.transform.position, Quaternion.identity);
-            InfoManager.Instance.AddPlayerScore(0, hit.collider.gameObject.GetComponent<Enemy_Score>().GetScore());
-            //Destroy(hit.collider.gameObject);
-            hit.collider.gameObject.GetComponent<Enemy_State>().SetState(Enemy_State.STATE.ESCAPE);
-            //逃げるモードと差し替え
+            if (hit.collider.gameObject.GetComponent<Enemy_State>().GetState() != Enemy_State.STATE.ESCAPE)
+            {
+                Instantiate(m_ExplosionObject, hit.collider.gameObject.transform.position, Quaternion.identity);
+                InfoManager.Instance.AddPlayerScore(0, hit.collider.gameObject.GetComponent<Enemy_Score>().GetScore());
+                hit.collider.gameObject.GetComponent<Life>().SubLife(1);
+
+                if (hit.collider.gameObject.GetComponent<Life>().GetLife() <= 0)
+                {
+                    InfoManager.Instance.AddPlayerCombo(0);
+                    InfoManager.Instance.AddPlayerEnemy(0);
+                }
+            }
         }
 
         m_Tank.FartingFarts(-0.5f);

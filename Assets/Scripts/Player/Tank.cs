@@ -184,4 +184,6 @@ public class Tank : MonoBehaviour
                                                            m_FurzUI.rectTransform.localPosition.z);
         }
     }
+
+    public bool GetFurzFlg() { return m_bFurzFlg; }
 }
