@@ -44,12 +44,6 @@ public class Enemy_Karasu : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        // 体力がなくなった？
-        if(m_Life.GetLife() <= 0)
-        {
-            m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
-        }
-
         // 状態判定
         switch (m_State.GetState())
         {
@@ -116,6 +110,17 @@ public class Enemy_Karasu : MonoBehaviour {
                 LookAtNoneY(m_TargetObj);
                 // 目標へ移動
                 MoveHoming(m_TargetObj, m_Speed * 0.5f);
+                break;
+
+            case Enemy_State.STATE.DAMAGE:      // ダメージ状態
+                // 体力を減らす
+                m_Life.SubLife(1.0f);
+
+                // 体力がなくなった？
+                if (m_Life.GetLife() <= 0)
+                {
+                    m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                }
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる

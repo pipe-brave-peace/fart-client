@@ -38,11 +38,6 @@ public class Enemy_Kamemusi : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        // 死亡した？
-        if (m_Life.GetLife() <= 0)
-        {
-            m_State.SetState(Enemy_State.STATE.ESCAPE);     // 逃げるモード
-        }
         // 状態判定
         switch (m_State.GetState())
         {
@@ -80,6 +75,17 @@ public class Enemy_Kamemusi : MonoBehaviour {
                 if (DistanceNoneY(m_FadePoint, 1.0f))
                 {
                     Destroy(gameObject);    // 消去
+                }
+                break;
+
+            case Enemy_State.STATE.DAMAGE:      // ダメージ状態
+                // 体力を減らす
+                m_Life.SubLife(1.0f);
+
+                // 体力がなくなった？
+                if (m_Life.GetLife() <= 0)
+                {
+                    m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
                 }
                 break;
 

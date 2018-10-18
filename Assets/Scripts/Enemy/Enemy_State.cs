@@ -10,12 +10,13 @@ public class Enemy_State : MonoBehaviour {
         MOVE,       // 移動
         EAT,        // 食べる
         ATTACK,     // 攻撃
+        DAMAGE,     // ダメージ
         SATIETY,    // 満腹
         ESCAPE,     // 逃げる
         MAX
     }
 
-    private STATE m_State;
+    private STATE m_State = STATE.NORMAL;
    
     public void SetState(STATE State)
     {
