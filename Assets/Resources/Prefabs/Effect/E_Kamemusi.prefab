@@ -120,8 +120,8 @@ MonoBehaviour:
   m_Canvas: {fileID: 1800565197624246}
   m_Inc: {fileID: 1329603976546100, guid: 7d45b0bf300befc4eaa0895e1ba7b271, type: 2}
   m_IncNum: {x: 2, y: 4}
+  m_IncScl: {x: 0, y: 0}
   m_MoveObj: {fileID: 1650088251819154}
-  m_TargetObj: {fileID: 0}
   m_MoveSpeed: 0.1
 --- !u!114 &114435312146621204
 MonoBehaviour:
@@ -138,7 +138,7 @@ MonoBehaviour:
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
+  m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
@@ -3577,7 +3577,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!224 &224338833511411064
 RectTransform:

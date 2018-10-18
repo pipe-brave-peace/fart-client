@@ -17,7 +17,9 @@ public class Enemy_Kamemusi : MonoBehaviour {
     GameObject m_FadePoint;
     [SerializeField]
     GameObject m_TargetObj;
-    
+    [SerializeField]
+    GameObject m_AttackEffect;           // インク
+
     private Enemy_State m_State;        // 状態
     private NavMeshAgent m_Nav;         // ナビメッシュ
     private Vector3 m_PosOld;           // 満腹後向かう座標
@@ -62,6 +64,12 @@ public class Enemy_Kamemusi : MonoBehaviour {
 
             case Enemy_State.STATE.ATTACK:      // 攻撃
                 Debug_State_Text.text = "STATE:攻撃している";
+
+                // エフェクトの生成Instantiate (prefab, transform.position, transform.rotation) as GameObject;
+                GameObject attack_effect = Instantiate(m_AttackEffect, transform.position, Quaternion.identity) as GameObject;
+
+                attack_effect.GetComponent<Effect_Kamemusi>().SetTargetObj(m_TargetObj);
+
                 m_State.SetState(Enemy_State.STATE.SATIETY);
                 break;
 

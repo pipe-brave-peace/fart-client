@@ -15,14 +15,13 @@ public class Effect_Kamemusi : MonoBehaviour {
     [SerializeField]
     GameObject m_MoveObj;       // 弾
     [SerializeField]
-    GameObject m_TargetObj;     // 目的
-    [SerializeField]
     private float m_MoveSpeed;  // 移動スピード
 
     private int m_IncCnt;           // インクの数
     private float m_Timer;          // カウンター
     private int m_Mode;             // モード
     private Vector3 m_MoveVector;   // 移動ベクトル
+    private GameObject m_TargetObj;     // 目的
 
     // 初期化
     void Start ()
@@ -30,6 +29,10 @@ public class Effect_Kamemusi : MonoBehaviour {
         m_Timer = 0.0f;
         m_IncCnt = Mathf.CeilToInt(Random.Range(m_IncNum.x, m_IncNum.y));   // インク数の代入
         m_Mode = 0;
+    }
+    public void SetTargetObj(GameObject obj)
+    {
+        m_TargetObj = obj;
         // 移動量の代入
         m_MoveVector = m_TargetObj.transform.position - m_MoveObj.transform.position;
         m_MoveVector.Normalize();
@@ -42,6 +45,9 @@ public class Effect_Kamemusi : MonoBehaviour {
         {
             case 0:
                 // 弾の移動
+                m_MoveVector = m_TargetObj.transform.position - m_MoveObj.transform.position;
+                m_MoveVector.Normalize();
+                m_MoveVector *= m_MoveSpeed;
                 m_MoveObj.transform.position += m_MoveVector;
                 // 近い？
                 if(Vector3.Distance(m_MoveObj.transform.position, m_TargetObj.transform.position) <= 0.1f)

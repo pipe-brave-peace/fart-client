@@ -7,6 +7,10 @@ public class Effect_Inc : MonoBehaviour {
 
     [SerializeField]
     Sprite[] m_ImageList;       // テクスチャ素材
+    [SerializeField]
+    private float m_Timer;          // カウンター
+    [SerializeField]
+    private float m_MoveAlpha;
 
     private RectTransform m_Image;  // 位置、サイズ更新用
     private Image m_ImageColor;     // 色、テクスチャ更新
@@ -15,7 +19,6 @@ public class Effect_Inc : MonoBehaviour {
     private Vector3 m_Pos;          // 座標
     private Color m_Color;          // 色
     private int m_Mode;             // モード
-    private float m_Timer;          // カウンター
 
     // Use this for initialization
     void Start () {
@@ -24,6 +27,7 @@ public class Effect_Inc : MonoBehaviour {
         m_ImageColor = GetComponent<Image>();
 
         m_ImageColor.sprite = m_ImageList[ImageID];       // テクスチャの挿入
+        m_Image.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         m_Size = m_Image.sizeDelta;                       // サイズの記憶
         m_Pos = m_Image.transform.position;               // 座標の記憶
         m_Image.sizeDelta = m_Size * 0.8f;                // 初期サイズの代入
@@ -55,8 +59,8 @@ public class Effect_Inc : MonoBehaviour {
                 m_Image.transform.position = m_Pos;
 
                 // カウント
-                m_Timer += Time.deltaTime;
-                if(m_Timer >= 2.0f)
+                m_Timer -= Time.deltaTime;
+                if(m_Timer <= 0.0f)
                 {
                     m_Mode++;   // 次へ
                 }
@@ -72,7 +76,7 @@ public class Effect_Inc : MonoBehaviour {
                 m_Image.transform.position = m_Pos;
 
                 // アルファ値の更新
-                m_Color.a = Mathf.Max(0.0f, m_Color.a - 0.005f);
+                m_Color.a = Mathf.Max(0.0f, m_Color.a - m_MoveAlpha);
                 m_ImageColor.color = m_Color;
                 // 透明になった？
                 if (m_Color.a <= 0.0f)
