@@ -40,6 +40,7 @@ public class InfoManager : SingletonMonoBehaviour<InfoManager>
         public int GetScore() { return Score; }
         public int GetEnemy() { return Enemy; }
         public int GetCombo() { return Combo; }
+        public int GetComboMax() { return ComboMax; }
         public int GetTotalScore() { return Score + Enemy + Combo; }
     }
 

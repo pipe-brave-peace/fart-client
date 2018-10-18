@@ -9,6 +9,10 @@ public class UI_FarmAll : MonoBehaviour {
     Slider m_Farm_UI;        // 畑ゲージ
     [SerializeField]
     Text m_PercentHP_Text;   // パーセントのテキスト
+    [SerializeField]
+    Text m_DebugText_HPMAX;
+    [SerializeField]
+    Text m_DebugText_HP;
 
     private float m_HP = 100;        // 畑HP
     private float m_MAX_HP = 100;     // MAX HP
@@ -26,6 +30,10 @@ public class UI_FarmAll : MonoBehaviour {
 
         // パーセントの初期化
         m_PercentHP_Text.text = "100%";
+
+        // テスト
+        m_DebugText_HPMAX.text = Mathf.CeilToInt( m_MAX_HP).ToString()+"/";
+        m_DebugText_HP.text = Mathf.CeilToInt(m_HP).ToString();
     }
 
     void Update()
@@ -33,6 +41,9 @@ public class UI_FarmAll : MonoBehaviour {
         // 
         m_HP = GameObject.FindGameObjectsWithTag("Crops").Length;
         m_Farm_UI.value = m_HP;
+
+        // テスト
+        m_DebugText_HP.text = Mathf.CeilToInt(m_HP).ToString();
 
         // パーセントの算出
         int percentHP = Mathf.FloorToInt(m_HP / m_MAX_HP * 100.0f);

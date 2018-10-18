@@ -11,15 +11,18 @@ public class Enemy_Karasu : MonoBehaviour {
     [SerializeField]
     TextMesh Debug_State_Text;
     [SerializeField]
-    GameObject[] m_NavObj;      // 目標オブジェクト
+    Renderer m_Color;               // 自分の色
     [SerializeField]
-    float m_Speed = 0.05f;      // スピード
+    GameObject[] m_NavObj;          // 目標オブジェクト
     [SerializeField]
-    float m_EatSpeed = 1.0f;      // 食べるスピード
+    float m_Speed = 0.05f;          // スピード
+    [SerializeField]
+    float m_EatSpeed = 1.0f;        // 食べるスピード
 
-    private Enemy_State m_State;
-    private GameObject m_TargetObj;
-    private Life m_Life;
+    private Enemy_State m_State;    // 状態
+    private GameObject m_TargetObj; // ターゲット
+    private Life m_Life;            // 体力
+    private Vector3 m_PosOld;       // 生成座標
 
     // Use this for initialization
     void Start()
@@ -33,6 +36,9 @@ public class Enemy_Karasu : MonoBehaviour {
         // スコアセット
         Enemy_Score score = GetComponent<Enemy_Score>();
         score.SetScore(Score_List.Enemy.Karasu);
+
+        // 生成座標の記憶
+        m_PosOld = transform.position;
     }
 
     // Update is called once per frame
@@ -114,9 +120,23 @@ public class Enemy_Karasu : MonoBehaviour {
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
                 Debug_State_Text.text = "STATE:FadeOut";
+
+                // 離脱の位置の方向に移動
+                LookAtNoneY(m_PosOld);
+                // 目標へ移動
+                MoveHoming(m_PosOld, m_Speed);
+
+                // アルファ値を減らす
+                Color color = m_Color.material.color;
+                color.a -= 0.01f;
+                m_Color.material.color = color;
+
+                // 透明になった？
+                if (color.a > 0.0f) { break; }
+
                 // カラスを消す
                 Destroy(gameObject.transform.parent.gameObject);
-                break;
+                return;
         }
     }
 
@@ -147,11 +167,22 @@ public class Enemy_Karasu : MonoBehaviour {
         target.y = transform.position.y;       // y軸無視
         transform.LookAt(target);
     }
+    void LookAtNoneY(Vector3 TargetPos)
+    {
+        TargetPos.y = transform.position.y;       // y軸無視
+        transform.LookAt(TargetPos);
+    }
 
     // 目標に移動
     void MoveHoming(GameObject Target, float Speed)
     {
         Vector3 move = Target.transform.position - transform.position;   // 目的へのベクトル
+        move = move.normalized;                                             // 正規化
+        transform.position += move * m_Speed;
+    }
+    void MoveHoming(Vector3 TargetPos, float Speed)
+    {
+        Vector3 move = TargetPos - transform.position;   // 目的へのベクトル
         move = move.normalized;                                             // 正規化
         transform.position += move * m_Speed;
     }
