@@ -12,27 +12,29 @@ public class Enemy_Inago : MonoBehaviour
     [SerializeField]
     TextMesh Debug_State_Text;
     [SerializeField]
-    float m_Satiety;            // 満腹度
+    Renderer m_Color;               // 自分の色
     [SerializeField]
-    float m_EatSpeed = 1.0f;    // 食べるスピード
+    float m_Satiety;                // 満腹度
     [SerializeField]
-    float m_JumpHeight = 10.0f;        // ジャンプ力
+    float m_EatSpeed = 1.0f;        // 食べるスピード
     [SerializeField]
-    float m_Jump = 150.0f;             // ジャンプ力
+    float m_JumpHeight = 10.0f;     // ジャンプ力
+    [SerializeField]
+    float m_Jump = 150.0f;          // ジャンプ力
     [SerializeField]
     float m_CntJump = 3.0f;         // ジャンプ間隔
     [SerializeField]
-    GameObject[] m_NavCrops;    // 農作物リスト
+    GameObject[] m_NavCrops;        // 農作物リスト
 
 
     private GameObject m_TargetObj;     // ターゲットオブジェクト
     private Enemy_State m_State;        // 状態
     private Vector3 m_PosOld;           // 満腹後向かう座標
     private Life m_Life;                // 体力
-    private float m_JumpTiming;
-    private Rigidbody m_Rigidbody;
+    private float m_JumpTiming;         // ジャンプ間隔
+    private Rigidbody m_Rigidbody;      // 移動用ボディ
 
-    // Use this for initialization
+    // 初期化
     void Start()
     {
         m_Life = GetComponent<Life>();
@@ -40,7 +42,7 @@ public class Enemy_Inago : MonoBehaviour
         m_Rigidbody = GetComponent<Rigidbody>();
         m_TargetObj = SerchCrops();                         // 農作物をサーチ
         m_PosOld = transform.position;                      // 満腹後向かう座標のセット
-        m_JumpTiming = m_CntJump;
+        m_JumpTiming = m_CntJump;                           // ジャンプ間隔
         // スコアセット
         Enemy_Score score = GetComponent<Enemy_Score>();
         score.SetScore(Score_List.Enemy.Inago);
@@ -49,11 +51,6 @@ public class Enemy_Inago : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // 死亡した？
-        if (m_Life.GetLife() <= 0)
-        {
-            m_State.SetState(Enemy_State.STATE.ESCAPE);     // 逃げるモード
-        }
         // 状態判定
         switch (m_State.GetState())
         {
@@ -121,10 +118,34 @@ public class Enemy_Inago : MonoBehaviour
                 }
                 break;
 
+            case Enemy_State.STATE.DAMAGE:      // ダメージ状態
+                // 体力を減らす
+                m_Life.SubLife(1.0f);
+
+                // 体力がなくなった？
+                if (m_Life.GetLife() <= 0)
+                {
+                    m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                }
+                break;
+
             case Enemy_State.STATE.ESCAPE:   // 逃げる
                 Debug_State_Text.text = "STATE:FadeOut";
+
+                // 離脱の位置の方向に移動
+                Jump(m_PosOld);
+
+                // アルファ値を減らす
+                Color color = m_Color.material.color;
+                color.a -= 0.01f;
+                m_Color.material.color = color;
+
+                // 透明になった？
+                if (color.a > 0.0f) { break; }
+
+                // 自分を消す
                 Destroy(gameObject);
-                break;
+                return;
         }
     }
 
@@ -135,11 +156,7 @@ public class Enemy_Inago : MonoBehaviour
         foreach (GameObject obs in m_NavCrops)
         {
             // nullじゃなかったら返す
-            if (obs != null)
-            {
-                return obs;
-            }
-
+            if (obs != null) { return obs; }
         }
         // リストがなくなったらnull
         m_State.SetState(Enemy_State.STATE.SATIETY);

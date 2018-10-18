@@ -51,7 +51,6 @@ public class UI_FarmGauge : MonoBehaviour {
                 Vector3 pos = m_ResultFarm.transform.localPosition;
                 pos.y -= m_MoveY;
                 m_ResultFarm.transform.localPosition = pos;
-                Debug.Log(m_ResultFarm.transform.localPosition.y);
                 if(m_ResultFarm.transform.localPosition.y <= -600.0f)
                 {
                     m_Mode++;

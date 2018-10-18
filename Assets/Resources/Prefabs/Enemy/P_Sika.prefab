@@ -1037,6 +1037,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Debug_State_Text: {fileID: 102130441611326742}
+  m_Color: {fileID: 137859630658725590}
   m_NavCrops:
   - {fileID: 0}
   - {fileID: 0}

@@ -133,5 +133,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Bgm: {fileID: 82288630888240618}
-  m_GameClear: {fileID: 0}
-  m_GameOver: {fileID: 0}
+  m_GameClear: {fileID: 1742485077326590, guid: 2f87f4266ff312240816b6a0e765908a,
+    type: 2}
+  m_GameOver: {fileID: 1302437148738416, guid: ecd56c8c34036634ba4640cc9adf0a95, type: 2}
+  m_PhaseManager: {fileID: 114783061347830050, guid: 685276809a63be3408fe88b5e23e4d9a,
+    type: 2}

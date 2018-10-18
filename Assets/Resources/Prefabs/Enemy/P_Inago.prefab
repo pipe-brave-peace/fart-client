@@ -595,7 +595,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1923960267439402}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -23.279999, y: 1.4, z: 9.33}
+  m_LocalPosition: {x: -27.33, y: 1.4, z: -3.89}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children:
   - {fileID: 4967108950505484}
@@ -1118,6 +1118,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Debug_State_Text: {fileID: 102049580221077542}
+  m_Color: {fileID: 137682985271236500}
   m_Satiety: 5
   m_EatSpeed: 1
   m_JumpHeight: 5

@@ -12,13 +12,15 @@ public class Enemy_Kamemusi : MonoBehaviour {
     [SerializeField]
     TextMesh Debug_State_Text;
     [SerializeField]
+    Renderer m_Color;           // 自分の色
+    [SerializeField]
     GameObject m_FadePoint;
 
     private GameObject m_TargetObj;     // ターゲットオブジェクト
     private Enemy_State m_State;        // 状態
     private NavMeshAgent m_Nav;         // ナビメッシュ
     private Vector3 m_PosOld;           // 満腹後向かう座標
-    private Life m_Life;
+    private Life m_Life;                // 体力
 
     // Use this for initialization
     void Start()
@@ -36,11 +38,6 @@ public class Enemy_Kamemusi : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        // 死亡した？
-        if (m_Life.GetLife() <= 0)
-        {
-            m_State.SetState(Enemy_State.STATE.ESCAPE);     // 逃げるモード
-        }
         // 状態判定
         switch (m_State.GetState())
         {
@@ -81,10 +78,34 @@ public class Enemy_Kamemusi : MonoBehaviour {
                 }
                 break;
 
+            case Enemy_State.STATE.DAMAGE:      // ダメージ状態
+                // 体力を減らす
+                m_Life.SubLife(1.0f);
+
+                // 体力がなくなった？
+                if (m_Life.GetLife() <= 0)
+                {
+                    m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                }
+                break;
+
             case Enemy_State.STATE.ESCAPE:   // 逃げる
                 Debug_State_Text.text = "STATE:FadeOut";
-                Destroy(gameObject);    // 消去
-                break;
+
+                // 離脱の位置の方向に移動
+                m_Nav.SetDestination(m_PosOld);
+
+                // アルファ値を減らす
+                Color color = m_Color.material.color;
+                color.a -= 0.01f;
+                m_Color.material.color = color;
+
+                // 透明になった？
+                if (color.a > 0.0f) { break; }
+
+                // 自分を消す
+                Destroy(gameObject);
+                return;
         }
     }
 

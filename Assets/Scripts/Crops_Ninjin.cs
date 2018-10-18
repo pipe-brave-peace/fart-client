@@ -6,8 +6,6 @@ using UnityEngine.UI;
 public class Crops_Ninjin : MonoBehaviour {
     
     [SerializeField]
-    float m_DamageTime;
-    [SerializeField]
     TextMesh UI_HP;      // 残りの農作物
 
     private Life m_Life;

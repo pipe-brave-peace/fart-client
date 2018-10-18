@@ -36,9 +36,9 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4183467446512770}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: P_Karasu
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -52,7 +52,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4076466652676576}
   - component: {fileID: 65885787488617418}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point_OUT
   m_TagString: Point
   m_Icon: {fileID: 0}
@@ -68,7 +68,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4148130060251872}
   - component: {fileID: 65379714686012572}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point_IN
   m_TagString: Point
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1384145422298506}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.05, y: 0, z: 11.72}
+  m_LocalPosition: {x: -6.3, y: 0, z: 55.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4899671223916900}
@@ -276,7 +276,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 5c6b602c9cc85a849912684309ad524d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -310,7 +310,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 5c6b602c9cc85a849912684309ad524d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -428,11 +428,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Debug_State_Text: {fileID: 102336036006480616}
+  m_Color: {fileID: 23810387089611790}
   m_NavObj:
   - {fileID: 1488603179470808}
   - {fileID: 1472806991228650}
   - {fileID: 0}
-  m_Speed: 1
+  m_Speed: 0.1
   m_EatSpeed: 1
 --- !u!114 &114448495548665700
 MonoBehaviour:

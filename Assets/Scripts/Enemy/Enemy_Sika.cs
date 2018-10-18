@@ -12,6 +12,8 @@ public class Enemy_Sika : MonoBehaviour {
     [SerializeField]
     TextMesh Debug_State_Text;
     [SerializeField]
+    Renderer m_Color;           // 自分の色
+    [SerializeField]
     GameObject[] m_NavCrops;    // 農作物リスト
     [SerializeField]
     float m_Satiety;            // 満腹度
@@ -23,7 +25,7 @@ public class Enemy_Sika : MonoBehaviour {
     private Enemy_State m_State;        // 状態
     private NavMeshAgent m_Nav;         // ナビメッシュ
     private Vector3 m_PosOld;           // 満腹後向かう座標
-    private Life m_Life;
+    private Life m_Life;                // 体力
 
     // Use this for initialization
     void Start()
@@ -41,11 +43,6 @@ public class Enemy_Sika : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        // 死亡した？
-        if (m_Life.GetLife() <= 0)
-        {
-            m_State.SetState(Enemy_State.STATE.ESCAPE);     // 逃げるモード
-        }
         // 状態判定
         switch (m_State.GetState())
         {
@@ -95,12 +92,13 @@ public class Enemy_Sika : MonoBehaviour {
                     // 次を探す
                     m_State.SetState(Enemy_State.STATE.NORMAL);
                 }
+
+                // 農作物体力を減らす
                 Life target_life = m_TargetObj.GetComponent<Life>();
                 target_life.SubLife(Time.deltaTime * m_EatSpeed);
-                if (target_life.GetLife() <= 0)
-                {
-                    Destroy(m_TargetObj.gameObject);
-                }
+                // 食べ終わった？
+                if (target_life.GetLife() <= 0) { Destroy(m_TargetObj.gameObject); }
+
                 // 満腹までのカウント
                 m_Satiety -= Time.deltaTime;
                 // カウント到達した？
@@ -125,11 +123,34 @@ public class Enemy_Sika : MonoBehaviour {
                 }
                 break;
 
+            case Enemy_State.STATE.DAMAGE:      // ダメージ状態
+                // 体力を減らす
+                m_Life.SubLife(1.0f);
+
+                // 体力がなくなった？
+                if (m_Life.GetLife() <= 0)
+                {
+                    m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                }
+                break;
+
             case Enemy_State.STATE.ESCAPE:   // 逃げる
                 Debug_State_Text.text = "STATE:FadeOut";
+
+                // 離脱の位置の方向に移動
+                m_Nav.SetDestination(m_PosOld);
+
+                // アルファ値を減らす
+                Color color = m_Color.material.color;
+                color.a -= 0.01f;
+                m_Color.material.color = color;
+
+                // 透明になった？
+                if (color.a > 0.0f) { break; }
+
                 // 自分を消す
                 Destroy(gameObject);
-                break;
+                return;
         }
     }
 
@@ -140,11 +161,7 @@ public class Enemy_Sika : MonoBehaviour {
         foreach (GameObject obs in m_NavCrops)
         {
             // nullじゃなかったら返す
-            if( obs != null)
-            {
-                return obs;
-            }
-
+            if( obs != null) { return obs; }
         }
         m_State.SetState(Enemy_State.STATE.SATIETY);
         // リストがなくなったらnull

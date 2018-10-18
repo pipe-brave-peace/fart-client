@@ -7,19 +7,19 @@ using UnityEngine.AI;
 [RequireComponent(typeof(Enemy_State))]
 [RequireComponent(typeof(Enemy_Score))]
 
-public class Enemy_Inosisi : MonoBehaviour {
+public class Enemy_Kuma : MonoBehaviour {
 
     [SerializeField]
     TextMesh Debug_State_Text;
     [SerializeField]
     Renderer m_Color;           // 自分の色
     [SerializeField]
-    GameObject m_FadePoint;     // 退却ポイント
+    GameObject m_Point;     // 移動ポイント
 
     private GameObject m_TargetObj;     // ターゲットオブジェクト
     private Enemy_State m_State;        // 状態
     private NavMeshAgent m_Nav;         // ナビメッシュ
-    private Vector3 m_PosOld;           // 満腹後向かう座標
+    private Vector3 m_PosOld;           // 生成座標
     private Life m_Life;                // 体力
 
     // 初期化
@@ -32,7 +32,7 @@ public class Enemy_Inosisi : MonoBehaviour {
         m_PosOld = transform.position;                      // 満腹後向かう座標のセット
         // スコアセット
         Enemy_Score score = GetComponent<Enemy_Score>();
-        score.SetScore(Score_List.Enemy.Sika);
+        score.SetScore(Score_List.Enemy.Kuma);
     }
 
     // Update is called once per frame
@@ -50,9 +50,9 @@ public class Enemy_Inosisi : MonoBehaviour {
                 Debug_State_Text.text = "STATE:Move";
                 //対象の位置の方向に移動
                 MoveHoming(m_TargetObj);
-                
+
                 // 近い？
-                if (DistanceNoneY(m_TargetObj,5.0f))
+                if (DistanceNoneY(m_TargetObj, 5.0f))
                 {
                     // 攻撃状態に変更
                     m_State.SetState(Enemy_State.STATE.ATTACK);
@@ -63,19 +63,6 @@ public class Enemy_Inosisi : MonoBehaviour {
             case Enemy_State.STATE.ATTACK:      // 攻撃
                 Debug_State_Text.text = "STATE:攻撃している";
                 m_State.SetState(Enemy_State.STATE.SATIETY);
-                break;
-
-            case Enemy_State.STATE.SATIETY:     // 攻撃した
-                Debug_State_Text.text = "STATE:満足した";
-
-                //対象の位置の方向に移動
-                MoveHoming(m_FadePoint);
-
-                // 近い？
-                if (DistanceNoneY(m_FadePoint, 1.0f))
-                {
-                    Destroy(gameObject);    // 消去
-                }
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
@@ -118,7 +105,7 @@ public class Enemy_Inosisi : MonoBehaviour {
     }
 
     // Y軸無視でターゲットと近い？
-    bool DistanceNoneY( GameObject Target, float var)
+    bool DistanceNoneY(GameObject Target, float var)
     {
         // Y軸無視の距離算出
         Vector2 this_pos = new Vector2(transform.position.x, transform.position.z);
