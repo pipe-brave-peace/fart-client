@@ -33,6 +33,9 @@ public class Buster : MonoBehaviour
     [SerializeField]
     int m_nTime;
 
+    [SerializeField]
+    Player m_Player;
+
     int m_nOldTime;
 
     bool m_bGasFlg = false;
@@ -52,29 +55,77 @@ public class Buster : MonoBehaviour
     void Update()
     {
 
-        if (m_WiimoteSharing.GetWiimote() != null)
-        {
-            float[] pointer = m_WiimoteSharing.GetWiimote().Ir.GetPointingPosition();
-            var point = new Vector2(pointer[0], pointer[1]);
-            m_ReticleUI.rectTransform.anchorMax = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMax, point, 0.5f);
-            m_ReticleUI.rectTransform.anchorMin = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMin, point, 0.5f);
-
-            if (m_WiimoteSharing.GetWiimote().Button.a)
-            {
-                GasShot();
-            }
-        }
-        else
-        {
-            Cursor.visible = false;
-            var position = Input.mousePosition;
-            m_ReticleUI.rectTransform.position = position;
-        }
-
         Vector3 rayPos = new Vector3(m_ReticleUI.rectTransform.position.x, m_ReticleUI.rectTransform.position.y, m_ReticleUI.rectTransform.position.z);
 
         Ray ray = Camera.main.ScreenPointToRay(rayPos);
         transform.rotation = Quaternion.LookRotation(ray.direction);
+
+        if (m_Player.GetPlayerNumber() == 0)
+        {
+            if (m_WiimoteSharing.GetWiimote() != null)
+            {
+                float[] pointer = m_WiimoteSharing.GetWiimote().Ir.GetPointingPosition();
+                var point = new Vector2(pointer[0], pointer[1]);
+                m_ReticleUI.rectTransform.anchorMax = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMax, point, 0.5f);
+                m_ReticleUI.rectTransform.anchorMin = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMin, point, 0.5f);
+
+                if (m_WiimoteSharing.GetWiimote().Button.plus)
+                {
+                    m_Tank.Farmer(0.5f);
+                }
+
+                if (m_WiimoteSharing.GetWiimote().Button.minus)
+                {
+                    m_Tank.Farmer(0.1f);
+                }
+
+                if (m_WiimoteSharing.GetWiimote().Button.b)
+                {
+                    if (!m_Tank.GetFurzFlg())
+                    {
+                        BulletShot();
+                    }
+                }
+
+                if (m_WiimoteSharing.GetWiimote().Button.a)
+                {
+                    GasShot();
+                }
+            }
+        }
+        else if (m_Player.GetPlayerNumber() == 1)
+        {
+            Cursor.visible = false;
+            var position = Input.mousePosition;
+            m_ReticleUI.rectTransform.position = position;
+
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                if (!m_Tank.GetFurzFlg())
+                {
+                    BulletShot();
+                }
+            }
+
+            if (!m_bGasFlg)
+            {
+                if (Input.GetKey(KeyCode.B))
+                {
+                    GasShot();
+                    m_bGasFlg = true;
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                m_Tank.Farmer(0.1f);
+            }
+
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                m_Tank.Farmer(0.5f);
+            }
+        }
 
         if (m_joyconR != null)
         {
@@ -83,23 +134,6 @@ public class Buster : MonoBehaviour
                 m_joyconR.SetRumble(1000, 1000, 1.0f, 200);
 
                 BulletShot();
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            if (!m_Tank.GetFurzFlg())
-            {
-                BulletShot();
-            }
-        }
-
-        if (!m_bGasFlg)
-        {
-            if (Input.GetKey(KeyCode.B))
-            {
-                GasShot();
-                m_bGasFlg = true;
             }
         }
 
@@ -120,21 +154,34 @@ public class Buster : MonoBehaviour
     {
         if (m_FartsUI.uvRect.x > 0.6f) { return; }
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); 
+
+        if (m_Player.GetPlayerNumber() == 0)
+        {
+
+            ray = Camera.main.ScreenPointToRay(m_ReticleUI.rectTransform.position);
+        }
+        else if (m_Player.GetPlayerNumber() == 1)
+        {
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        }
+
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, 600f, LayerMask.GetMask("Enemy")))
         {
             if (hit.collider.gameObject.GetComponent<Enemy_State>().GetState() != Enemy_State.STATE.ESCAPE)
             {
+                int nNumber = m_Player.GetPlayerNumber();
+
                 Instantiate(m_ExplosionObject, hit.collider.gameObject.transform.position, Quaternion.identity);
-                InfoManager.Instance.AddPlayerScore(0, hit.collider.gameObject.GetComponent<Enemy_Score>().GetScore());
-                hit.collider.gameObject.GetComponent<Life>().SubLife(1);
+                InfoManager.Instance.AddPlayerScore(nNumber, hit.collider.gameObject.GetComponent<Enemy_Score>().GetScore());
+                hit.collider.gameObject.GetComponent<Enemy_State>().SetState(Enemy_State.STATE.DAMAGE);
 
                 if (hit.collider.gameObject.GetComponent<Life>().GetLife() <= 0)
                 {
-                    InfoManager.Instance.AddPlayerCombo(0);
-                    InfoManager.Instance.AddPlayerEnemy(0);
+                    InfoManager.Instance.AddPlayerCombo(nNumber);
+                    InfoManager.Instance.AddPlayerEnemy(nNumber);
                 }
             }
         }

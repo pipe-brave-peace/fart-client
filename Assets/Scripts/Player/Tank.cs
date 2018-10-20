@@ -26,14 +26,20 @@ public class Tank : MonoBehaviour
     float m_fStrength = 0.0f;
 
     [SerializeField]
-    float m_fLaunchVolume = 0.0f;
-
-    [SerializeField]
     RawImage m_FurzUI = null;
 
-    private float m_fUvRectX = 0;
+    [SerializeField]
+    int StartPos;
 
-    private float m_fMove = 0;
+    [SerializeField]
+    int EndPos;
+
+    [SerializeField]
+    float m_fMove = 0;
+
+    private float m_fOldMove = 0.0f;
+
+    private float m_fUvRectX = 0;
 
     private List<Joycon> m_joycons;
 
@@ -48,7 +54,8 @@ public class Tank : MonoBehaviour
     // Use this for initialization
     void Start () {
 
-        m_fMove = 5;
+        m_fOldMove = m_fMove;
+
         m_fUvRectX = 0.01f;
 
         m_joycons = JoyconManager.Instance.j;
@@ -101,7 +108,7 @@ public class Tank : MonoBehaviour
         m_FurzValue = 0.0f;
         m_ChargeValue = fChargeValue;
         m_fUvRectX = 0.01f;
-        m_fMove = 5;
+        m_fMove = m_fOldMove;
     }
 
     //オナラ発射
@@ -112,7 +119,7 @@ public class Tank : MonoBehaviour
         m_FurzValue = 0.0f;
         m_ChargeValue = fFartingValue;
         m_fUvRectX = -0.01f;
-        m_fMove = -5;
+        m_fMove = -m_fOldMove;
     }
 
     //デバッグ用キーボード入力
@@ -169,7 +176,7 @@ public class Tank : MonoBehaviour
             var uvRect = m_FurzUI.uvRect;
             uvRect.x = 1;
             m_FurzUI.uvRect = uvRect;
-            m_FurzUI.rectTransform.localPosition = new Vector3(231,
+            m_FurzUI.rectTransform.localPosition = new Vector3(EndPos,
                                                m_FurzUI.rectTransform.localPosition.y,
                                                m_FurzUI.rectTransform.localPosition.z);
         }
@@ -179,7 +186,7 @@ public class Tank : MonoBehaviour
             var uvRect = m_FurzUI.uvRect;
             uvRect.x = 0;
             m_FurzUI.uvRect = uvRect;
-            m_FurzUI.rectTransform.localPosition = new Vector3(-269,
+            m_FurzUI.rectTransform.localPosition = new Vector3(StartPos,
                                                            m_FurzUI.rectTransform.localPosition.y,
                                                            m_FurzUI.rectTransform.localPosition.z);
         }
