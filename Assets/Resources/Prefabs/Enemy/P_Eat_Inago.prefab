@@ -496,7 +496,7 @@ GameObject:
   - component: {fileID: 114828994557538344}
   - component: {fileID: 114195792864619750}
   m_Layer: 8
-  m_Name: P_Inago
+  m_Name: P_Eat_Inago
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

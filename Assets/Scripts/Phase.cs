@@ -18,9 +18,15 @@ public class Phase : MonoBehaviour {
     void Start()
     {
         // 敵を非表示する
-        foreach (ENEMY_IN_TIME enemy in m_Enemy)
+        for (int i = 0; i < m_Enemy.Count(); ++i)
         {
-            enemy.Enemy.SetActive(false);
+            // このリストからにこの敵を除外
+            if (m_Enemy[i].Enemy == null)
+            {
+                m_Enemy.Remove(m_Enemy[i]);
+                continue;
+            }
+            m_Enemy[i].Enemy.SetActive(false);
         }
     }
 
@@ -41,6 +47,7 @@ public class Phase : MonoBehaviour {
                 m_Enemy[i].Enemy.SetActive(true);
                 // このリストからにこの敵を除外
                 m_Enemy.Remove(m_Enemy[i]);
+                continue;
             }
         }
 	}

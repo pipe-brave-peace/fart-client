@@ -95,7 +95,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4340137062498174}
   m_Layer: 0
-  m_Name: P_Kuma
+  m_Name: P_Boos_Kuma
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -946,7 +946,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Debug_State_Text: {fileID: 102870916089881526}
   m_Color: {fileID: 137135039091825306}
-  m_Point: {fileID: 1708065738436264}
+  m_EatSpeed: 1
+  m_NavPoints: []
+  m_NavCrops: []
+  m_PhaseManager: {fileID: 0}
+  m_PhaseLife: 
 --- !u!114 &114490877946090458
 MonoBehaviour:
   m_ObjectHideFlags: 1

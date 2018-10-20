@@ -362,7 +362,7 @@ GameObject:
   - component: {fileID: 54695430177378176}
   - component: {fileID: 65213423805682388}
   m_Layer: 8
-  m_Name: P_Kamemusi
+  m_Name: P_Attack_Kamemusi
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -729,7 +729,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1897270200151152}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -41.7, y: 0.995, z: 46.4}
+  m_LocalPosition: {x: 3.4, y: 0.995, z: 4.1}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children:
   - {fileID: 4306784706636084}
@@ -965,6 +965,9 @@ MonoBehaviour:
   Debug_State_Text: {fileID: 102760507058244392}
   m_Color: {fileID: 137067457868900658}
   m_FadePoint: {fileID: 0}
+  m_TargetObj: {fileID: 0}
+  m_AttackEffect: {fileID: 1195117226430820, guid: 81eac4bd16750ff49ba941f8b6f1eefa,
+    type: 2}
 --- !u!137 &137067457868900658
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

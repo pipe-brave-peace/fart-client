@@ -18,9 +18,10 @@ public class Enemy_Karasu : MonoBehaviour {
     float m_Speed = 0.05f;          // スピード
     [SerializeField]
     float m_EatSpeed = 1.0f;        // 食べるスピード
+    [SerializeField]
+    GameObject m_TargetObj; // ターゲット
 
     private Enemy_State m_State;    // 状態
-    private GameObject m_TargetObj; // ターゲット
     private Life m_Life;            // 体力
     private Vector3 m_PosOld;       // 生成座標
 
@@ -28,7 +29,7 @@ public class Enemy_Karasu : MonoBehaviour {
     void Start()
     {
         // ターゲットの代入
-        m_TargetObj = m_NavObj[0];
+        if( !m_TargetObj) { m_TargetObj = m_NavObj[0]; }
         // モードの取得
         m_State = GetComponent<Enemy_State>();
         // 体力の取得
@@ -113,6 +114,7 @@ public class Enemy_Karasu : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
+                Debug_State_Text.text = "STATE:痛えぇ！";
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
 
@@ -120,7 +122,9 @@ public class Enemy_Karasu : MonoBehaviour {
                 if (m_Life.GetLife() <= 0)
                 {
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                    break;
                 }
+                m_State.SetState(Enemy_State.STATE.NORMAL);     // 通常状態へ
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
@@ -152,10 +156,7 @@ public class Enemy_Karasu : MonoBehaviour {
         foreach (GameObject obs in m_NavObj)
         {
             if (obs == null) continue;
-            if( obs.tag == "Crops")
-            {
-                return obs;
-            }
+            if( obs.tag == "Crops") { return obs; }
         }
         // 満腹になる
         m_State.SetState(Enemy_State.STATE.SATIETY);

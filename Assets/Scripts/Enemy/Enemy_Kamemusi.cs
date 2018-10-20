@@ -15,8 +15,11 @@ public class Enemy_Kamemusi : MonoBehaviour {
     Renderer m_Color;           // 自分の色
     [SerializeField]
     GameObject m_FadePoint;
+    [SerializeField]
+    GameObject m_TargetObj;
+    [SerializeField]
+    GameObject m_AttackEffect;           // インク
 
-    private GameObject m_TargetObj;     // ターゲットオブジェクト
     private Enemy_State m_State;        // 状態
     private NavMeshAgent m_Nav;         // ナビメッシュ
     private Vector3 m_PosOld;           // 満腹後向かう座標
@@ -27,7 +30,6 @@ public class Enemy_Kamemusi : MonoBehaviour {
     {
         m_Life = GetComponent<Life>();
         m_State = GetComponent<Enemy_State>();
-        m_TargetObj = GameObject.FindGameObjectWithTag("MainCamera");                         // プレイヤーを取得
         m_Nav = GetComponent<NavMeshAgent>();               // ナビメッシュの取得
         m_PosOld = transform.position;                      // 満腹後向かう座標のセット
         // スコアセット
@@ -62,6 +64,12 @@ public class Enemy_Kamemusi : MonoBehaviour {
 
             case Enemy_State.STATE.ATTACK:      // 攻撃
                 Debug_State_Text.text = "STATE:攻撃している";
+
+                // エフェクトの生成Instantiate (prefab, transform.position, transform.rotation) as GameObject;
+                GameObject attack_effect = Instantiate(m_AttackEffect, transform.position, Quaternion.identity) as GameObject;
+
+                attack_effect.GetComponent<Effect_Kamemusi>().SetTargetObj(m_TargetObj);
+
                 m_State.SetState(Enemy_State.STATE.SATIETY);
                 break;
 
@@ -79,6 +87,7 @@ public class Enemy_Kamemusi : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
+                Debug_State_Text.text = "STATE:痛えぇ！";
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
 
@@ -86,7 +95,9 @@ public class Enemy_Kamemusi : MonoBehaviour {
                 if (m_Life.GetLife() <= 0)
                 {
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                    break;
                 }
+                m_State.SetState(Enemy_State.STATE.NORMAL);     // 通常状態へ
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる

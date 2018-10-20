@@ -15,8 +15,9 @@ public class Enemy_Inosisi : MonoBehaviour {
     Renderer m_Color;           // 自分の色
     [SerializeField]
     GameObject m_FadePoint;     // 退却ポイント
+    [SerializeField]
+    GameObject m_TargetObj;
 
-    private GameObject m_TargetObj;     // ターゲットオブジェクト
     private Enemy_State m_State;        // 状態
     private NavMeshAgent m_Nav;         // ナビメッシュ
     private Vector3 m_PosOld;           // 満腹後向かう座標
@@ -27,7 +28,6 @@ public class Enemy_Inosisi : MonoBehaviour {
     {
         m_Life = GetComponent<Life>();
         m_State = GetComponent<Enemy_State>();
-        m_TargetObj = GameObject.FindGameObjectWithTag("MainCamera");                         // プレイヤーを取得
         m_Nav = GetComponent<NavMeshAgent>();               // ナビメッシュの取得
         m_PosOld = transform.position;                      // 満腹後向かう座標のセット
         // スコアセット
@@ -79,6 +79,7 @@ public class Enemy_Inosisi : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
+                Debug_State_Text.text = "STATE:痛えぇ！";
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
 
@@ -86,7 +87,9 @@ public class Enemy_Inosisi : MonoBehaviour {
                 if (m_Life.GetLife() <= 0)
                 {
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                    break;
                 }
+                m_State.SetState(Enemy_State.STATE.NORMAL);     // 通常状態へ
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
@@ -124,7 +127,6 @@ public class Enemy_Inosisi : MonoBehaviour {
         Vector2 this_pos = new Vector2(transform.position.x, transform.position.z);
         Vector2 target_pos = new Vector2(Target.transform.position.x, Target.transform.position.z);
         // 近い？
-        Debug.Log(Vector2.Distance(this_pos, target_pos));
         if (Vector2.Distance(this_pos, target_pos) <= var)
         {
             return true;

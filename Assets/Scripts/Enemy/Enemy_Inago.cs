@@ -119,6 +119,7 @@ public class Enemy_Inago : MonoBehaviour
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
+                Debug_State_Text.text = "STATE:痛えぇ！";
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
 
@@ -126,7 +127,9 @@ public class Enemy_Inago : MonoBehaviour
                 if (m_Life.GetLife() <= 0)
                 {
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                    break;
                 }
+                m_State.SetState(Enemy_State.STATE.NORMAL);     // 通常状態へ
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
