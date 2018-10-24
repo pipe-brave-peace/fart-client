@@ -10,7 +10,7 @@ public class UI_FarmGauge : MonoBehaviour {
     [SerializeField]
     GameObject m_ResultFarm;
     [SerializeField]
-    float m_MoveY;
+    float m_MoveX;
     [SerializeField]
     Result_InfoNum m_ResultInfo;
 
@@ -40,18 +40,25 @@ public class UI_FarmGauge : MonoBehaviour {
                 m_FarmNum.text = m_FarmVer.ToString() + "%";
                 if( m_FarmVer >= m_FarmVerMax)
                 {
-                    m_Timer += Time.deltaTime;
-                    if (m_Timer >= 3.0f || Input.anyKeyDown)
-                    {
-                        m_Mode++;
-                    }
+                    m_FarmVer = m_FarmVerMax;
+                    m_FarmNum.text = m_FarmVerMax.ToString() + "%";
+                    UI_CreateNum effect = m_FarmNum.GetComponent<UI_CreateNum>();
+                    effect.CreateNum();
+                    m_Mode++;
                 }
                 break;
             case 1:
+                m_Timer += Time.deltaTime;
+                if (m_Timer >= 3.0f || Input.anyKeyDown)
+                {
+                    m_Mode++;
+                }
+                break;
+            case 2:
                 Vector3 pos = m_ResultFarm.transform.localPosition;
-                pos.y -= m_MoveY;
+                pos.x -= m_MoveX;
                 m_ResultFarm.transform.localPosition = pos;
-                if(m_ResultFarm.transform.localPosition.y <= -600.0f)
+                if(m_ResultFarm.transform.localPosition.x <= -1000.0f)
                 {
                     m_Mode++;
                     m_ResultInfo.SetMode(Result_InfoNum.MODE.SCORE);
