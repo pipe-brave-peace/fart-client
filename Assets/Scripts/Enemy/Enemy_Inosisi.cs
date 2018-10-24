@@ -16,7 +16,7 @@ public class Enemy_Inosisi : MonoBehaviour {
     [SerializeField]
     GameObject m_TargetObj;
     [SerializeField]
-    GameObject[] m_NavObj;          // 農作物リスト
+    GameObject[] m_NavCrops;      // 農作物リスト
     [SerializeField]
     float m_Satiety;            // 満腹度
     [SerializeField]
@@ -33,7 +33,7 @@ public class Enemy_Inosisi : MonoBehaviour {
     void Start()
     {
         // ターゲットの代入
-        if (!m_TargetObj) { m_TargetObj = m_NavObj[0]; }
+        if (!m_TargetObj) { m_TargetObj = m_NavCrops[0]; }
         m_Life = GetComponent<Life>();
         m_State = GetComponent<Enemy_State>();
         m_Nav = GetComponent<NavMeshAgent>();               // ナビメッシュの取得
@@ -52,13 +52,15 @@ public class Enemy_Inosisi : MonoBehaviour {
         // 状態判定
         switch (m_State.GetState())
         {
-            case Enemy_State.STATE.NORMAL:   // 通常
-                Debug_State_Text.text = "STATE:Normal";
-                m_State.SetState(Enemy_State.STATE.MOVE);
-                break;
-
             case Enemy_State.STATE.MOVE:     // 移動
                 Debug_State_Text.text = "STATE:Move";
+                // 目標がなくなった？
+                if (m_TargetObj == null)
+                {
+                    // 再検索
+                    m_TargetObj = SerchCrops();          // 農作物をサーチ
+                    break;
+                }
                 //対象の位置の方向に移動
                 MoveHoming(m_TargetObj);
                 // 近い？
@@ -91,7 +93,7 @@ public class Enemy_Inosisi : MonoBehaviour {
                         break;
                     }
                     // 次を探す
-                    m_State.SetState(Enemy_State.STATE.NORMAL);
+                    m_State.SetState(Enemy_State.STATE.MOVE);
                 }
 
                 // 農作物体力を減らす
@@ -145,7 +147,7 @@ public class Enemy_Inosisi : MonoBehaviour {
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
                     break;
                 }
-                m_State.SetState(Enemy_State.STATE.NORMAL);     // 通常状態へ
+                m_State.SetState(Enemy_State.STATE.MOVE);     // 通常状態へ
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
@@ -187,5 +189,19 @@ public class Enemy_Inosisi : MonoBehaviour {
             return true;
         }
         return false;
+    }
+
+    // 農作物リストから目標を取得
+    GameObject SerchCrops()
+    {
+        //目標を配列で取得する
+        foreach (GameObject obs in m_NavCrops)
+        {
+            // nullじゃなかったら返す
+            if (obs != null) { return obs; }
+        }
+        m_State.SetState(Enemy_State.STATE.SATIETY);
+        // リストがなくなったらnull
+        return null;
     }
 }

@@ -46,11 +46,6 @@ public class Enemy_Sika : MonoBehaviour {
         // 状態判定
         switch (m_State.GetState())
         {
-            case Enemy_State.STATE.NORMAL:   // 通常
-                Debug_State_Text.text = "STATE:Normal";
-                m_State.SetState(Enemy_State.STATE.MOVE);
-                break;
-
             case Enemy_State.STATE.MOVE:     // 移動
                 Debug_State_Text.text = "STATE:Move";
                 // 目標がなくなった？
@@ -90,7 +85,7 @@ public class Enemy_Sika : MonoBehaviour {
                         break;
                     }
                     // 次を探す
-                    m_State.SetState(Enemy_State.STATE.NORMAL);
+                    m_State.SetState(Enemy_State.STATE.MOVE);
                 }
 
                 // 農作物体力を減らす
@@ -134,7 +129,7 @@ public class Enemy_Sika : MonoBehaviour {
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
                     break;
                 }
-                m_State.SetState(Enemy_State.STATE.NORMAL);     // 通常状態へ
+                m_State.SetState(Enemy_State.STATE.MOVE);     // 通常状態へ
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる

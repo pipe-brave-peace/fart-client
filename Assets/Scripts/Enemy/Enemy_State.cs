@@ -6,25 +6,34 @@ public class Enemy_State : MonoBehaviour {
 
     public enum STATE
     {
-        NORMAL = 0, // 通常
-        MOVE,       // 移動
+        MOVE = 0,   // 移動
         EAT,        // 食べる
         ATTACK,     // 攻撃
+        CRY,        // 叫ぶ
         DAMAGE,     // ダメージ
+        FEAR,       // 怯む
         SATIETY,    // 満腹
         ESCAPE,     // 逃げる
+        FAINT,      // 気絶
         MAX
     }
 
-    private STATE m_State = STATE.NORMAL;
+    private STATE m_State = STATE.MOVE;
+    private bool m_canSet = true;
    
     public void SetState(STATE State)
     {
+        if(!m_canSet) { return; }
         m_State = State;
     }
 
     public STATE GetState()
     {
         return m_State;
+    }
+
+    public void CanSet(bool CanSet)
+    {
+        m_canSet = CanSet;
     }
 }
