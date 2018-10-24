@@ -33,6 +33,7 @@ public class Enemy_Inago : MonoBehaviour
     private Life m_Life;                // 体力
     private float m_JumpTiming;         // ジャンプ間隔
     private Rigidbody m_Rigidbody;      // 移動用ボディ
+    private Color m_FadeColor;
 
     // 初期化
     void Start()
@@ -43,6 +44,7 @@ public class Enemy_Inago : MonoBehaviour
         m_TargetObj = SerchCrops();                         // 農作物をサーチ
         m_PosOld = transform.position;                      // 満腹後向かう座標のセット
         m_JumpTiming = m_CntJump;                           // ジャンプ間隔
+        m_FadeColor = m_Color.material.color;
         // スコアセット
         Enemy_Score score = GetComponent<Enemy_Score>();
         score.SetScore(Score_List.Enemy.Inago);
@@ -126,6 +128,10 @@ public class Enemy_Inago : MonoBehaviour
                 // 体力がなくなった？
                 if (m_Life.GetLife() <= 0)
                 {
+                    // 透明できる描画モードに変更
+                    BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
+                    m_FadeColor.a = 1.0f;
+                    m_Color.material.color = m_FadeColor;
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
                     break;
                 }
@@ -139,12 +145,11 @@ public class Enemy_Inago : MonoBehaviour
                 Jump(m_PosOld);
 
                 // アルファ値を減らす
-                Color color = m_Color.material.color;
-                color.a -= 0.01f;
-                m_Color.material.color = color;
+                m_FadeColor.a -= 0.01f;
+                m_Color.material.color = m_FadeColor;
 
                 // 透明になった？
-                if (color.a > 0.0f) { break; }
+                if (m_FadeColor.a > 0.0f) { break; }
 
                 // 自分を消す
                 Destroy(gameObject);

@@ -24,6 +24,7 @@ public class Enemy_Kamemusi : MonoBehaviour {
     private NavMeshAgent m_Nav;         // ナビメッシュ
     private Vector3 m_PosOld;           // 満腹後向かう座標
     private Life m_Life;                // 体力
+    private Color m_FadeColor;
 
     // Use this for initialization
     void Start()
@@ -32,6 +33,8 @@ public class Enemy_Kamemusi : MonoBehaviour {
         m_State = GetComponent<Enemy_State>();
         m_Nav = GetComponent<NavMeshAgent>();               // ナビメッシュの取得
         m_PosOld = transform.position;                      // 満腹後向かう座標のセット
+        m_FadeColor = m_Color.material.color;
+
         // スコアセット
         Enemy_Score score = GetComponent<Enemy_Score>();
         score.SetScore(Score_List.Enemy.Sika);
@@ -94,6 +97,10 @@ public class Enemy_Kamemusi : MonoBehaviour {
                 // 体力がなくなった？
                 if (m_Life.GetLife() <= 0)
                 {
+                    // 透明できる描画モードに変更
+                    BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
+                    m_FadeColor.a = 1.0f;
+                    m_Color.material.color = m_FadeColor;
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
                     break;
                 }
@@ -107,12 +114,11 @@ public class Enemy_Kamemusi : MonoBehaviour {
                 m_Nav.SetDestination(m_PosOld);
 
                 // アルファ値を減らす
-                Color color = m_Color.material.color;
-                color.a -= 0.01f;
-                m_Color.material.color = color;
+                m_FadeColor.a -= 0.01f;
+                m_Color.material.color = m_FadeColor;
 
                 // 透明になった？
-                if (color.a > 0.0f) { break; }
+                if (m_FadeColor.a > 0.0f) { break; }
 
                 // 自分を消す
                 Destroy(gameObject);

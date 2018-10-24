@@ -12,24 +12,35 @@ public class Enemy_Inosisi : MonoBehaviour {
     [SerializeField]
     TextMesh Debug_State_Text;
     [SerializeField]
-    Renderer m_Color;           // 自分の色
-    [SerializeField]
     GameObject m_FadePoint;     // 退却ポイント
     [SerializeField]
     GameObject m_TargetObj;
+    [SerializeField]
+    GameObject[] m_NavObj;          // 農作物リスト
+    [SerializeField]
+    float m_Satiety;            // 満腹度
+    [SerializeField]
+    float m_EatSpeed = 1.0f;        // 食べるスピード
 
     private Enemy_State m_State;        // 状態
     private NavMeshAgent m_Nav;         // ナビメッシュ
     private Vector3 m_PosOld;           // 満腹後向かう座標
     private Life m_Life;                // 体力
+    private Renderer m_Color;           // 自分の色
+    private Color m_FadeColor;
 
     // 初期化
     void Start()
     {
+        // ターゲットの代入
+        if (!m_TargetObj) { m_TargetObj = m_NavObj[0]; }
         m_Life = GetComponent<Life>();
         m_State = GetComponent<Enemy_State>();
         m_Nav = GetComponent<NavMeshAgent>();               // ナビメッシュの取得
+        m_Color = GetComponent<Renderer>();
         m_PosOld = transform.position;                      // 満腹後向かう座標のセット
+        m_FadeColor = m_Color.material.color;
+
         // スコアセット
         Enemy_Score score = GetComponent<Enemy_Score>();
         score.SetScore(Score_List.Enemy.Sika);
@@ -50,13 +61,54 @@ public class Enemy_Inosisi : MonoBehaviour {
                 Debug_State_Text.text = "STATE:Move";
                 //対象の位置の方向に移動
                 MoveHoming(m_TargetObj);
-                
                 // 近い？
-                if (DistanceNoneY(m_TargetObj,5.0f))
+                if (!DistanceNoneY(m_TargetObj, 5.0f)) { break; }
+
+                // 目標が農作物？
+                if (m_TargetObj.tag == "Crops")
                 {
-                    // 攻撃状態に変更
-                    m_State.SetState(Enemy_State.STATE.ATTACK);
-                    m_Nav.SetDestination(transform.position);       // 移動を止める
+                    // 食べる状態に変更
+                    m_State.SetState(Enemy_State.STATE.EAT);
+                    break;
+                }
+                // 攻撃状態に変更
+                m_State.SetState(Enemy_State.STATE.ATTACK);
+                m_Nav.SetDestination(transform.position);       // 移動を止める
+                break;
+
+            case Enemy_State.STATE.EAT:      // 食べる
+                Debug_State_Text.text = "STATE:食べているよ";
+                // 食べ終わった？
+                if (m_TargetObj == null)
+                {
+                    // だいたい食べた？
+                    if (m_Satiety <= 0.5f)
+                    {
+                        // 満腹になる
+                        m_State.SetState(Enemy_State.STATE.SATIETY);
+                        // 移動速度が減る
+                        m_Nav.speed = m_Nav.speed * 0.5f;
+                        break;
+                    }
+                    // 次を探す
+                    m_State.SetState(Enemy_State.STATE.NORMAL);
+                }
+
+                // 農作物体力を減らす
+                Life target_life = m_TargetObj.GetComponent<Life>();
+                target_life.SubLife(Time.deltaTime * m_EatSpeed);
+                // 食べ終わった？
+                if (target_life.GetLife() <= 0) { Destroy(m_TargetObj.gameObject); }
+
+                // 満腹までのカウント
+                m_Satiety -= Time.deltaTime;
+                // カウント到達した？
+                if (m_Satiety <= 0.0f)
+                {
+                    // 満腹になる
+                    m_State.SetState(Enemy_State.STATE.SATIETY);
+                    // 移動速度が減る
+                    m_Nav.speed = m_Nav.speed * 0.5f;
                 }
                 break;
 
@@ -86,6 +138,10 @@ public class Enemy_Inosisi : MonoBehaviour {
                 // 体力がなくなった？
                 if (m_Life.GetLife() <= 0)
                 {
+                    // 透明できる描画モードに変更
+                    BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
+                    m_FadeColor.a = 1.0f;
+                    m_Color.material.color = m_FadeColor;
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
                     break;
                 }
@@ -99,12 +155,11 @@ public class Enemy_Inosisi : MonoBehaviour {
                 m_Nav.SetDestination(m_PosOld);
 
                 // アルファ値を減らす
-                Color color = m_Color.material.color;
-                color.a -= 0.01f;
-                m_Color.material.color = color;
+                m_FadeColor.a -= 0.01f;
+                m_Color.material.color = m_FadeColor;
 
                 // 透明になった？
-                if (color.a > 0.0f) { break; }
+                if (m_FadeColor.a > 0.0f) { break; }
 
                 // 自分を消す
                 Destroy(gameObject);

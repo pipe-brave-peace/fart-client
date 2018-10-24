@@ -11,11 +11,15 @@ public class Enemy_Karasu : MonoBehaviour {
     [SerializeField]
     TextMesh Debug_State_Text;
     [SerializeField]
+    GameObject m_FadePoint;     // 退却ポイント
+    [SerializeField]
     Renderer m_Color;               // 自分の色
     [SerializeField]
-    GameObject[] m_NavObj;          // 目標オブジェクト
+    GameObject[] m_NavObj;          // 農作物リスト
     [SerializeField]
     float m_Speed = 0.05f;          // スピード
+    [SerializeField]
+    float m_Satiety;            // 満腹度
     [SerializeField]
     float m_EatSpeed = 1.0f;        // 食べるスピード
     [SerializeField]
@@ -23,23 +27,21 @@ public class Enemy_Karasu : MonoBehaviour {
 
     private Enemy_State m_State;    // 状態
     private Life m_Life;            // 体力
-    private Vector3 m_PosOld;       // 生成座標
+    private Color m_FadeColor;
 
     // Use this for initialization
     void Start()
     {
-        // ターゲットの代入
+        // ターゲットがなければ農作物をターゲットに
         if( !m_TargetObj) { m_TargetObj = m_NavObj[0]; }
         // モードの取得
         m_State = GetComponent<Enemy_State>();
         // 体力の取得
         m_Life = GetComponent<Life>();
+        m_FadeColor = m_Color.material.color;
         // スコアセット
         Enemy_Score score = GetComponent<Enemy_Score>();
         score.SetScore(Score_List.Enemy.Karasu);
-
-        // 生成座標の記憶
-        m_PosOld = transform.position;
     }
 
     // Update is called once per frame
@@ -79,21 +81,33 @@ public class Enemy_Karasu : MonoBehaviour {
 
             case Enemy_State.STATE.EAT:      // 食べる
                 Debug_State_Text.text = "STATE:食べているよ";
-                if (m_TargetObj == null) { break; }
-
-                // 農作物のライフを取得
+                // 食べ終わった？
+                if (m_TargetObj == null)
+                {
+                    // だいたい食べた？
+                    if (m_Satiety <= 0.5f)
+                    {
+                        // 満腹になる
+                        m_State.SetState(Enemy_State.STATE.SATIETY);
+                        break;
+                    }
+                    // 次を探す
+                    m_State.SetState(Enemy_State.STATE.NORMAL);
+                }
+                
+                // 農作物体力を減らす
                 Life target_life = m_TargetObj.GetComponent<Life>();
-                // ライフを削る
                 target_life.SubLife(Time.deltaTime * m_EatSpeed);
                 // 食べ終わった？
-                if ( target_life.GetLife() <= 0)
+                if (target_life.GetLife() <= 0) { Destroy(m_TargetObj.gameObject); }
+
+                // 満腹までのカウント
+                m_Satiety -= Time.deltaTime;
+                // カウント到達した？
+                if (m_Satiety <= 0.0f)
                 {
-                    // 農作物を消す
-                    Destroy(m_TargetObj.gameObject);
                     // 満腹になる
                     m_State.SetState(Enemy_State.STATE.SATIETY);
-                    // 退却座標の代入
-                    m_TargetObj = m_NavObj[1];
                 }
                 break;
 
@@ -121,6 +135,10 @@ public class Enemy_Karasu : MonoBehaviour {
                 // 体力がなくなった？
                 if (m_Life.GetLife() <= 0)
                 {
+                    // 透明できる描画モードに変更
+                    BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
+                    m_FadeColor.a = 1.0f;
+                    m_Color.material.color = m_FadeColor;
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
                     break;
                 }
@@ -131,17 +149,16 @@ public class Enemy_Karasu : MonoBehaviour {
                 Debug_State_Text.text = "STATE:FadeOut";
 
                 // 離脱の位置の方向に移動
-                LookAtNoneY(m_PosOld);
+                LookAtNoneY(m_FadePoint);
                 // 目標へ移動
-                MoveHoming(m_PosOld, m_Speed);
+                MoveHoming(m_FadePoint, m_Speed);
 
                 // アルファ値を減らす
-                Color color = m_Color.material.color;
-                color.a -= 0.01f;
-                m_Color.material.color = color;
+                m_FadeColor.a -= 0.01f;
+                m_Color.material.color = m_FadeColor;
 
                 // 透明になった？
-                if (color.a > 0.0f) { break; }
+                if (m_FadeColor.a > 0.0f) { break; }
 
                 // カラスを消す
                 Destroy(gameObject.transform.parent.gameObject);
@@ -160,10 +177,8 @@ public class Enemy_Karasu : MonoBehaviour {
         }
         // 満腹になる
         m_State.SetState(Enemy_State.STATE.SATIETY);
-        // 退却座標の代入
-        m_TargetObj = m_NavObj[1];
-        // リストがなくなったらnull
-        return null;
+        // リストがなくなったら退却座標
+        return m_FadePoint;
     }
 
     // Y軸無視でターゲットに向く
