@@ -31,39 +31,59 @@ public class Enemy_Kuma : MonoBehaviour {
     [SerializeField]
     float m_EscapeTimer;
 
+    // フェーズタイプ
     private enum PHASE
     {
-        EAT = 0,
-        ATTACK,
-        MIX,
+        EAT = 0,    // 農作物を荒らす
+        ATTACK,     // 攻撃
+        MIX,        // 両方
         MAX
     }
 
-    private Enemy_State m_State;        // 状態
-    private NavMeshAgent m_Nav;         // ナビメッシュ
-    private Life m_Life;                // 体力
-    private PHASE m_Phase;              // フェーズ判断用
-    private int m_FearCntMax;           // 怯むまでダメージを受ける回数
-    private GameObject m_AttackObj;     // 攻撃目標
-    private float m_UrouroTimerMax;     // ウロウロする時間
+    private Enemy_State     m_State;            // 状態
+    private NavMeshAgent    m_Nav;              // ナビメッシュ
+    private Life            m_Life;             // 体力
+    private PHASE           m_Phase;            // フェーズ判断用
+    private int             m_FearCntMax;       // 怯むまでダメージを受ける回数
+    private GameObject      m_AttackObj;        // 攻撃目標
+    private float           m_UrouroTimerMax;   // ウロウロする時間
+    private int             m_CropIndex;        // 農作物リストのインデックス
 
     // 初期化
     void Start()
     {
-        m_Life = GetComponent<Life>();
-        m_State = GetComponent<Enemy_State>();
-        m_Nav = GetComponent<NavMeshAgent>();               // ナビメッシュの取得
-        m_FearCntMax = m_FearCnt;
-        m_AttackObj = m_TargetObj;
+        m_Life           = GetComponent<Life>();
+        m_State          = GetComponent<Enemy_State>();
+        m_Nav            = GetComponent<NavMeshAgent>();               // ナビメッシュの取得
+        m_FearCntMax     = m_FearCnt;
+        m_AttackObj      = m_TargetObj;
         m_UrouroTimerMax = m_UrouroTimer;
+        m_CropIndex      = 0;
         // スコアセット
         Enemy_Score score = GetComponent<Enemy_Score>();
         score.SetScore(Score_List.Enemy.Kuma);
 
-        // フェーズチェック
+        // nullリストの除外
+        for (int i = 0; i < m_NavCrops.Count; ++i)
+        {
+            if (m_NavCrops[i] == null)
+            {
+                m_NavCrops.Remove(m_NavCrops[i]);
+                continue;
+            }
+        }
+
+        // フェーズチェック ////////////////
+        // 農作物リストがなければ攻撃フェーズへ
         if (m_NavCrops.Count <= 0) { m_Phase = PHASE.ATTACK; return; }
+        
+        // 農作物の先頭をターゲットに
         m_TargetObj = SerchCrops();
-        if ( m_TargetObj == null) { m_Phase = PHASE.EAT; return; }
+
+        // 攻撃ターゲットがいなければ荒らすフェーズへ
+        if (m_AttackObj == null) { m_Phase = PHASE.EAT; return; }
+
+        // 両方ある場合は両方フェーズへ
         m_Phase = PHASE.MIX;
     }
 
@@ -95,16 +115,17 @@ public class Enemy_Kuma : MonoBehaviour {
                 if (m_TargetObj == null)
                 {
                     // 再検索
-                    m_TargetObj = SerchCrops();          // 農作物をサーチ
+                    m_TargetObj = SerchCrops(m_CropIndex);          // 農作物をサーチ
                     break;
                 }
                 // 目標へ移動
                 MoveHoming(m_TargetObj);
-                
+
                 // 近い？
-                if (Vector3.Distance(transform.position, m_TargetObj.transform.position) <= 1.0f)
+                if (DistanceNoneY(m_TargetObj, 1.0f))
                 {
                     // 食べる状態に変更
+                    m_State.CanSet(true);
                     m_State.SetState(Enemy_State.STATE.EAT);
                     MoveHoming(gameObject);     // 止まる
                 }
@@ -121,6 +142,7 @@ public class Enemy_Kuma : MonoBehaviour {
                 {
                     // 次を探す
                     m_State.SetState(Enemy_State.STATE.MOVE);
+                    break;
                 }
 
                 // 農作物体力を減らす
@@ -138,7 +160,7 @@ public class Enemy_Kuma : MonoBehaviour {
                 Debug_State_Text.text = "STATE:痛えぇ！";
 
                 // 攻撃不能
-                m_State.CanSet(false);
+                //m_State.CanSet(false);
 
                 // 怯むまでのカウント
                 m_FearCnt--;
@@ -146,6 +168,7 @@ public class Enemy_Kuma : MonoBehaviour {
                 {
                     m_FearCnt = m_FearCntMax;                     // カウントのクリア
                     m_State.SetState(Enemy_State.STATE.FEAR);     // 怯む状態へ
+                    break;
                 }
                 
                 m_State.SetState(Enemy_State.STATE.EAT);     // 食べる状態へ
@@ -157,6 +180,9 @@ public class Enemy_Kuma : MonoBehaviour {
                 // 攻撃不能
                 m_State.CanSet(false);
 
+                // 次の農作物を狙う
+                m_CropIndex++;
+
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
@@ -167,9 +193,9 @@ public class Enemy_Kuma : MonoBehaviour {
 
                 // 離脱の位置の方向に移動
                 MoveHoming(m_FadePoint);
-                
-                // 自分を消す
-                Destroy(gameObject);
+
+                // クマオブジェクトを消す
+                if (DistanceNoneY(m_FadePoint, 1.0f)) { Destroy(transform.parent.gameObject); }
                 return;
         }
 
@@ -177,10 +203,10 @@ public class Enemy_Kuma : MonoBehaviour {
         m_EscapeTimer -= Time.deltaTime;
         if (m_EscapeTimer > 0.0f) return;
         if (m_State.GetState() == Enemy_State.STATE.ESCAPE) return;
-        if (m_State.GetState() == Enemy_State.STATE.CRY) return;
+        if (m_State.GetState() == Enemy_State.STATE.CRY)    return;
         if (m_State.GetState() == Enemy_State.STATE.DAMAGE) return;
-        if (m_State.GetState() == Enemy_State.STATE.FEAR) return;
-        m_State.SetState(Enemy_State.STATE.ESCAPE);
+        if (m_State.GetState() == Enemy_State.STATE.FEAR)   return;
+        m_State.SetState( Enemy_State.STATE.ESCAPE );
     }
 
     // プレイヤーを攻撃するフェーズ
@@ -206,7 +232,11 @@ public class Enemy_Kuma : MonoBehaviour {
                     // ウロウロする時間のカウント
                     m_UrouroTimer -= Time.deltaTime;
                     // 来たら攻撃目標を狙う
-                    if( m_UrouroTimer<= 0.0f) { m_TargetObj = m_AttackObj; }
+                    if( m_UrouroTimer<= 0.0f)
+                    {
+                        m_UrouroTimer = m_UrouroTimerMax;
+                        m_TargetObj = m_AttackObj;
+                    }
                 }
                 else                            // プレイヤー？
                 {
@@ -214,13 +244,12 @@ public class Enemy_Kuma : MonoBehaviour {
                     m_State.CanSet(true);
 
                     // 近い？
-                    if (Vector3.Distance(transform.position, m_TargetObj.transform.position) <= 1.0f)
+                    if (DistanceNoneY(m_TargetObj, 5.0f))
                     {
-                        // 食べる状態に変更
+                        // 攻撃状態に変更
                         m_State.SetState(Enemy_State.STATE.ATTACK);
                         MoveHoming(gameObject);     // 止まる
                     }
-
                 }
                 break;
 
@@ -231,8 +260,8 @@ public class Enemy_Kuma : MonoBehaviour {
             case Enemy_State.STATE.ATTACK:      // 攻撃
                 Debug_State_Text.text = "STATE:喰らえ！！";
                 
-                // 攻撃不能
-                m_State.CanSet(false);
+                m_TargetObj = SerchPoint();
+                m_State.SetState(Enemy_State.STATE.MOVE);
 
                 break;
 
@@ -240,7 +269,7 @@ public class Enemy_Kuma : MonoBehaviour {
                 Debug_State_Text.text = "STATE:痛えぇ！";
 
                 // 攻撃不能
-                m_State.CanSet(false);
+                //m_State.CanSet(false);
 
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
@@ -251,6 +280,7 @@ public class Enemy_Kuma : MonoBehaviour {
                 {
                     m_FearCnt = m_FearCntMax;                     // カウントのクリア
                     m_State.SetState(Enemy_State.STATE.FEAR);     // 怯む状態へ
+                    break;
                 }
 
                 m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
@@ -273,8 +303,8 @@ public class Enemy_Kuma : MonoBehaviour {
                 // 離脱の位置の方向に移動
                 MoveHoming(m_FadePoint);
 
-                // 自分を消す
-                Destroy(gameObject);
+                // クマオブジェクトを消す
+                if (DistanceNoneY(m_FadePoint, 1.0f)) { Destroy(transform.parent.gameObject); }
                 return;
         }
 
@@ -283,10 +313,10 @@ public class Enemy_Kuma : MonoBehaviour {
         if (m_EscapeTimer > 0.0f) return;
         if (m_State.GetState() == Enemy_State.STATE.ESCAPE) return;
         if (m_State.GetState() == Enemy_State.STATE.ATTACK) return;
-        if (m_State.GetState() == Enemy_State.STATE.CRY) return;
+        if (m_State.GetState() == Enemy_State.STATE.CRY)    return;
         if (m_State.GetState() == Enemy_State.STATE.DAMAGE) return;
-        if (m_State.GetState() == Enemy_State.STATE.FEAR) return;
-        m_State.SetState(Enemy_State.STATE.ESCAPE);
+        if (m_State.GetState() == Enemy_State.STATE.FEAR)   return;
+        m_State.SetState( Enemy_State.STATE.ESCAPE );
     }
 
     // 攻撃と荒らすフェーズ
@@ -297,6 +327,45 @@ public class Enemy_Kuma : MonoBehaviour {
         {
             case Enemy_State.STATE.MOVE:     // 移動
                 Debug_State_Text.text = "STATE:Move";
+
+                // 目標がなくなった？
+                if (m_TargetObj == null)
+                {
+                    // 再検索
+                    m_TargetObj = SerchCrops();          // 農作物をサーチ
+                    break;
+                }
+                // 目標へ移動
+                MoveHoming(m_TargetObj);
+                
+                // 目標タグチェック
+                if (m_TargetObj.tag == "Crops") // 農作物？
+                {
+                    // 攻撃不能
+                    m_State.CanSet(false);
+
+                    // 近い？
+                    if (DistanceNoneY(m_TargetObj, 1.0f))
+                    {
+                        // 食べる状態に変更
+                        m_State.CanSet(true);
+                        m_State.SetState(Enemy_State.STATE.EAT);
+                        MoveHoming(gameObject);     // 止まる
+                    }
+                }
+                else                            // 攻撃目標？
+                {
+                    // 攻撃可能
+                    m_State.CanSet(true);
+
+                    // 近い？
+                    if (DistanceNoneY(m_TargetObj, 1.0f))
+                    {
+                        // 攻撃状態に変更
+                        m_State.SetState(Enemy_State.STATE.ATTACK);
+                        MoveHoming(gameObject);     // 止まる
+                    }
+                }
 
                 break;
 
@@ -311,6 +380,7 @@ public class Enemy_Kuma : MonoBehaviour {
                 {
                     // 次を探す
                     m_State.SetState(Enemy_State.STATE.MOVE);
+                    break;
                 }
 
                 // 農作物体力を減らす
@@ -336,7 +406,7 @@ public class Enemy_Kuma : MonoBehaviour {
                 Debug_State_Text.text = "STATE:痛えぇ！";
 
                 // 攻撃不能
-                m_State.CanSet(false);
+                //m_State.CanSet(false);
 
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
@@ -347,6 +417,7 @@ public class Enemy_Kuma : MonoBehaviour {
                 {
                     m_FearCnt = m_FearCntMax;                     // カウントのクリア
                     m_State.SetState(Enemy_State.STATE.FEAR);     // 怯む状態へ
+                    break;
                 }
 
                 m_State.SetState(Enemy_State.STATE.MOVE);     // 食べる状態へ
@@ -374,9 +445,9 @@ public class Enemy_Kuma : MonoBehaviour {
     void MoveHoming(GameObject Target)
     {
         if (Target == null) return;
-        Vector3 target = Target.transform.position;
-        target.y = transform.position.y;       // y軸無視
-        m_Nav.SetDestination(target);
+        Vector3 target  = Target.transform.position;
+        target.y        = transform.position.y;         // y軸無視
+        m_Nav.SetDestination(target);                   // ナビメッシュ上の移動
     }
 
     // Y軸無視でターゲットと近い？
@@ -384,8 +455,8 @@ public class Enemy_Kuma : MonoBehaviour {
     {
         if (Target == null) return false;
         // Y軸無視の距離算出
-        Vector2 this_pos = new Vector2(transform.position.x, transform.position.z);
-        Vector2 target_pos = new Vector2(Target.transform.position.x, Target.transform.position.z);
+        Vector2 this_pos    = new Vector2(transform.position.x, transform.position.z);
+        Vector2 target_pos  = new Vector2(Target.transform.position.x, Target.transform.position.z);
 
         // 近い？
         return (Vector2.Distance(this_pos, target_pos) <= var) ? true : false;
@@ -403,5 +474,39 @@ public class Enemy_Kuma : MonoBehaviour {
         m_State.SetState(Enemy_State.STATE.ESCAPE);
         // リストがなくなったらnull
         return null;
+    }
+    // 農作物リストからインデックスで目標を取得
+    GameObject SerchCrops(int Index)
+    {
+        // nullリストの除外
+        for( int i = 0; i < m_NavCrops.Count; ++i)
+        {
+            if( m_NavCrops[i] == null)
+            {
+                m_NavCrops.Remove(m_NavCrops[i]);
+                continue;
+            }
+        }
+        // リストなくなった？
+        if( m_NavCrops.Count <= 0)
+        {
+            m_State.SetState(Enemy_State.STATE.ESCAPE);
+            return null;
+        }
+        // インデックスがリストより大きかったら、最初のオブジェクトを返す
+        if( Index >= m_NavCrops.Count ) { Index = 0; }
+        m_CropIndex = Index;
+        return m_NavCrops[Index];
+    }
+    // ポイントリストから目標を取得
+    GameObject SerchPoint()
+    {
+        // リストがなくなったらnull
+        if ( m_NavPoints.Count <= 0) { return null; }
+
+        // ランダムでポイントを返す
+        int max = m_NavPoints.Count;
+        int pointID = Random.Range(0, max);
+        return m_NavPoints[pointID];
     }
 }
