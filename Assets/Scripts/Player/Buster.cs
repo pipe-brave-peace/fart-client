@@ -125,6 +125,17 @@ public class Buster : MonoBehaviour
             {
                 m_Tank.Farmer(0.5f);
             }
+
+            if (m_joyconR != null)
+            {
+                if (m_joyconR.GetStick()[0] > 0.5f)
+                {
+                    if (!m_Tank.GetFurzFlg())
+                    {
+                        BulletShot();
+                    }
+                }
+            }
         }
 
         if (m_joyconR != null)

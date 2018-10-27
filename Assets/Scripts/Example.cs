@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Example : MonoBehaviour
 {
@@ -13,6 +14,14 @@ public class Example : MonoBehaviour
     private Joycon m_joyconR;
     private Joycon.Button? m_pressedButtonL;
     private Joycon.Button? m_pressedButtonR;
+
+    float max = 0;
+    float min = 0;
+
+    float oldPos = 0.0f;
+
+    [SerializeField]
+    Slider onara;
 
     private void Start()
     {
@@ -37,11 +46,38 @@ public class Example : MonoBehaviour
             {
                 m_pressedButtonL = button;
             }
-            if (m_joyconR.GetButton(button))
+
+            if (m_joyconR != null)
             {
-                m_pressedButtonR = button;
+                if (m_joyconR.GetButton(button))
+                {
+                    m_pressedButtonR = button;
+                }
             }
         }
+
+        if (m_joyconL.GetGyro().y > 0.1f)
+        {
+            min = m_joyconL.GetGyro().y;
+
+            if (oldPos > 0)
+            {
+                onara.value += 0.01f;
+            }
+            else if(oldPos < 0)
+            {
+                onara.value = 0;
+            }
+        }
+
+        if (m_joyconL.GetGyro().y < 0)
+        {
+            max = m_joyconL.GetGyro().y;
+
+            onara.value = 0;
+        }
+
+        oldPos = m_joyconL.GetGyro().y;
 
         if (Input.GetKeyDown(KeyCode.Z))
         {
@@ -97,6 +133,9 @@ public class Example : MonoBehaviour
             GUILayout.Label("ジャイロ：" + gyro);
             GUILayout.Label("加速度：" + accel);
             GUILayout.Label("傾き：" + orientation);
+
+            GUILayout.Label("最大：" + max);
+            GUILayout.Label("最低：" + min);
             GUILayout.EndVertical();
         }
 

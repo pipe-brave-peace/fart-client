@@ -49,10 +49,15 @@ public class Tank : MonoBehaviour
 
     private bool m_bFiring = false;
 
-    private int m_nTime = 0;
+    private int m_nTime = 15;
+    private int m_nOldTime = 0;
+
+    private float OldPos = 0.0f;
 
     // Use this for initialization
     void Start () {
+
+        m_nOldTime = m_nTime;
 
         m_fOldMove = m_fMove;
 
@@ -74,23 +79,33 @@ public class Tank : MonoBehaviour
 
         if (m_joyconL != null)
         {
-            if (m_joyconL.GetGyro().y < m_GyroValue)
+            if (OldPos < -0.2f)
             {
-                if (m_nTime == 15)
+                if (m_joyconL.GetGyro().y < -0.2f)
                 {
-                    Farmer(m_fNormal);
+                    if (m_nTime > 0)
+                    {
+                        m_nTime--;
+                    }
+
+                    if (m_nTime <= 0)
+                    {
+                        Farmer(0.5f);
+                        m_nTime = m_nOldTime;
+                    }
+                }
+                else if (m_joyconL.GetGyro().y < -0.1f)
+                {
+                    Farmer(0.001f);
+                    m_nTime = m_nOldTime;
                 }
             }
-
-            if (m_nTime > 0)
+            else
             {
-                m_nTime--;
+                m_nTime = m_nOldTime;
             }
 
-            if (m_nTime <= 0)
-            {
-                m_nTime = 15;
-            }
+            OldPos = m_joyconL.GetGyro().y;
         }
 
         DebugController();
@@ -103,6 +118,7 @@ public class Tank : MonoBehaviour
     //オナラ貯める
     public void Farmer(float fChargeValue)
     {
+        if (m_bFurzFlg){ return; }
         m_bFurzFlg = true;
         m_bFiring = false;
         m_FurzValue = 0.0f;
@@ -125,20 +141,20 @@ public class Tank : MonoBehaviour
     //デバッグ用キーボード入力
     private void DebugController()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            Farmer(m_fWeak);
-        }
-
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            Farmer(m_fNormal);
-        }
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            Farmer(m_fStrength);
-        }
+        //if (Input.GetKeyDown(KeyCode.Q))
+        //{
+        //    Farmer(m_fWeak);
+        //}
+        //
+        //if (Input.GetKeyDown(KeyCode.W))
+        //{
+        //    Farmer(m_fNormal);
+        //}
+        //
+        //if (Input.GetKeyDown(KeyCode.E))
+        //{
+        //    Farmer(m_fStrength);
+        //}
     }
 
     //UI幅調整
