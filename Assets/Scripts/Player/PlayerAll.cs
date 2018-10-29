@@ -20,6 +20,8 @@ public class PlayerAll : MonoBehaviour {
 
     int nNumber = 0;
 
+    int index = 0;
+
     private void Awake()
     {
         // updateを自動で行わないように設定する
@@ -42,19 +44,35 @@ public class PlayerAll : MonoBehaviour {
         }
         else
         {
-            if (m_PhaseManager.GetNowPhaseIndex() == 1)
-            {
+            //if (m_PhaseManager.GetNowPhaseIndex() == 1)
+            //{
 
-                //対象の位置の方向に移動
-                m_Navigate.SetDestination(m_NavPoint[nNumber].transform.position);
+            //対象の位置の方向に移動
+            m_Navigate.SetDestination(m_NavPoint[nNumber].transform.position);
+            if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.MOVE)
+            {
                 Vector();
             }
+            //}
 
             if (transform.position.x == m_NavPoint[nNumber].transform.position.x &&
                 transform.position.z == m_NavPoint[nNumber].transform.position.z)
             {
-                nNumber++;
+                if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.STOP)
+                {
+                    Vector();
+                    if (index != m_PhaseManager.GetNowPhaseIndex())
+                    {
+                        nNumber ++;
+                    }
+                }
+                else if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.MOVE)
+                {
+                    nNumber ++;
+                }
             }
+
+            index = m_PhaseManager.GetNowPhaseIndex();
         }
 
     }
