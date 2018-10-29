@@ -9,6 +9,8 @@ public class SubImgAlpha : MonoBehaviour {
     Image[] m_ChildImage;
     [SerializeField]
     float m_SubVal;
+    [SerializeField]
+    float m_StartTimer;
 
     private Color m_Color;
 
@@ -19,6 +21,12 @@ public class SubImgAlpha : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (m_StartTimer > 0.0f)
+        {
+            m_StartTimer -= Time.deltaTime;
+            return;
+        }
+
         m_Color.a -= m_SubVal;
         if( m_Color.a <= 0.0f)
         {
