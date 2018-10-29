@@ -22,7 +22,9 @@ public class Enemy_Inosisi : MonoBehaviour {
     [SerializeField]
     float m_EatSpeed = 1.0f;        // 食べるスピード
     [SerializeField]
-    GameObject m_AttackEffect;           // インク
+    GameObject m_AttackEffect;          // アタックエフェクト
+    [SerializeField]
+    GameObject m_DamageEffect;          // ダメージエフェクト
     // テスト
     [SerializeField]
     int m_PlayerIndex;
@@ -143,6 +145,9 @@ public class Enemy_Inosisi : MonoBehaviour {
                 Debug_State_Text.text = "STATE:痛えぇ！";
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
+
+                // エフェクトの生成
+                GameObject damage_effect = Instantiate(m_DamageEffect, transform.position, Quaternion.identity) as GameObject;
 
                 // 体力がなくなった？
                 if (m_Life.GetLife() <= 0)

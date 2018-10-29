@@ -25,6 +25,8 @@ public class Enemy_Inago : MonoBehaviour
     float m_CntJump = 3.0f;         // ジャンプ間隔
     [SerializeField]
     GameObject[] m_NavCrops;        // 農作物リスト
+    [SerializeField]
+    GameObject m_DamageEffect;          // ダメージエフェクト
 
 
     private GameObject m_TargetObj;     // ターゲットオブジェクト
@@ -119,6 +121,9 @@ public class Enemy_Inago : MonoBehaviour
                 Debug_State_Text.text = "STATE:痛えぇ！";
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
+
+                // エフェクトの生成
+                GameObject damage_effect = Instantiate(m_DamageEffect, transform.position, Quaternion.identity) as GameObject;
 
                 // 体力がなくなった？
                 if (m_Life.GetLife() <= 0)

@@ -24,6 +24,8 @@ public class Enemy_Karasu : MonoBehaviour {
     float m_EatSpeed = 1.0f;        // 食べるスピード
     [SerializeField]
     GameObject m_TargetObj; // ターゲット
+    [SerializeField]
+    GameObject m_DamageEffect;          // ダメージエフェクト
 
     private Enemy_State m_State;    // 状態
     private Life m_Life;            // 体力
@@ -126,6 +128,9 @@ public class Enemy_Karasu : MonoBehaviour {
                 Debug_State_Text.text = "STATE:痛えぇ！";
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
+
+                // エフェクトの生成
+                GameObject damage_effect = Instantiate(m_DamageEffect, transform.position, Quaternion.identity) as GameObject;
 
                 // 体力がなくなった？
                 if (m_Life.GetLife() <= 0)

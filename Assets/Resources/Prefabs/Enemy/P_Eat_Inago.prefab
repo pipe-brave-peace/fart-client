@@ -1127,6 +1127,8 @@ MonoBehaviour:
   m_NavCrops:
   - {fileID: 0}
   - {fileID: 0}
+  m_DamageEffect: {fileID: 1484713999219436, guid: 43a9b44292b4f71448eee55d06c4677c,
+    type: 2}
 --- !u!114 &114311441124762038
 MonoBehaviour:
   m_ObjectHideFlags: 1

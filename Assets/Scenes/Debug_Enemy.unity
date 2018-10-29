@@ -1153,6 +1153,12 @@ Prefab:
       propertyPath: m_TagString
       value: Point
       objectReference: {fileID: 0}
+    - target: {fileID: 114019812725344812, guid: 25eff1d3f10992b49b47a8d8da3fad0f,
+        type: 2}
+      propertyPath: m_EffectAttack
+      value: 
+      objectReference: {fileID: 1121449085284772, guid: b65b7ba5956151047bd33c2566e985d3,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 25eff1d3f10992b49b47a8d8da3fad0f, type: 2}
   m_IsPrefabParent: 0
@@ -1984,6 +1990,12 @@ Prefab:
       value: 
       objectReference: {fileID: 1231743324123114, guid: 973009aa242195347adb3b4053fb7ccd,
         type: 2}
+    - target: {fileID: 114250971781727672, guid: 1e50ed77f6df3de43a8a1709ab6186c6,
+        type: 2}
+      propertyPath: m_DamageEffect
+      value: 
+      objectReference: {fileID: 1484713999219436, guid: 43a9b44292b4f71448eee55d06c4677c,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1e50ed77f6df3de43a8a1709ab6186c6, type: 2}
   m_IsPrefabParent: 0
@@ -2030,7 +2042,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4183467446512770, guid: 4e2324a75bd69104aba50d59057c2f50, type: 2}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114496157261853890, guid: 4e2324a75bd69104aba50d59057c2f50,
         type: 2}
@@ -3589,6 +3601,65 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!1 &1862668184
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 1484713999219436, guid: 43a9b44292b4f71448eee55d06c4677c,
+    type: 2}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1862668187}
+  - component: {fileID: 1862668186}
+  - component: {fileID: 1862668185}
+  m_Layer: 0
+  m_Name: E_BulletExplosion
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1862668185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 114238975534858766, guid: 43a9b44292b4f71448eee55d06c4677c,
+    type: 2}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1862668184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1862668186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 114435544836171582, guid: 43a9b44292b4f71448eee55d06c4677c,
+    type: 2}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1862668184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50091075b6bce714bbcd73abc4eee722, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectName: Bullet_Explosion
+  playOnStart: 1
+  loop: 0
+--- !u!4 &1862668187
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 4924461722979316, guid: 43a9b44292b4f71448eee55d06c4677c,
+    type: 2}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1862668184}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1863247937
 Prefab:
   m_ObjectHideFlags: 0
@@ -4072,6 +4143,12 @@ Prefab:
       propertyPath: m_AttackEffect
       value: 
       objectReference: {fileID: 1231743324123114, guid: 973009aa242195347adb3b4053fb7ccd,
+        type: 2}
+    - target: {fileID: 114250971781727672, guid: 1e50ed77f6df3de43a8a1709ab6186c6,
+        type: 2}
+      propertyPath: m_DamageEffect
+      value: 
+      objectReference: {fileID: 1484713999219436, guid: 43a9b44292b4f71448eee55d06c4677c,
         type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1e50ed77f6df3de43a8a1709ab6186c6, type: 2}

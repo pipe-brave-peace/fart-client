@@ -235,9 +235,14 @@ MonoBehaviour:
   Debug_State_Text: {fileID: 102899349031827830}
   m_FadePoint: {fileID: 0}
   m_TargetObj: {fileID: 0}
-  m_NavObj: []
+  m_NavCrops: []
   m_Satiety: 0
   m_EatSpeed: 1
+  m_AttackEffect: {fileID: 1231743324123114, guid: 973009aa242195347adb3b4053fb7ccd,
+    type: 2}
+  m_DamageEffect: {fileID: 1484713999219436, guid: 43a9b44292b4f71448eee55d06c4677c,
+    type: 2}
+  m_PlayerIndex: 0
 --- !u!114 &114531902177245724
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -428,14 +428,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Debug_State_Text: {fileID: 102336036006480616}
+  m_FadePoint: {fileID: 0}
   m_Color: {fileID: 23810387089611790}
   m_NavObj:
   - {fileID: 1488603179470808}
   - {fileID: 1472806991228650}
   - {fileID: 0}
   m_Speed: 0.1
+  m_Satiety: 0
   m_EatSpeed: 1
   m_TargetObj: {fileID: 0}
+  m_DamageEffect: {fileID: 1484713999219436, guid: 43a9b44292b4f71448eee55d06c4677c,
+    type: 2}
 --- !u!114 &114448495548665700
 MonoBehaviour:
   m_ObjectHideFlags: 1

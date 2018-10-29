@@ -19,6 +19,8 @@ public class Enemy_Kamemusi : MonoBehaviour {
     GameObject m_TargetObj;
     [SerializeField]
     GameObject m_AttackEffect;           // インク
+    [SerializeField]
+    GameObject m_DamageEffect;          // ダメージエフェクト
 
     private Enemy_State m_State;        // 状態
     private NavMeshAgent m_Nav;         // ナビメッシュ
@@ -88,6 +90,9 @@ public class Enemy_Kamemusi : MonoBehaviour {
                 Debug_State_Text.text = "STATE:痛えぇ！";
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
+
+                // エフェクトの生成
+                GameObject damage_effect = Instantiate(m_DamageEffect, transform.position, Quaternion.identity) as GameObject;
 
                 // 体力がなくなった？
                 if (m_Life.GetLife() <= 0)

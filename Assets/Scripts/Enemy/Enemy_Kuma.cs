@@ -12,24 +12,32 @@ public class Enemy_Kuma : MonoBehaviour {
     
     [SerializeField]
     TextMesh Debug_State_Text;
-    [SerializeField]
-    Renderer m_Color;           // 自分の色
+    [Header("農作物を荒らすスピード")]
     [SerializeField]
     float m_EatSpeed = 1.0f;
+    [Header("NavCropsがない,TargetObjがあり：攻撃モード")]
+    [Header("NavCropsがあり,TargetObjがない：荒らしモード")]
+    [Header("NavCropsがあり,TargetObjがあり：ミックスモード")]
     [SerializeField]
     List<GameObject> m_NavPoints;     // 移動ポイントリスト
     [SerializeField]
     List<GameObject> m_NavCrops;      // 農作物リスト
     [SerializeField]
     GameObject m_TargetObj;     // 移動目標
+    [Header("怯むまでダメージを受ける回数")]
+    [SerializeField]
+    int m_FearCnt;
+    [Header("ウロウロする時間")]
+    [SerializeField]
+    float m_UrouroTimer;
+    [Header("逃げるまでの時間")]
+    [SerializeField]
+    float m_EscapeTimer;
+    [Header("逃げる時の目的地")]
     [SerializeField]
     GameObject m_FadePoint;     // 退却ポイント
     [SerializeField]
-    int m_FearCnt;
-    [SerializeField]
-    float m_UrouroTimer;
-    [SerializeField]
-    float m_EscapeTimer;
+    GameObject m_EffectAttack;     // 攻撃エフェクト
 
     // フェーズタイプ
     private enum PHASE
@@ -259,7 +267,9 @@ public class Enemy_Kuma : MonoBehaviour {
 
             case Enemy_State.STATE.ATTACK:      // 攻撃
                 Debug_State_Text.text = "STATE:喰らえ！！";
-                
+
+                GameObject effet = Instantiate(m_EffectAttack, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as GameObject;
+
                 m_TargetObj = SerchPoint();
                 m_State.SetState(Enemy_State.STATE.MOVE);
 
@@ -396,9 +406,10 @@ public class Enemy_Kuma : MonoBehaviour {
 
             case Enemy_State.STATE.ATTACK:      // 攻撃
                 Debug_State_Text.text = "STATE:喰らえ！！";
-                
-                // 攻撃不能
-                m_State.CanSet(false);
+                GameObject effet = Instantiate(m_EffectAttack, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as GameObject;
+
+                m_TargetObj = SerchCrops();
+                m_State.SetState(Enemy_State.STATE.MOVE);
 
                 break;
 
