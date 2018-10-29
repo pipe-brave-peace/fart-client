@@ -968,6 +968,8 @@ MonoBehaviour:
   m_TargetObj: {fileID: 0}
   m_AttackEffect: {fileID: 1195117226430820, guid: 81eac4bd16750ff49ba941f8b6f1eefa,
     type: 2}
+  m_DamageEffect: {fileID: 1484713999219436, guid: 43a9b44292b4f71448eee55d06c4677c,
+    type: 2}
 --- !u!137 &137067457868900658
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

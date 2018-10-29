@@ -17,11 +17,11 @@ public class Effect_Kamemusi : MonoBehaviour {
     [SerializeField]
     private float m_MoveSpeed;  // 移動スピード
 
-    private int m_IncCnt;           // インクの数
-    private float m_Timer;          // カウンター
-    private int m_Mode;             // モード
-    private Vector3 m_MoveVector;   // 移動ベクトル
-    private GameObject m_TargetObj;     // 目的
+    private int         m_IncCnt;       // インクの数
+    private float       m_Timer;        // カウンター
+    private int         m_Mode;         // モード
+    private Vector3     m_MoveVector;   // 移動ベクトル
+    private GameObject  m_TargetObj;    // 目的
 
     // 初期化
     void Start ()

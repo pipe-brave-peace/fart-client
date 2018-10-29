@@ -12,131 +12,442 @@ public class Enemy_Kuma : MonoBehaviour {
     
     [SerializeField]
     TextMesh Debug_State_Text;
-    [SerializeField]
-    Renderer m_Color;           // 自分の色
+    [Header("農作物を荒らすスピード")]
     [SerializeField]
     float m_EatSpeed = 1.0f;
-    
+    [Header("NavCropsがない,TargetObjがあり：攻撃モード")]
+    [Header("NavCropsがあり,TargetObjがない：荒らしモード")]
+    [Header("NavCropsがあり,TargetObjがあり：ミックスモード")]
     [SerializeField]
     List<GameObject> m_NavPoints;     // 移動ポイントリスト
     [SerializeField]
     List<GameObject> m_NavCrops;      // 農作物リスト
     [SerializeField]
-    PhaseManager m_PhaseManager;
+    GameObject m_TargetObj;     // 移動目標
+    [Header("怯むまでダメージを受ける回数")]
     [SerializeField]
-    List<int> m_PhaseLife;
+    int m_FearCnt;
+    [Header("ウロウロする時間")]
+    [SerializeField]
+    float m_UrouroTimer;
+    [Header("逃げるまでの時間")]
+    [SerializeField]
+    float m_EscapeTimer;
+    [Header("逃げる時の目的地")]
+    [SerializeField]
+    GameObject m_FadePoint;     // 退却ポイント
+    [SerializeField]
+    GameObject m_EffectAttack;     // 攻撃エフェクト
 
-    private GameObject m_TargetObj;     // ターゲットオブジェクト
-    private Enemy_State m_State;        // 状態
-    private NavMeshAgent m_Nav;         // ナビメッシュ
-    private Vector3 m_PosOld;           // 生成座標
-    private Life m_Life;                // 体力
+    // フェーズタイプ
+    private enum PHASE
+    {
+        EAT = 0,    // 農作物を荒らす
+        ATTACK,     // 攻撃
+        MIX,        // 両方
+        MAX
+    }
+
+    private Enemy_State     m_State;            // 状態
+    private NavMeshAgent    m_Nav;              // ナビメッシュ
+    private Life            m_Life;             // 体力
+    private PHASE           m_Phase;            // フェーズ判断用
+    private int             m_FearCntMax;       // 怯むまでダメージを受ける回数
+    private GameObject      m_AttackObj;        // 攻撃目標
+    private float           m_UrouroTimerMax;   // ウロウロする時間
+    private int             m_CropIndex;        // 農作物リストのインデックス
 
     // 初期化
     void Start()
     {
-        m_Life = GetComponent<Life>();
-        m_State = GetComponent<Enemy_State>();
-        //m_TargetObj = GameObject.FindGameObjectWithTag("MainCamera");                         // プレイヤーを取得
-        m_TargetObj = GetCrop(m_PhaseManager.GetNowPhaseIndex());
-        m_Nav = GetComponent<NavMeshAgent>();               // ナビメッシュの取得
-        m_PosOld = transform.position;                      // 満腹後向かう座標のセット
+        m_Life           = GetComponent<Life>();
+        m_State          = GetComponent<Enemy_State>();
+        m_Nav            = GetComponent<NavMeshAgent>();               // ナビメッシュの取得
+        m_FearCntMax     = m_FearCnt;
+        m_AttackObj      = m_TargetObj;
+        m_UrouroTimerMax = m_UrouroTimer;
+        m_CropIndex      = 0;
         // スコアセット
         Enemy_Score score = GetComponent<Enemy_Score>();
         score.SetScore(Score_List.Enemy.Kuma);
+
+        // nullリストの除外
+        for (int i = 0; i < m_NavCrops.Count; ++i)
+        {
+            if (m_NavCrops[i] == null)
+            {
+                m_NavCrops.Remove(m_NavCrops[i]);
+                continue;
+            }
+        }
+
+        // フェーズチェック ////////////////
+        // 農作物リストがなければ攻撃フェーズへ
+        if (m_NavCrops.Count <= 0) { m_Phase = PHASE.ATTACK; return; }
+        
+        // 農作物の先頭をターゲットに
+        m_TargetObj = SerchCrops();
+
+        // 攻撃ターゲットがいなければ荒らすフェーズへ
+        if (m_AttackObj == null) { m_Phase = PHASE.EAT; return; }
+
+        // 両方ある場合は両方フェーズへ
+        m_Phase = PHASE.MIX;
     }
 
     // Update is called once per frame
     void Update()
     {
+        // フェーズ判定
+        switch (m_Phase)
+        {
+            case PHASE.EAT      : PhaseEat();       break;
+            case PHASE.ATTACK   : PhaseAttack();    break;
+            case PHASE.MIX      : PhaseMix();       break;
+        }
+    }
+
+    // 農作物を荒らすフェーズ
+    void PhaseEat()
+    {
         // 状態判定
         switch (m_State.GetState())
         {
-            case Enemy_State.STATE.NORMAL:   // 通常
-                Debug_State_Text.text = "STATE:Normal";
-                m_State.SetState(Enemy_State.STATE.MOVE);
-                break;
-
             case Enemy_State.STATE.MOVE:     // 移動
                 Debug_State_Text.text = "STATE:Move";
+
+                // 攻撃不可
+                m_State.CanSet(false);
+
+                // 目標がなくなった？
                 if (m_TargetObj == null)
                 {
-                    m_TargetObj = GetCrop(m_PhaseManager.GetNowPhaseIndex());
+                    // 再検索
+                    m_TargetObj = SerchCrops(m_CropIndex);          // 農作物をサーチ
                     break;
                 }
-                //対象の位置の方向に移動
+                // 目標へ移動
                 MoveHoming(m_TargetObj);
 
                 // 近い？
-                if (!DistanceNoneY(m_TargetObj, 5.0f)) { break; }
-
-                // 対象による処理
-                if( m_TargetObj.tag == "Crops")
+                if (DistanceNoneY(m_TargetObj, 1.0f))
                 {
-                    // 食事状態に変更
+                    // 食べる状態に変更
+                    m_State.CanSet(true);
                     m_State.SetState(Enemy_State.STATE.EAT);
-                    break;
+                    MoveHoming(gameObject);     // 止まる
                 }
-                // 攻撃状態に変更
-                m_State.SetState(Enemy_State.STATE.ATTACK);
-                m_Nav.SetDestination(transform.position);       // 移動を止める
-
                 break;
-                
+
             case Enemy_State.STATE.EAT:      // 食べる
                 Debug_State_Text.text = "STATE:食べているよ";
-                if (m_TargetObj == null) { break; }
 
-                // 農作物のライフを取得
+                // 攻撃可能
+                m_State.CanSet(true);
+
+                // 食べ終わった？
+                if (m_TargetObj == null)
+                {
+                    // 次を探す
+                    m_State.SetState(Enemy_State.STATE.MOVE);
+                    break;
+                }
+
+                // 農作物体力を減らす
                 Life target_life = m_TargetObj.GetComponent<Life>();
-                // ライフを削る
                 target_life.SubLife(Time.deltaTime * m_EatSpeed);
                 // 食べ終わった？
-                if (target_life.GetLife() > 0) { break; }
-
-                // 農作物を消す
-                Destroy(m_TargetObj.gameObject);
-                // 次の農作物を代入
-                m_TargetObj = GetCrop(m_PhaseManager.GetNowPhaseIndex());
-                // 移動状態へ
-                m_State.SetState(Enemy_State.STATE.MOVE);
+                if (target_life.GetLife() <= 0) { Destroy(m_TargetObj.gameObject); }
                 break;
 
-            case Enemy_State.STATE.ATTACK:      // 攻撃
-                Debug_State_Text.text = "STATE:攻撃している";
-                //m_TargetObj = GetCrop();
-                m_State.SetState(Enemy_State.STATE.MOVE);
+            case Enemy_State.STATE.CRY:
+                Debug_State_Text.text = "STATE:がおぉぉ！！！";
                 break;
-
+                
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
                 Debug_State_Text.text = "STATE:痛えぇ！";
-                // 体力を減らす
-                m_Life.SubLife(1.0f);
 
-                // 体力がなくなった？
-                if (m_Life.GetLife() <= 0)
+                // 攻撃不能
+                //m_State.CanSet(false);
+
+                // 怯むまでのカウント
+                m_FearCnt--;
+                if( m_FearCnt <= 0)
                 {
-                    m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                    m_FearCnt = m_FearCntMax;                     // カウントのクリア
+                    m_State.SetState(Enemy_State.STATE.FEAR);     // 怯む状態へ
+                    break;
                 }
-                m_State.SetState(Enemy_State.STATE.NORMAL);     // 通常状態へ
+                
+                m_State.SetState(Enemy_State.STATE.EAT);     // 食べる状態へ
+                break;
+
+            case Enemy_State.STATE.FEAR:        // 怯む
+                Debug_State_Text.text = "STATE:怖いよ、怖いよぉ～";
+
+                // 攻撃不能
+                m_State.CanSet(false);
+
+                // 次の農作物を狙う
+                m_CropIndex++;
+
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
                 Debug_State_Text.text = "STATE:FadeOut";
 
+                // 攻撃不能
+                m_State.CanSet(false);
+
                 // 離脱の位置の方向に移動
-                m_Nav.SetDestination(m_PosOld);
+                MoveHoming(m_FadePoint);
 
-                // アルファ値を減らす
-                Color color = m_Color.material.color;
-                color.a -= 0.01f;
-                m_Color.material.color = color;
+                // クマオブジェクトを消す
+                if (DistanceNoneY(m_FadePoint, 1.0f)) { Destroy(transform.parent.gameObject); }
+                return;
+        }
 
-                // 透明になった？
-                if (color.a > 0.0f) { break; }
+        // 時間来たら逃げる～
+        m_EscapeTimer -= Time.deltaTime;
+        if (m_EscapeTimer > 0.0f) return;
+        if (m_State.GetState() == Enemy_State.STATE.ESCAPE) return;
+        if (m_State.GetState() == Enemy_State.STATE.CRY)    return;
+        if (m_State.GetState() == Enemy_State.STATE.DAMAGE) return;
+        if (m_State.GetState() == Enemy_State.STATE.FEAR)   return;
+        m_State.SetState( Enemy_State.STATE.ESCAPE );
+    }
 
-                // 自分を消す
-                Destroy(gameObject);
+    // プレイヤーを攻撃するフェーズ
+    void PhaseAttack()
+    {
+        // 状態判定
+        switch (m_State.GetState())
+        {
+            case Enemy_State.STATE.MOVE:     // 移動
+                Debug_State_Text.text = "STATE:Move";
+
+                // 目標がなくなった？
+                if (m_TargetObj == null) { break; }
+                // 目標へ移動
+                MoveHoming(m_TargetObj);
+
+                // 目標タグチェック
+                if (m_TargetObj.tag == "Point") // ポイント？
+                {
+                    // 攻撃不能
+                    m_State.CanSet(false);
+
+                    // ウロウロする時間のカウント
+                    m_UrouroTimer -= Time.deltaTime;
+                    // 来たら攻撃目標を狙う
+                    if( m_UrouroTimer<= 0.0f)
+                    {
+                        m_UrouroTimer = m_UrouroTimerMax;
+                        m_TargetObj = m_AttackObj;
+                    }
+                }
+                else                            // プレイヤー？
+                {
+                    // 攻撃可能
+                    m_State.CanSet(true);
+
+                    // 近い？
+                    if (DistanceNoneY(m_TargetObj, 5.0f))
+                    {
+                        // 攻撃状態に変更
+                        m_State.SetState(Enemy_State.STATE.ATTACK);
+                        MoveHoming(gameObject);     // 止まる
+                    }
+                }
+                break;
+
+            case Enemy_State.STATE.CRY:
+                Debug_State_Text.text = "STATE:がおぉぉ！！！";
+                break;
+
+            case Enemy_State.STATE.ATTACK:      // 攻撃
+                Debug_State_Text.text = "STATE:喰らえ！！";
+
+                GameObject effet = Instantiate(m_EffectAttack, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as GameObject;
+
+                m_TargetObj = SerchPoint();
+                m_State.SetState(Enemy_State.STATE.MOVE);
+
+                break;
+
+            case Enemy_State.STATE.DAMAGE:      // ダメージ状態
+                Debug_State_Text.text = "STATE:痛えぇ！";
+
+                // 攻撃不能
+                //m_State.CanSet(false);
+
+                // 体力を減らす
+                m_Life.SubLife(1.0f);
+
+                // 怯むまでのカウント
+                m_FearCnt--;
+                if (m_FearCnt <= 0)
+                {
+                    m_FearCnt = m_FearCntMax;                     // カウントのクリア
+                    m_State.SetState(Enemy_State.STATE.FEAR);     // 怯む状態へ
+                    break;
+                }
+
+                m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
+                break;
+
+            case Enemy_State.STATE.FEAR:        // 怯む
+                Debug_State_Text.text = "STATE:怖いよ、怖いよぉ～";
+
+                // 攻撃不能
+                m_State.CanSet(false);
+
+                break;
+
+            case Enemy_State.STATE.ESCAPE:   // 逃げる
+                Debug_State_Text.text = "STATE:FadeOut";
+
+                // 攻撃不能
+                m_State.CanSet(false);
+
+                // 離脱の位置の方向に移動
+                MoveHoming(m_FadePoint);
+
+                // クマオブジェクトを消す
+                if (DistanceNoneY(m_FadePoint, 1.0f)) { Destroy(transform.parent.gameObject); }
+                return;
+        }
+
+        // 時間来たら逃げる～
+        m_EscapeTimer -= Time.deltaTime;
+        if (m_EscapeTimer > 0.0f) return;
+        if (m_State.GetState() == Enemy_State.STATE.ESCAPE) return;
+        if (m_State.GetState() == Enemy_State.STATE.ATTACK) return;
+        if (m_State.GetState() == Enemy_State.STATE.CRY)    return;
+        if (m_State.GetState() == Enemy_State.STATE.DAMAGE) return;
+        if (m_State.GetState() == Enemy_State.STATE.FEAR)   return;
+        m_State.SetState( Enemy_State.STATE.ESCAPE );
+    }
+
+    // 攻撃と荒らすフェーズ
+    void PhaseMix()
+    {
+        // 状態判定
+        switch (m_State.GetState())
+        {
+            case Enemy_State.STATE.MOVE:     // 移動
+                Debug_State_Text.text = "STATE:Move";
+
+                // 目標がなくなった？
+                if (m_TargetObj == null)
+                {
+                    // 再検索
+                    m_TargetObj = SerchCrops();          // 農作物をサーチ
+                    break;
+                }
+                // 目標へ移動
+                MoveHoming(m_TargetObj);
+                
+                // 目標タグチェック
+                if (m_TargetObj.tag == "Crops") // 農作物？
+                {
+                    // 攻撃不能
+                    m_State.CanSet(false);
+
+                    // 近い？
+                    if (DistanceNoneY(m_TargetObj, 1.0f))
+                    {
+                        // 食べる状態に変更
+                        m_State.CanSet(true);
+                        m_State.SetState(Enemy_State.STATE.EAT);
+                        MoveHoming(gameObject);     // 止まる
+                    }
+                }
+                else                            // 攻撃目標？
+                {
+                    // 攻撃可能
+                    m_State.CanSet(true);
+
+                    // 近い？
+                    if (DistanceNoneY(m_TargetObj, 1.0f))
+                    {
+                        // 攻撃状態に変更
+                        m_State.SetState(Enemy_State.STATE.ATTACK);
+                        MoveHoming(gameObject);     // 止まる
+                    }
+                }
+
+                break;
+
+            case Enemy_State.STATE.EAT:      // 食べる
+                Debug_State_Text.text = "STATE:食べているよ";
+
+                // 攻撃可能
+                m_State.CanSet(true);
+
+                // 食べ終わった？
+                if (m_TargetObj == null)
+                {
+                    // 次を探す
+                    m_State.SetState(Enemy_State.STATE.MOVE);
+                    break;
+                }
+
+                // 農作物体力を減らす
+                Life target_life = m_TargetObj.GetComponent<Life>();
+                target_life.SubLife(Time.deltaTime * m_EatSpeed);
+                // 食べ終わった？
+                if (target_life.GetLife() <= 0) { Destroy(m_TargetObj.gameObject); }
+                break;
+
+            case Enemy_State.STATE.CRY:
+                Debug_State_Text.text = "STATE:がおぉぉ！！！";
+                break;
+
+            case Enemy_State.STATE.ATTACK:      // 攻撃
+                Debug_State_Text.text = "STATE:喰らえ！！";
+                GameObject effet = Instantiate(m_EffectAttack, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as GameObject;
+
+                m_TargetObj = SerchCrops();
+                m_State.SetState(Enemy_State.STATE.MOVE);
+
+                break;
+
+            case Enemy_State.STATE.DAMAGE:      // ダメージ状態
+                Debug_State_Text.text = "STATE:痛えぇ！";
+
+                // 攻撃不能
+                //m_State.CanSet(false);
+
+                // 体力を減らす
+                m_Life.SubLife(1.0f);
+
+                // 怯むまでのカウント
+                m_FearCnt--;
+                if (m_FearCnt <= 0)
+                {
+                    m_FearCnt = m_FearCntMax;                     // カウントのクリア
+                    m_State.SetState(Enemy_State.STATE.FEAR);     // 怯む状態へ
+                    break;
+                }
+
+                m_State.SetState(Enemy_State.STATE.MOVE);     // 食べる状態へ
+                break;
+
+            case Enemy_State.STATE.FEAR:        // 怯む
+                Debug_State_Text.text = "STATE:怖いよ、怖いよぉ～";
+
+                // 攻撃不能
+                m_State.CanSet(false);
+
+                break;
+
+            case Enemy_State.STATE.FAINT:   // 気絶
+                Debug_State_Text.text = "STATE:ここどこ？私は誰？";
+
+                // 攻撃不能
+                m_State.CanSet(false);
+
                 return;
         }
     }
@@ -145,9 +456,9 @@ public class Enemy_Kuma : MonoBehaviour {
     void MoveHoming(GameObject Target)
     {
         if (Target == null) return;
-        Vector3 target = Target.transform.position;
-        target.y = transform.position.y;       // y軸無視
-        m_Nav.SetDestination(target);
+        Vector3 target  = Target.transform.position;
+        target.y        = transform.position.y;         // y軸無視
+        m_Nav.SetDestination(target);                   // ナビメッシュ上の移動
     }
 
     // Y軸無視でターゲットと近い？
@@ -155,36 +466,58 @@ public class Enemy_Kuma : MonoBehaviour {
     {
         if (Target == null) return false;
         // Y軸無視の距離算出
-        Vector2 this_pos = new Vector2(transform.position.x, transform.position.z);
-        Vector2 target_pos = new Vector2(Target.transform.position.x, Target.transform.position.z);
+        Vector2 this_pos    = new Vector2(transform.position.x, transform.position.z);
+        Vector2 target_pos  = new Vector2(Target.transform.position.x, Target.transform.position.z);
 
         // 近い？
         return (Vector2.Distance(this_pos, target_pos) <= var) ? true : false;
     }
 
-    // リストから次のポイントの取得処理
-    GameObject GetNextPoint(int Phase)
+    // 農作物リストから目標を取得
+    GameObject SerchCrops()
     {
-        if ( m_NavPoints[0] == null ) return null;
-        Destroy( m_NavPoints[0].transform.gameObject );
-        m_NavPoints.Remove( m_NavPoints[0] );
         //目標を配列で取得する
-        return ( m_NavPoints[0] == null ) ? null : m_NavPoints[0];
-    }
-
-    // リストから次の農作物の取得処理
-    GameObject GetCrop(int Phase)
-    {
-        for (int i = 0; i < m_NavCrops.Count(); ++i)
+        foreach (GameObject obs in m_NavCrops)
         {
-            // このリストからにこの敵を除外
-            if (m_NavCrops[i] == null)
+            // nullじゃなかったら返す
+            if (obs != null) { return obs; }
+        }
+        m_State.SetState(Enemy_State.STATE.ESCAPE);
+        // リストがなくなったらnull
+        return null;
+    }
+    // 農作物リストからインデックスで目標を取得
+    GameObject SerchCrops(int Index)
+    {
+        // nullリストの除外
+        for( int i = 0; i < m_NavCrops.Count; ++i)
+        {
+            if( m_NavCrops[i] == null)
             {
                 m_NavCrops.Remove(m_NavCrops[i]);
                 continue;
             }
         }
-        //目標を配列で取得する
-        return (m_NavCrops[0] == null) ? null : m_NavCrops[0];
+        // リストなくなった？
+        if( m_NavCrops.Count <= 0)
+        {
+            m_State.SetState(Enemy_State.STATE.ESCAPE);
+            return null;
+        }
+        // インデックスがリストより大きかったら、最初のオブジェクトを返す
+        if( Index >= m_NavCrops.Count ) { Index = 0; }
+        m_CropIndex = Index;
+        return m_NavCrops[Index];
+    }
+    // ポイントリストから目標を取得
+    GameObject SerchPoint()
+    {
+        // リストがなくなったらnull
+        if ( m_NavPoints.Count <= 0) { return null; }
+
+        // ランダムでポイントを返す
+        int max = m_NavPoints.Count;
+        int pointID = Random.Range(0, max);
+        return m_NavPoints[pointID];
     }
 }

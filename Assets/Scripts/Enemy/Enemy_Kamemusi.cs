@@ -19,11 +19,14 @@ public class Enemy_Kamemusi : MonoBehaviour {
     GameObject m_TargetObj;
     [SerializeField]
     GameObject m_AttackEffect;           // インク
+    [SerializeField]
+    GameObject m_DamageEffect;          // ダメージエフェクト
 
     private Enemy_State m_State;        // 状態
     private NavMeshAgent m_Nav;         // ナビメッシュ
     private Vector3 m_PosOld;           // 満腹後向かう座標
     private Life m_Life;                // 体力
+    private Color m_FadeColor;
 
     // Use this for initialization
     void Start()
@@ -32,6 +35,8 @@ public class Enemy_Kamemusi : MonoBehaviour {
         m_State = GetComponent<Enemy_State>();
         m_Nav = GetComponent<NavMeshAgent>();               // ナビメッシュの取得
         m_PosOld = transform.position;                      // 満腹後向かう座標のセット
+        m_FadeColor = m_Color.material.color;
+
         // スコアセット
         Enemy_Score score = GetComponent<Enemy_Score>();
         score.SetScore(Score_List.Enemy.Sika);
@@ -43,11 +48,6 @@ public class Enemy_Kamemusi : MonoBehaviour {
         // 状態判定
         switch (m_State.GetState())
         {
-            case Enemy_State.STATE.NORMAL:   // 通常
-                Debug_State_Text.text = "STATE:Normal";
-                m_State.SetState(Enemy_State.STATE.MOVE);
-                break;
-
             case Enemy_State.STATE.MOVE:     // 移動
                 Debug_State_Text.text = "STATE:Move";
                 //対象の位置の方向に移動
@@ -91,13 +91,20 @@ public class Enemy_Kamemusi : MonoBehaviour {
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
 
+                // エフェクトの生成
+                GameObject damage_effect = Instantiate(m_DamageEffect, transform.position, Quaternion.identity) as GameObject;
+
                 // 体力がなくなった？
                 if (m_Life.GetLife() <= 0)
                 {
+                    // 透明できる描画モードに変更
+                    BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
+                    m_FadeColor.a = 1.0f;
+                    m_Color.material.color = m_FadeColor;
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
                     break;
                 }
-                m_State.SetState(Enemy_State.STATE.NORMAL);     // 通常状態へ
+                m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
@@ -107,12 +114,11 @@ public class Enemy_Kamemusi : MonoBehaviour {
                 m_Nav.SetDestination(m_PosOld);
 
                 // アルファ値を減らす
-                Color color = m_Color.material.color;
-                color.a -= 0.01f;
-                m_Color.material.color = color;
+                m_FadeColor.a -= 0.01f;
+                m_Color.material.color = m_FadeColor;
 
                 // 透明になった？
-                if (color.a > 0.0f) { break; }
+                if (m_FadeColor.a > 0.0f) { break; }
 
                 // 自分を消す
                 Destroy(gameObject);
