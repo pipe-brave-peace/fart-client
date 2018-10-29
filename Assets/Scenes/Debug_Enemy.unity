@@ -1978,6 +1978,12 @@ Prefab:
       propertyPath: m_Satiety
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114250971781727672, guid: 1e50ed77f6df3de43a8a1709ab6186c6,
+        type: 2}
+      propertyPath: m_AttackEffect
+      value: 
+      objectReference: {fileID: 1231743324123114, guid: 973009aa242195347adb3b4053fb7ccd,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1e50ed77f6df3de43a8a1709ab6186c6, type: 2}
   m_IsPrefabParent: 0
@@ -4061,6 +4067,12 @@ Prefab:
       propertyPath: m_Life
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114250971781727672, guid: 1e50ed77f6df3de43a8a1709ab6186c6,
+        type: 2}
+      propertyPath: m_AttackEffect
+      value: 
+      objectReference: {fileID: 1231743324123114, guid: 973009aa242195347adb3b4053fb7ccd,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1e50ed77f6df3de43a8a1709ab6186c6, type: 2}
   m_IsPrefabParent: 0
