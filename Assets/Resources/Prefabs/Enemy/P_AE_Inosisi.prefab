@@ -236,7 +236,7 @@ MonoBehaviour:
   m_FadePoint: {fileID: 0}
   m_TargetObj: {fileID: 0}
   m_NavCrops: []
-  m_Satiety: 0
+  m_Satiety: 5
   m_EatSpeed: 1
   m_AttackEffect: {fileID: 1231743324123114, guid: 973009aa242195347adb3b4053fb7ccd,
     type: 2}
@@ -277,7 +277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50279423d7f10d44b9586b8529a103b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Life: 4
+  m_Life: 1
 --- !u!114 &114803393075020002
 MonoBehaviour:
   m_ObjectHideFlags: 1

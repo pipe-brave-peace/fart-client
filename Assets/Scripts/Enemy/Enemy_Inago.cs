@@ -27,6 +27,8 @@ public class Enemy_Inago : MonoBehaviour
     GameObject[] m_NavCrops;        // 農作物リスト
     [SerializeField]
     GameObject m_DamageEffect;          // ダメージエフェクト
+    [SerializeField]
+    GameObject m_BuffEffect;          // バフエフェクト
 
 
     private GameObject m_TargetObj;     // ターゲットオブジェクト
@@ -67,8 +69,6 @@ public class Enemy_Inago : MonoBehaviour
                     m_TargetObj = SerchCrops();          // 農作物をサーチ
                     break;
                 }
-                // ジャンプ
-                Jump(m_TargetObj.transform.position);
                 // 近い？
                 if (Vector3.Distance(transform.position, m_TargetObj.transform.position) <= 2.0f)
                 {
@@ -76,7 +76,10 @@ public class Enemy_Inago : MonoBehaviour
                     m_State.SetState(Enemy_State.STATE.EAT);
                     // ジャンプタイミングをリセット
                     m_CntJump = m_JumpTiming;
+                    break;
                 }
+                // ジャンプ
+                Jump(m_TargetObj.transform.position);
                 break;
 
             case Enemy_State.STATE.EAT:      // 食べる
@@ -118,6 +121,13 @@ public class Enemy_Inago : MonoBehaviour
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
+                // バフがない？
+                if( !m_State.isBuff())
+                {
+                    m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
+                    break;
+                }
+
                 Debug_State_Text.text = "STATE:痛えぇ！";
                 // 体力を減らす
                 m_Life.SubLife(1.0f);

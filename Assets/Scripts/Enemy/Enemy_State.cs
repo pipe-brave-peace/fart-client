@@ -19,6 +19,7 @@ public class Enemy_State : MonoBehaviour {
     }
 
     private STATE m_State = STATE.MOVE;
+    private bool m_Buff = false;
     private bool m_canSet = true;
    
     public void SetState(STATE State)
@@ -35,5 +36,15 @@ public class Enemy_State : MonoBehaviour {
     public void CanSet(bool CanSet)
     {
         m_canSet = CanSet;
+    }
+
+    public void SetBuff(bool Buff = true)
+    {
+        m_Buff = Buff;
+    }
+
+    public bool isBuff()
+    {
+        return m_Buff;
     }
 }
