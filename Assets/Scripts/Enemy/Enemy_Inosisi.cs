@@ -25,6 +25,8 @@ public class Enemy_Inosisi : MonoBehaviour {
     GameObject m_AttackEffect;          // アタックエフェクト
     [SerializeField]
     GameObject m_DamageEffect;          // ダメージエフェクト
+    [SerializeField]
+    GameObject m_BuffEffect;          // バフエフェクト
 
     private Enemy_State m_State;        // 状態
     private NavMeshAgent m_Nav;         // ナビメッシュ
@@ -32,6 +34,7 @@ public class Enemy_Inosisi : MonoBehaviour {
     private Life m_Life;                // 体力
     private Renderer m_Color;           // 自分の色
     private Color m_FadeColor;
+    private bool m_isAttack;
 
     // 初期化
     void Start()
@@ -44,6 +47,7 @@ public class Enemy_Inosisi : MonoBehaviour {
         m_Color = GetComponent<Renderer>();
         m_PosOld = transform.position;                      // 満腹後向かう座標のセット
         m_FadeColor = m_Color.material.color;
+        m_isAttack = false;
 
         // スコアセット
         Enemy_Score score = GetComponent<Enemy_Score>();
@@ -53,11 +57,22 @@ public class Enemy_Inosisi : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        if (m_State.isBuff() && m_State.canBuff())
+        {
+            m_BuffEffect.SetActive(true);
+        }
         // 状態判定
         switch (m_State.GetState())
         {
             case Enemy_State.STATE.MOVE:     // 移動
                 Debug_State_Text.text = "STATE:Move";
+                // だいたい食べた？攻撃した？
+                if (m_Satiety <= 0.5f || m_isAttack)
+                {
+                    // 離脱する
+                    m_State.SetState(Enemy_State.STATE.SATIETY);
+                    break;
+                }
                 // 目標がなくなった？
                 if (m_TargetObj == null)
                 {
@@ -65,21 +80,23 @@ public class Enemy_Inosisi : MonoBehaviour {
                     m_TargetObj = SerchCrops();          // 農作物をサーチ
                     break;
                 }
-                //対象の位置の方向に移動
-                MoveHoming(m_TargetObj);
                 // 近い？
-                if (!DistanceNoneY(m_TargetObj, 5.0f)) { break; }
-
-                // 目標が農作物？
-                if (m_TargetObj.tag == "Crops")
+                if (DistanceNoneY(m_TargetObj, 5.0f))
                 {
-                    // 食べる状態に変更
-                    m_State.SetState(Enemy_State.STATE.EAT);
+                    // 目標が農作物？
+                    if (m_TargetObj.tag == "Crops")
+                    {
+                        // 食べる状態に変更
+                        m_State.SetState(Enemy_State.STATE.EAT);
+                        break;
+                    }
+                    // 攻撃状態に変更
+                    m_State.SetState(Enemy_State.STATE.ATTACK);
+                    m_Nav.SetDestination(transform.position);       // 移動を止める
                     break;
                 }
-                // 攻撃状態に変更
-                m_State.SetState(Enemy_State.STATE.ATTACK);
-                m_Nav.SetDestination(transform.position);       // 移動を止める
+                //対象の位置の方向に移動
+                MoveHoming(m_TargetObj);
                 break;
 
             case Enemy_State.STATE.EAT:      // 食べる
@@ -122,6 +139,7 @@ public class Enemy_Inosisi : MonoBehaviour {
                 Debug_State_Text.text = "STATE:攻撃している";
                 GameObject attack_effect = Instantiate(m_AttackEffect, new Vector3(0.0f,0.0f,0.0f), Quaternion.identity) as GameObject;
                 attack_effect.GetComponent<Effect_Damage>().Set(m_TargetObj.GetComponent<Player>().GetPlayerNumber());
+                m_isAttack = true;
                 m_State.SetState(Enemy_State.STATE.SATIETY);
                 break;
 
@@ -139,6 +157,12 @@ public class Enemy_Inosisi : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
+                // バフがない？
+                if (!m_State.isBuff() && m_State.canBuff())
+                {
+                    m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
+                    break;
+                }
                 Debug_State_Text.text = "STATE:痛えぇ！";
                 // 体力を減らす
                 m_Life.SubLife(1.0f);

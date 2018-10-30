@@ -17,6 +17,8 @@ public class Enemy_State : MonoBehaviour {
         FAINT,      // 気絶
         MAX
     }
+    [SerializeField]
+    bool m_canBuff;
 
     private STATE m_State = STATE.MOVE;
     private bool m_Buff = false;
@@ -40,11 +42,16 @@ public class Enemy_State : MonoBehaviour {
 
     public void SetBuff(bool Buff = true)
     {
+        if (!m_canBuff) { return; }
         m_Buff = Buff;
     }
 
     public bool isBuff()
     {
         return m_Buff;
+    }
+    public bool canBuff()
+    {
+        return m_canBuff;
     }
 }

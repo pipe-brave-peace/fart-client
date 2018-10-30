@@ -49,7 +49,7 @@ public class Enemy_Kamemusi : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (m_State.isBuff())
+        if (m_State.isBuff() && m_State.canBuff())
         {
             m_BuffEffect.SetActive(true);
         }
@@ -105,7 +105,7 @@ public class Enemy_Kamemusi : MonoBehaviour {
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
                 // バフがない？
-                if (!m_State.isBuff())
+                if (!m_State.isBuff() && m_State.canBuff())
                 {
                     m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
                     break;
