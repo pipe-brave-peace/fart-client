@@ -25,9 +25,6 @@ public class Enemy_Inosisi : MonoBehaviour {
     GameObject m_AttackEffect;          // アタックエフェクト
     [SerializeField]
     GameObject m_DamageEffect;          // ダメージエフェクト
-    // テスト
-    [SerializeField]
-    int m_PlayerIndex;
 
     private Enemy_State m_State;        // 状態
     private NavMeshAgent m_Nav;         // ナビメッシュ
@@ -124,7 +121,7 @@ public class Enemy_Inosisi : MonoBehaviour {
             case Enemy_State.STATE.ATTACK:      // 攻撃
                 Debug_State_Text.text = "STATE:攻撃している";
                 GameObject attack_effect = Instantiate(m_AttackEffect, new Vector3(0.0f,0.0f,0.0f), Quaternion.identity) as GameObject;
-                attack_effect.GetComponent<Effect_Damage>().Set(m_PlayerIndex);
+                attack_effect.GetComponent<Effect_Damage>().Set(m_TargetObj.GetComponent<Player>().GetPlayerNumber());
                 m_State.SetState(Enemy_State.STATE.SATIETY);
                 break;
 

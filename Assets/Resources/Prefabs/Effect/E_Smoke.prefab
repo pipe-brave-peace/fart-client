@@ -101,11 +101,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-<<<<<<< HEAD
-  randomSeed: 824820059
-=======
-  randomSeed: -280783436
->>>>>>> origin/yuusan_beta
+  randomSeed: 1428916296
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -3421,7 +3417,7 @@ ParticleSystemRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: f15105a6bdf832a4caea5caa3c5550b9, type: 2}
+  - {fileID: 2100000, guid: f36f2dcdf22b9994eadce026ad1c4fed, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0

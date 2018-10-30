@@ -57,11 +57,22 @@ public class Enemy_Inago : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if( m_State.isBuff())
+        {
+            m_BuffEffect.SetActive(true);
+        }
         // 状態判定
         switch (m_State.GetState())
         {
             case Enemy_State.STATE.MOVE:     // 移動
                 Debug_State_Text.text = "STATE:Jump(Move)";
+                // だいたい食べた？
+                if (m_Satiety <= 0.5f)
+                {
+                    // 満腹になる
+                    m_State.SetState(Enemy_State.STATE.SATIETY);
+                    break;
+                }
                 // 目標がなくなった？
                 if (m_TargetObj == null)
                 {

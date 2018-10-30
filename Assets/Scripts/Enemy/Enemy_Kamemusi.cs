@@ -21,12 +21,15 @@ public class Enemy_Kamemusi : MonoBehaviour {
     GameObject m_AttackEffect;           // インク
     [SerializeField]
     GameObject m_DamageEffect;          // ダメージエフェクト
+    [SerializeField]
+    GameObject m_BuffEffect;          // バフエフェクト
 
     private Enemy_State m_State;        // 状態
     private NavMeshAgent m_Nav;         // ナビメッシュ
     private Vector3 m_PosOld;           // 満腹後向かう座標
     private Life m_Life;                // 体力
     private Color m_FadeColor;
+    private bool m_isAttack;            // 攻撃チェック
 
     // Use this for initialization
     void Start()
@@ -36,6 +39,7 @@ public class Enemy_Kamemusi : MonoBehaviour {
         m_Nav = GetComponent<NavMeshAgent>();               // ナビメッシュの取得
         m_PosOld = transform.position;                      // 満腹後向かう座標のセット
         m_FadeColor = m_Color.material.color;
+        m_isAttack = false;
 
         // スコアセット
         Enemy_Score score = GetComponent<Enemy_Score>();
@@ -45,13 +49,21 @@ public class Enemy_Kamemusi : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        if (m_State.isBuff())
+        {
+            m_BuffEffect.SetActive(true);
+        }
         // 状態判定
         switch (m_State.GetState())
         {
             case Enemy_State.STATE.MOVE:     // 移動
                 Debug_State_Text.text = "STATE:Move";
-                //対象の位置の方向に移動
-                MoveHoming(m_TargetObj);
+                // 攻撃したら離脱する
+                if (m_isAttack)
+                {
+                    m_State.SetState(Enemy_State.STATE.SATIETY);
+                    break;
+                }
 
                 // 近い？
                 if (DistanceNoneY(m_TargetObj, 5.0f))
@@ -59,16 +71,21 @@ public class Enemy_Kamemusi : MonoBehaviour {
                     // 攻撃状態に変更
                     m_State.SetState(Enemy_State.STATE.ATTACK);
                     m_Nav.SetDestination(transform.position);       // 移動を止める
+                    break;
                 }
+                //対象の位置の方向に移動
+                MoveHoming(m_TargetObj);
                 break;
 
             case Enemy_State.STATE.ATTACK:      // 攻撃
                 Debug_State_Text.text = "STATE:攻撃している";
 
-                // エフェクトの生成Instantiate (prefab, transform.position, transform.rotation) as GameObject;
+                // エフェクトの生成
                 GameObject attack_effect = Instantiate(m_AttackEffect, transform.position, Quaternion.identity) as GameObject;
-
                 attack_effect.GetComponent<Effect_Kamemusi>().SetTargetObj(m_TargetObj);
+
+                // 攻撃フラグを立つ
+                m_isAttack = true;
 
                 m_State.SetState(Enemy_State.STATE.SATIETY);
                 break;
@@ -87,6 +104,12 @@ public class Enemy_Kamemusi : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
+                // バフがない？
+                if (!m_State.isBuff())
+                {
+                    m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
+                    break;
+                }
                 Debug_State_Text.text = "STATE:痛えぇ！";
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
