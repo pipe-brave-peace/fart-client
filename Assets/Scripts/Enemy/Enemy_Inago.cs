@@ -38,6 +38,7 @@ public class Enemy_Inago : MonoBehaviour
     private float m_JumpTiming;         // ジャンプ間隔
     private Rigidbody m_Rigidbody;      // 移動用ボディ
     private Color m_FadeColor;
+    private bool m_isBuff;
 
     // 初期化
     void Start()
@@ -49,6 +50,7 @@ public class Enemy_Inago : MonoBehaviour
         m_PosOld = transform.position;                      // 満腹後向かう座標のセット
         m_JumpTiming = m_CntJump;                           // ジャンプ間隔
         m_FadeColor = m_Color.material.color;
+        m_isBuff = false;
         // スコアセット
         Enemy_Score score = GetComponent<Enemy_Score>();
         score.SetScore(Score_List.Enemy.Inago);
@@ -57,40 +59,12 @@ public class Enemy_Inago : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if( m_State.isBuff() && m_State.canBuff())
-        {
-            m_BuffEffect.SetActive(true);
-        }
         // 状態判定
         switch (m_State.GetState())
         {
             case Enemy_State.STATE.MOVE:     // 移動
                 Debug_State_Text.text = "STATE:Jump(Move)";
-                // だいたい食べた？
-                if (m_Satiety <= 0.5f)
-                {
-                    // 満腹になる
-                    m_State.SetState(Enemy_State.STATE.SATIETY);
-                    break;
-                }
-                // 目標がなくなった？
-                if (m_TargetObj == null)
-                {
-                    // 再検索
-                    m_TargetObj = SerchCrops();          // 農作物をサーチ
-                    break;
-                }
-                // 近い？
-                if (Vector3.Distance(transform.position, m_TargetObj.transform.position) <= 2.0f)
-                {
-                    // 食べる状態に変更
-                    m_State.SetState(Enemy_State.STATE.EAT);
-                    // ジャンプタイミングをリセット
-                    m_CntJump = m_JumpTiming;
-                    break;
-                }
-                // ジャンプ
-                Jump(m_TargetObj.transform.position);
+                StateMove();
                 break;
 
             case Enemy_State.STATE.EAT:      // 食べる
@@ -133,11 +107,44 @@ public class Enemy_Inago : MonoBehaviour
                 }
                 break;
 
+            case Enemy_State.STATE.SPRAY:      // スプレー状態
+                Debug_State_Text.text = "STATE:見えねぇ！！";
+                // スプレーを受けた
+                m_isBuff = true;
+
+                // エフェクトの生成
+                m_BuffEffect.SetActive(true);
+
+                m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
+                // 虫の場合
+                if (m_State.isMusi())
+                {
+                    // 体力を減らす
+                    m_Life.SubLife(1.0f);
+
+                    // 体力がなくなった？
+                    if (m_Life.GetLife() <= 0)
+                    {
+                        // 透明できる描画モードに変更
+                        BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
+                        m_FadeColor.a = 1.0f;
+                        m_Color.material.color = m_FadeColor;
+                        m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                        break;
+                    }
+                }
+                else
+                {
+                    StateMove();
+                }
+                break;
+
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
-                // バフがない？
-                if( !m_State.isBuff()&& m_State.canBuff())
+                // バフがない&&虫ではない？
+                if( !m_isBuff && !m_State.isMusi())
                 {
                     m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
+                    StateMove();
                     break;
                 }
 
@@ -234,5 +241,35 @@ public class Enemy_Inago : MonoBehaviour
         }
         // 満腹までのカウント
         m_Satiety -= Time.deltaTime;
+    }
+
+    // 移動モード
+    void StateMove()
+    {
+        // だいたい食べた？
+        if (m_Satiety <= 0.5f)
+        {
+            // 満腹になる
+            m_State.SetState(Enemy_State.STATE.SATIETY);
+            return;
+        }
+        // 目標がなくなった？
+        if (m_TargetObj == null)
+        {
+            // 再検索
+            m_TargetObj = SerchCrops();          // 農作物をサーチ
+            return;
+        }
+        // 近い？
+        if (Vector3.Distance(transform.position, m_TargetObj.transform.position) <= 2.0f)
+        {
+            // 食べる状態に変更
+            m_State.SetState(Enemy_State.STATE.EAT);
+            // ジャンプタイミングをリセット
+            m_CntJump = m_JumpTiming;
+            return;
+        }
+        // ジャンプ
+        Jump(m_TargetObj.transform.position);
     }
 }

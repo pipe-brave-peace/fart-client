@@ -13,12 +13,12 @@ public class Crops_Ninjin : MonoBehaviour {
     // Use this for initialization
     void Start () {
         m_Life = GetComponent<Life>();
-        UI_HP.text = m_Life.GetLife().ToString();
+        UI_HP.text = "　"+m_Life.GetLife().ToString();
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        UI_HP.text = m_Life.GetLife().ToString();
+        UI_HP.text = "　" + m_Life.GetLife().ToString();
     }
 }
