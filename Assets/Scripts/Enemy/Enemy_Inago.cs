@@ -107,11 +107,13 @@ public class Enemy_Inago : MonoBehaviour
                     }
                     // 次を探す
                     m_State.SetState(Enemy_State.STATE.MOVE);
+                    break;
                 }
                 // 満腹？
                 if (m_Satiety <= 0.0f)
                 {
                     m_State.SetState(Enemy_State.STATE.SATIETY);
+                    break;
                 }
                 // 農作物を食べる
                 EatCrop(m_TargetObj.GetComponent<Life>());
