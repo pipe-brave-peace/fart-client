@@ -1831,7 +1831,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b2c0acc59eea314594ddd256abe2ccd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_canBuff: 0
+  m_isMusi: 0
 --- !u!195 &890209615
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -3354,6 +3354,11 @@ Prefab:
       propertyPath: m_TargetObj
       value: 
       objectReference: {fileID: 181904046}
+    - target: {fileID: 114383550757744002, guid: 2877d9151b3f92f4d8347849b1b6571d,
+        type: 2}
+      propertyPath: m_isMusi
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2877d9151b3f92f4d8347849b1b6571d, type: 2}
   m_IsPrefabParent: 0
@@ -3676,6 +3681,11 @@ Prefab:
         type: 2}
       propertyPath: m_canBuff
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114427680963650520, guid: e78c9b28a2ec39140a9e37f96bf3d64d,
+        type: 2}
+      propertyPath: m_isMusi
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e78c9b28a2ec39140a9e37f96bf3d64d, type: 2}
