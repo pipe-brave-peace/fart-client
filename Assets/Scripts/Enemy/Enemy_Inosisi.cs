@@ -26,6 +26,8 @@ public class Enemy_Inosisi : MonoBehaviour {
     [SerializeField]
     GameObject m_DamageEffect;          // ダメージエフェクト
     [SerializeField]
+    GameObject m_EscapeEffect;          // バフエフェクト
+    [SerializeField]
     GameObject m_BuffEffect;          // バフエフェクト
 
     private Enemy_State m_State;        // 状態
@@ -130,7 +132,7 @@ public class Enemy_Inosisi : MonoBehaviour {
                 // スプレーを受けた
                 m_isBuff = true;
 
-                // エフェクトの生成
+                // エフェクトの再生
                 m_BuffEffect.SetActive(true);
 
                 m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
@@ -187,6 +189,8 @@ public class Enemy_Inosisi : MonoBehaviour {
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
                 Debug_State_Text.text = "STATE:FadeOut";
+
+                m_EscapeEffect.SetActive(true);
 
                 // 離脱の位置の方向に移動
                 m_Nav.SetDestination(m_PosOld);
