@@ -10,6 +10,7 @@ public class Enemy_State : MonoBehaviour {
         EAT,        // 食べる
         ATTACK,     // 攻撃
         CRY,        // 叫ぶ
+        SPRAY,      // スプレー
         DAMAGE,     // ダメージ
         FEAR,       // 怯む
         SATIETY,    // 満腹
@@ -18,10 +19,9 @@ public class Enemy_State : MonoBehaviour {
         MAX
     }
     [SerializeField]
-    bool m_canBuff;
+    bool m_isMusi;
 
     private STATE m_State = STATE.MOVE;
-    private bool m_Buff = false;
     private bool m_canSet = true;
    
     public void SetState(STATE State)
@@ -39,19 +39,9 @@ public class Enemy_State : MonoBehaviour {
     {
         m_canSet = CanSet;
     }
-
-    public void SetBuff(bool Buff = true)
+    
+    public bool isMusi()
     {
-        if (!m_canBuff) { return; }
-        m_Buff = Buff;
-    }
-
-    public bool isBuff()
-    {
-        return m_Buff;
-    }
-    public bool canBuff()
-    {
-        return m_canBuff;
+        return m_isMusi;
     }
 }

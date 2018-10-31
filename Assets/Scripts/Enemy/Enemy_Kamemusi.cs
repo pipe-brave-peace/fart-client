@@ -30,6 +30,7 @@ public class Enemy_Kamemusi : MonoBehaviour {
     private Life m_Life;                // 体力
     private Color m_FadeColor;
     private bool m_isAttack;            // 攻撃チェック
+    private bool m_isBuff;
 
     // Use this for initialization
     void Start()
@@ -40,6 +41,7 @@ public class Enemy_Kamemusi : MonoBehaviour {
         m_PosOld = transform.position;                      // 満腹後向かう座標のセット
         m_FadeColor = m_Color.material.color;
         m_isAttack = false;
+        m_isBuff = false;
 
         // スコアセット
         Enemy_Score score = GetComponent<Enemy_Score>();
@@ -49,32 +51,12 @@ public class Enemy_Kamemusi : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (m_State.isBuff() && m_State.canBuff())
-        {
-            m_BuffEffect.SetActive(true);
-        }
         // 状態判定
         switch (m_State.GetState())
         {
             case Enemy_State.STATE.MOVE:     // 移動
                 Debug_State_Text.text = "STATE:Move";
-                // 攻撃したら離脱する
-                if (m_isAttack)
-                {
-                    m_State.SetState(Enemy_State.STATE.SATIETY);
-                    break;
-                }
-
-                // 近い？
-                if (DistanceNoneY(m_TargetObj, 5.0f))
-                {
-                    // 攻撃状態に変更
-                    m_State.SetState(Enemy_State.STATE.ATTACK);
-                    m_Nav.SetDestination(transform.position);       // 移動を止める
-                    break;
-                }
-                //対象の位置の方向に移動
-                MoveHoming(m_TargetObj);
+                StateMove();
                 break;
 
             case Enemy_State.STATE.ATTACK:      // 攻撃
@@ -103,11 +85,44 @@ public class Enemy_Kamemusi : MonoBehaviour {
                 }
                 break;
 
+            case Enemy_State.STATE.SPRAY:      // スプレー状態
+                Debug_State_Text.text = "STATE:見えねぇ！！";
+                // スプレーを受けた
+                m_isBuff = true;
+
+                // エフェクトの生成
+                m_BuffEffect.SetActive(true);
+
+                m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
+                // 虫の場合
+                if (m_State.isMusi())
+                {
+                    // 体力を減らす
+                    m_Life.SubLife(1.0f);
+
+                    // 体力がなくなった？
+                    if (m_Life.GetLife() <= 0)
+                    {
+                        // 透明できる描画モードに変更
+                        BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
+                        m_FadeColor.a = 1.0f;
+                        m_Color.material.color = m_FadeColor;
+                        m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                        break;
+                    }
+                }
+                else
+                {
+                    StateMove();
+                }
+                break;
+
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
-                // バフがない？
-                if (!m_State.isBuff() && m_State.canBuff())
+                // バフがない&&虫ではない？
+                if (!m_isBuff && !m_State.isMusi())
                 {
                     m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
+                    StateMove();
                     break;
                 }
                 Debug_State_Text.text = "STATE:痛えぇ！";
@@ -169,5 +184,26 @@ public class Enemy_Kamemusi : MonoBehaviour {
             return true;
         }
         return false;
+    }
+    // 移動モード
+    void StateMove()
+    {
+        // 攻撃したら離脱する
+        if (m_isAttack)
+        {
+            m_State.SetState(Enemy_State.STATE.SATIETY);
+            return;
+        }
+
+        // 近い？
+        if (DistanceNoneY(m_TargetObj, 5.0f))
+        {
+            // 攻撃状態に変更
+            m_State.SetState(Enemy_State.STATE.ATTACK);
+            m_Nav.SetDestination(transform.position);       // 移動を止める
+            return;
+        }
+        //対象の位置の方向に移動
+        MoveHoming(m_TargetObj);
     }
 }
