@@ -115,6 +115,7 @@ public class Enemy_Inosisi : MonoBehaviour {
                     }
                     // 次を探す
                     m_State.SetState(Enemy_State.STATE.MOVE);
+                    break;
                 }
 
                 // 農作物体力を減らす
