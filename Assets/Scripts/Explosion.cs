@@ -32,7 +32,7 @@ public class Explosion : MonoBehaviour
         {
             if (col.gameObject.GetComponent<Enemy_State>().GetState() != Enemy_State.STATE.ESCAPE)
             {
-                col.GetComponent<Enemy_State>().SetBuff();
+                //col.GetComponent<Enemy_State>().SetBuff();
             }
         }
     }

@@ -45,5 +45,11 @@ public class Gas : MonoBehaviour {
         {
            col.gameObject.transform.localScale = new Vector3(5,5,5);
         }
+
+        if (col.gameObject.tag == "Enemy")
+        {
+            col.GetComponent<Enemy_State>().SetBuff();
+        }
+
     }
 }
