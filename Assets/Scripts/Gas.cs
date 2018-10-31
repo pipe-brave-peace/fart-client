@@ -48,7 +48,7 @@ public class Gas : MonoBehaviour {
 
         if (col.gameObject.tag == "Enemy")
         {
-            col.GetComponent<Enemy_State>().SetBuff();
+            col.GetComponent<Enemy_State>().SetState(Enemy_State.STATE.SPRAY);
         }
 
     }

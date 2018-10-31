@@ -497,7 +497,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b2c0acc59eea314594ddd256abe2ccd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_canBuff: 1
+  m_isMusi: 0
 --- !u!114 &25031650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8172,7 +8172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b2c0acc59eea314594ddd256abe2ccd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_canBuff: 0
+  m_isMusi: 0
 --- !u!195 &1016351059
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -23695,7 +23695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b2c0acc59eea314594ddd256abe2ccd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_canBuff: 0
+  m_isMusi: 1
 --- !u!65 &2061391196
 BoxCollider:
   m_ObjectHideFlags: 0
