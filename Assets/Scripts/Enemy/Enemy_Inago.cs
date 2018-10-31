@@ -97,7 +97,7 @@ public class Enemy_Inago : MonoBehaviour
             case Enemy_State.STATE.SATIETY:  // 満腹
                 Debug_State_Text.text = "STATE:満腹";
                 // ジャンプ
-                Jump(m_PosOld,0.5f);
+                Jump(m_PosOld,1);
 
                 // 目標に着いた？
                 if (Vector3.Distance(m_PosOld, transform.position) <= 1.0f)

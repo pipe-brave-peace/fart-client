@@ -128,23 +128,13 @@ public class Buster : MonoBehaviour
 
             if (m_joyconR != null)
             {
-                if (m_joyconR.GetStick()[0] > 0.5f)
+                if (m_joyconR.GetButtonDown(Joycon.Button.SHOULDER_1))
                 {
                     if (!m_Tank.GetFurzFlg())
                     {
                         BulletShot();
                     }
                 }
-            }
-        }
-
-        if (m_joyconR != null)
-        {
-            if (m_joyconR.GetButtonDown(Joycon.Button.SR))
-            {
-                m_joyconR.SetRumble(1000, 1000, 1.0f, 200);
-
-                BulletShot();
             }
         }
 

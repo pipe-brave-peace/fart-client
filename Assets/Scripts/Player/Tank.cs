@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class Tank : MonoBehaviour
 {
+    [SerializeField]
+    Effect_Trigger Effect;
 
     [SerializeField]
     float m_ChargeValue = 0.0f;
@@ -130,6 +132,7 @@ public class Tank : MonoBehaviour
     //オナラ発射
     public void FartingFarts(float fFartingValue)
     {
+        Effect.Play();
         m_bFurzFlg = true;
         m_bFiring = true;
         m_FurzValue = 0.0f;

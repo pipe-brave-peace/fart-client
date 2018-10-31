@@ -21,10 +21,10 @@ public class Effect_Trigger : MonoBehaviour {
     void Update()
     {
         // テスト
-        if( Input.GetKeyDown(KeyCode.A))
-        {
-            Play();
-        }
+        //if( Input.GetKeyDown(KeyCode.A))
+        //{
+        //    Play();
+        //}
         m_Timer -= Time.deltaTime;
         if (m_Timer > 0.0f) return;
         m_Effect.Stop();
