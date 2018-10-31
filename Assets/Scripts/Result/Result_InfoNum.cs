@@ -147,8 +147,6 @@ public class Result_InfoNum : MonoBehaviour {
             case MODE.RANK:
                 m_Player1_Text_Rank.text = InfoManager.Instance.GetPlayerRank(0);
                 m_Player2_Text_Rank.text = InfoManager.Instance.GetPlayerRank(1);
-                m_Player1_Rank.GetComponent<UI_CreateNum>().CreateNum();
-                m_Player2_Rank.GetComponent<UI_CreateNum>().CreateNum();
                 m_CntFrame = 0.0f;
                 m_Mode++;
                 break;
