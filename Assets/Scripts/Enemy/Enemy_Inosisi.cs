@@ -35,6 +35,7 @@ public class Enemy_Inosisi : MonoBehaviour {
     private Renderer m_Color;           // 自分の色
     private Color m_FadeColor;
     private bool m_isAttack;
+    private bool m_isBuff;
 
     // 初期化
     void Start()
@@ -48,6 +49,7 @@ public class Enemy_Inosisi : MonoBehaviour {
         m_PosOld = transform.position;                      // 満腹後向かう座標のセット
         m_FadeColor = m_Color.material.color;
         m_isAttack = false;
+        m_isBuff = false;
 
         // スコアセット
         Enemy_Score score = GetComponent<Enemy_Score>();
@@ -57,46 +59,12 @@ public class Enemy_Inosisi : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (m_State.isBuff() && m_State.canBuff())
-        {
-            m_BuffEffect.SetActive(true);
-        }
         // 状態判定
         switch (m_State.GetState())
         {
             case Enemy_State.STATE.MOVE:     // 移動
                 Debug_State_Text.text = "STATE:Move";
-                // だいたい食べた？攻撃した？
-                if (m_Satiety <= 0.5f || m_isAttack)
-                {
-                    // 離脱する
-                    m_State.SetState(Enemy_State.STATE.SATIETY);
-                    break;
-                }
-                // 目標がなくなった？
-                if (m_TargetObj == null)
-                {
-                    // 再検索
-                    m_TargetObj = SerchCrops();          // 農作物をサーチ
-                    break;
-                }
-                // 近い？
-                if (DistanceNoneY(m_TargetObj, 5.0f))
-                {
-                    // 目標が農作物？
-                    if (m_TargetObj.tag == "Crops")
-                    {
-                        // 食べる状態に変更
-                        m_State.SetState(Enemy_State.STATE.EAT);
-                        break;
-                    }
-                    // 攻撃状態に変更
-                    m_State.SetState(Enemy_State.STATE.ATTACK);
-                    m_Nav.SetDestination(transform.position);       // 移動を止める
-                    break;
-                }
-                //対象の位置の方向に移動
-                MoveHoming(m_TargetObj);
+                StateMove();
                 break;
 
             case Enemy_State.STATE.EAT:      // 食べる
@@ -157,11 +125,44 @@ public class Enemy_Inosisi : MonoBehaviour {
                 }
                 break;
 
+            case Enemy_State.STATE.SPRAY:      // スプレー状態
+                Debug_State_Text.text = "STATE:見えねぇ！！";
+                // スプレーを受けた
+                m_isBuff = true;
+
+                // エフェクトの生成
+                m_BuffEffect.SetActive(true);
+
+                m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
+                // 虫の場合
+                if (m_State.isMusi())
+                {
+                    // 体力を減らす
+                    m_Life.SubLife(1.0f);
+
+                    // 体力がなくなった？
+                    if (m_Life.GetLife() <= 0)
+                    {
+                        // 透明できる描画モードに変更
+                        BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
+                        m_FadeColor.a = 1.0f;
+                        m_Color.material.color = m_FadeColor;
+                        m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                        break;
+                    }
+                }
+                else
+                {
+                    StateMove();
+                }
+                break;
+
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
-                // バフがない？
-                if (!m_State.isBuff() && m_State.canBuff())
+                // バフがない&&虫ではない？
+                if (!m_isBuff && !m_State.isMusi())
                 {
                     m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
+                    StateMove();
                     break;
                 }
                 Debug_State_Text.text = "STATE:痛えぇ！";
@@ -237,5 +238,40 @@ public class Enemy_Inosisi : MonoBehaviour {
         m_State.SetState(Enemy_State.STATE.SATIETY);
         // リストがなくなったらnull
         return null;
+    }
+    // 移動モード
+    void StateMove()
+    {
+        // だいたい食べた？攻撃した？
+        if (m_Satiety <= 0.5f || m_isAttack)
+        {
+            // 離脱する
+            m_State.SetState(Enemy_State.STATE.SATIETY);
+            return;
+        }
+        // 目標がなくなった？
+        if (m_TargetObj == null)
+        {
+            // 再検索
+            m_TargetObj = SerchCrops();          // 農作物をサーチ
+            return;
+        }
+        // 近い？
+        if (DistanceNoneY(m_TargetObj, 5.0f))
+        {
+            // 目標が農作物？
+            if (m_TargetObj.tag == "Crops")
+            {
+                // 食べる状態に変更
+                m_State.SetState(Enemy_State.STATE.EAT);
+                return;
+            }
+            // 攻撃状態に変更
+            m_State.SetState(Enemy_State.STATE.ATTACK);
+            m_Nav.SetDestination(transform.position);       // 移動を止める
+            return;
+        }
+        //対象の位置の方向に移動
+        MoveHoming(m_TargetObj);
     }
 }
