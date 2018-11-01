@@ -83,6 +83,7 @@ public class EffekseerEmitter : MonoBehaviour
 		if (handle.HasValue) {
 			handle.Value.Stop();
 			handle = null;
+            Destroy(gameObject);
 		}
 	}
 	
