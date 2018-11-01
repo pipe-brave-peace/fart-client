@@ -49,7 +49,8 @@ public class PlayerAll : MonoBehaviour {
 
             //対象の位置の方向に移動
             m_Navigate.SetDestination(m_NavPoint[nNumber].transform.position);
-            if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.MOVE)
+            if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.MOVE ||
+                m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.ROTSTOP)
             {
                 Vector();
             }
@@ -58,7 +59,22 @@ public class PlayerAll : MonoBehaviour {
             if (transform.position.x == m_NavPoint[nNumber].transform.position.x &&
                 transform.position.z == m_NavPoint[nNumber].transform.position.z)
             {
+                if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetChangePhase())
+                {
+                    m_PhaseManager.Play();
+                }
+                else
+                {
+                    m_PhaseManager.Stop();
+                }
+
                 if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.STOP)
+                {
+                    Vector();
+                }
+
+                if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.STOP ||
+                    m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.ROTSTOP)
                 {
                     Vector();
                     if (index != m_PhaseManager.GetNowPhaseIndex())

@@ -30,6 +30,7 @@ public class PhaseManager : MonoBehaviour {
         {
             m_PhaseIndex++;
             if (m_PhaseIndex >= m_Phase.Length) return;
+            Destroy(m_NowPhase.gameObject);
             SetPhase(m_PhaseIndex);
         }
 	}

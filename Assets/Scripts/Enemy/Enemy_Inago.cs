@@ -100,7 +100,7 @@ public class Enemy_Inago : MonoBehaviour
                 Jump(m_PosOld,1);
 
                 // 目標に着いた？
-                if (Vector3.Distance(m_PosOld, transform.position) <= 1.0f)
+                if (Vector3.Distance(m_PosOld, transform.position) <= 10.0f)
                 {
                     // 自分を消す
                     Destroy(gameObject);

@@ -8,6 +8,7 @@ public class PlayerPoint : MonoBehaviour {
     {
         MOVE,       // 移動
         STOP,       //停止
+        ROTSTOP,
         MAX
     }
 
@@ -15,6 +16,11 @@ public class PlayerPoint : MonoBehaviour {
     [SerializeField]
     STATE m_state;
 
+    [SerializeField]
+    bool m_ChangePhase;
+
     public STATE GetState() { return m_state; }
     public void SetState(STATE state) { m_state = state; }
+
+    public bool GetChangePhase() { return m_ChangePhase; }
 }

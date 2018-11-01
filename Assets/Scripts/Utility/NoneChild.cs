@@ -8,10 +8,10 @@ public class NoneChild : MonoBehaviour {
 	void Update () {
 
         // 子がなくなった？
-        if (transform.childCount <= 0)
-        {
-            // 自分を消す
-            Destroy(gameObject);
-        }
+        //if (transform.childCount <= 0)
+        //{
+        //    // 自分を消す
+        //    Destroy(gameObject);
+        //}
     }
 }
