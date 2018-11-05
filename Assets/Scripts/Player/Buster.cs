@@ -166,7 +166,9 @@ public class Buster : MonoBehaviour
     {
         if (m_FartsUI.uvRect.x > 0.6f) { return; }
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); 
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        Instantiate(m_ExplosionObject, gameObject.transform.position, Quaternion.identity);
 
         if (m_Player.GetPlayerNumber() == 0)
         {
@@ -186,7 +188,6 @@ public class Buster : MonoBehaviour
             {
                 int nNumber = m_Player.GetPlayerNumber();
 
-                //Instantiate(m_ExplosionObject, hit.collider.gameObject.transform.position, Quaternion.identity);
                 InfoManager.Instance.AddPlayerScore(nNumber, hit.collider.gameObject.GetComponent<Enemy_Score>().GetScore());
                 hit.collider.gameObject.GetComponent<Enemy_State>().SetState(Enemy_State.STATE.DAMAGE);
 

@@ -132,7 +132,7 @@ public class Tank : MonoBehaviour
     //オナラ発射
     public void FartingFarts(float fFartingValue)
     {
-        Effect.Play();
+        //Effect.Play();
         m_bFurzFlg = true;
         m_bFiring = true;
         m_FurzValue = 0.0f;
