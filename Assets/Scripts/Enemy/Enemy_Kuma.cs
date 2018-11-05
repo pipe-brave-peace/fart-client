@@ -56,6 +56,7 @@ public class Enemy_Kuma : MonoBehaviour {
     private GameObject      m_AttackObj;        // 攻撃目標
     private float           m_UrouroTimerMax;   // ウロウロする時間
     private int             m_CropIndex;        // 農作物リストのインデックス
+    private Animator        m_Animator;        // アニメション
 
     // 初期化
     void Start()
@@ -63,6 +64,7 @@ public class Enemy_Kuma : MonoBehaviour {
         m_Life           = GetComponent<Life>();
         m_State          = GetComponent<Enemy_State>();
         m_Nav            = GetComponent<NavMeshAgent>();               // ナビメッシュの取得
+        m_Animator       = GetComponent<Animator>();
         m_FearCntMax     = m_FearCnt;
         m_AttackObj      = m_TargetObj;
         m_UrouroTimerMax = m_UrouroTimer;
@@ -98,6 +100,27 @@ public class Enemy_Kuma : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        // テスト
+        if( Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            m_Animator.Play("Walk");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            m_Animator.Play("Eat");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            m_Animator.Play("Bark");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            m_Animator.Play("Claw");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            m_Animator.Play("Flinch");
+        }
         // フェーズ判定
         switch (m_Phase)
         {
@@ -135,6 +158,7 @@ public class Enemy_Kuma : MonoBehaviour {
                     // 食べる状態に変更
                     m_State.CanSet(true);
                     m_State.SetState(Enemy_State.STATE.EAT);
+                    m_Animator.Play("Eat");
                     MoveHoming(gameObject);     // 止まる
                 }
                 break;
@@ -150,6 +174,7 @@ public class Enemy_Kuma : MonoBehaviour {
                 {
                     // 次を探す
                     m_State.SetState(Enemy_State.STATE.MOVE);
+                    m_Animator.Play("Walk");
                     break;
                 }
 
@@ -162,13 +187,16 @@ public class Enemy_Kuma : MonoBehaviour {
 
             case Enemy_State.STATE.CRY:
                 Debug_State_Text.text = "STATE:がおぉぉ！！！";
+                m_Animator.Play("Bark");
+                break;
+
+            case Enemy_State.STATE.SPRAY:
+                m_State.SetState(Enemy_State.STATE.MOVE);
+                m_Animator.Play("Walk");
                 break;
                 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
                 Debug_State_Text.text = "STATE:痛えぇ！";
-
-                // 攻撃不能
-                //m_State.CanSet(false);
 
                 // 怯むまでのカウント
                 m_FearCnt--;
@@ -176,10 +204,12 @@ public class Enemy_Kuma : MonoBehaviour {
                 {
                     m_FearCnt = m_FearCntMax;                     // カウントのクリア
                     m_State.SetState(Enemy_State.STATE.FEAR);     // 怯む状態へ
+                    m_Animator.Play("Flinch");
                     break;
                 }
                 
                 m_State.SetState(Enemy_State.STATE.EAT);     // 食べる状態へ
+                m_Animator.Play("Eat");
                 break;
 
             case Enemy_State.STATE.FEAR:        // 怯む
@@ -187,6 +217,13 @@ public class Enemy_Kuma : MonoBehaviour {
 
                 // 攻撃不能
                 m_State.CanSet(false);
+
+                // アニメション終わった？
+                if( m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+                {
+                    m_State.SetState(Enemy_State.STATE.MOVE);
+                    m_Animator.Play("Walk");
+                }
 
                 // 次の農作物を狙う
                 m_CropIndex++;
@@ -214,7 +251,9 @@ public class Enemy_Kuma : MonoBehaviour {
         if (m_State.GetState() == Enemy_State.STATE.CRY)    return;
         if (m_State.GetState() == Enemy_State.STATE.DAMAGE) return;
         if (m_State.GetState() == Enemy_State.STATE.FEAR)   return;
+        m_State.CanSet(true);
         m_State.SetState( Enemy_State.STATE.ESCAPE );
+        m_Animator.Play("Walk");
     }
 
     // プレイヤーを攻撃するフェーズ
@@ -256,6 +295,7 @@ public class Enemy_Kuma : MonoBehaviour {
                     {
                         // 攻撃状態に変更
                         m_State.SetState(Enemy_State.STATE.ATTACK);
+                        m_Animator.Play("Claw");
                         MoveHoming(gameObject);     // 止まる
                     }
                 }
@@ -263,23 +303,27 @@ public class Enemy_Kuma : MonoBehaviour {
 
             case Enemy_State.STATE.CRY:
                 Debug_State_Text.text = "STATE:がおぉぉ！！！";
+                m_Animator.Play("Bark");
                 break;
 
             case Enemy_State.STATE.ATTACK:      // 攻撃
                 Debug_State_Text.text = "STATE:喰らえ！！";
 
-                GameObject effet = Instantiate(m_EffectAttack, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as GameObject;
+                // アニメション終わった？
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+                {
 
-                m_TargetObj = SerchPoint();
-                m_State.SetState(Enemy_State.STATE.MOVE);
+                    GameObject effet = Instantiate(m_EffectAttack, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as GameObject;
+
+                    m_TargetObj = SerchPoint();
+                    m_State.SetState(Enemy_State.STATE.MOVE);
+                    m_Animator.Play("Walk");
+                }
 
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
                 Debug_State_Text.text = "STATE:痛えぇ！";
-
-                // 攻撃不能
-                //m_State.CanSet(false);
 
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
@@ -290,6 +334,7 @@ public class Enemy_Kuma : MonoBehaviour {
                 {
                     m_FearCnt = m_FearCntMax;                     // カウントのクリア
                     m_State.SetState(Enemy_State.STATE.FEAR);     // 怯む状態へ
+                    m_Animator.Play("Flinch");
                     break;
                 }
 
@@ -301,6 +346,13 @@ public class Enemy_Kuma : MonoBehaviour {
 
                 // 攻撃不能
                 m_State.CanSet(false);
+
+                // アニメション終わった？
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+                {
+                    m_State.SetState(Enemy_State.STATE.MOVE);
+                    m_Animator.Play("Walk");
+                }
 
                 break;
 
@@ -326,7 +378,9 @@ public class Enemy_Kuma : MonoBehaviour {
         if (m_State.GetState() == Enemy_State.STATE.CRY)    return;
         if (m_State.GetState() == Enemy_State.STATE.DAMAGE) return;
         if (m_State.GetState() == Enemy_State.STATE.FEAR)   return;
+        m_State.CanSet(true);
         m_State.SetState( Enemy_State.STATE.ESCAPE );
+        m_Animator.Play("Walk");
     }
 
     // 攻撃と荒らすフェーズ
@@ -360,6 +414,7 @@ public class Enemy_Kuma : MonoBehaviour {
                         // 食べる状態に変更
                         m_State.CanSet(true);
                         m_State.SetState(Enemy_State.STATE.EAT);
+                        m_Animator.Play("Eat");
                         MoveHoming(gameObject);     // 止まる
                     }
                 }
@@ -373,6 +428,7 @@ public class Enemy_Kuma : MonoBehaviour {
                     {
                         // 攻撃状態に変更
                         m_State.SetState(Enemy_State.STATE.ATTACK);
+                        m_Animator.Play("Claw");
                         MoveHoming(gameObject);     // 止まる
                     }
                 }
@@ -390,6 +446,7 @@ public class Enemy_Kuma : MonoBehaviour {
                 {
                     // 次を探す
                     m_State.SetState(Enemy_State.STATE.MOVE);
+                    m_Animator.Play("Walk");
                     break;
                 }
 
@@ -402,25 +459,33 @@ public class Enemy_Kuma : MonoBehaviour {
 
             case Enemy_State.STATE.CRY:
                 Debug_State_Text.text = "STATE:がおぉぉ！！！";
+                m_Animator.Play("Bark");
                 break;
 
             case Enemy_State.STATE.ATTACK:      // 攻撃
                 Debug_State_Text.text = "STATE:喰らえ！！";
-                GameObject effet = Instantiate(m_EffectAttack, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as GameObject;
+                // アニメション終わった？
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+                {
+                    GameObject effet = Instantiate(m_EffectAttack, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as GameObject;
 
-                m_TargetObj = SerchCrops();
-                m_State.SetState(Enemy_State.STATE.MOVE);
-
+                    m_TargetObj = SerchCrops();
+                    m_State.SetState(Enemy_State.STATE.MOVE);
+                    m_Animator.Play("Walk");
+                }
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
                 Debug_State_Text.text = "STATE:痛えぇ！";
 
-                // 攻撃不能
-                //m_State.CanSet(false);
-
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
+
+                if( m_Life.GetLife() <= 0.0f)
+                {
+                    m_State.SetState(Enemy_State.STATE.FAINT);     // 気絶状態へ
+                    transform.parent = transform.parent.parent.parent;
+                }
 
                 // 怯むまでのカウント
                 m_FearCnt--;
@@ -428,10 +493,12 @@ public class Enemy_Kuma : MonoBehaviour {
                 {
                     m_FearCnt = m_FearCntMax;                     // カウントのクリア
                     m_State.SetState(Enemy_State.STATE.FEAR);     // 怯む状態へ
+                    m_Animator.Play("Flinch");
                     break;
                 }
 
                 m_State.SetState(Enemy_State.STATE.MOVE);     // 食べる状態へ
+                m_Animator.Play("Walk");
                 break;
 
             case Enemy_State.STATE.FEAR:        // 怯む
@@ -440,6 +507,12 @@ public class Enemy_Kuma : MonoBehaviour {
                 // 攻撃不能
                 m_State.CanSet(false);
 
+                // アニメション終わった？
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+                {
+                    m_State.SetState(Enemy_State.STATE.MOVE);
+                    m_Animator.Play("Walk");
+                }
                 break;
 
             case Enemy_State.STATE.FAINT:   // 気絶
