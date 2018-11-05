@@ -41,10 +41,10 @@ public class Gas : MonoBehaviour {
 
     void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.tag == "Explosion")
-        {
-           col.gameObject.transform.localScale = new Vector3(5,5,5);
-        }
+        //if (col.gameObject.tag == "Explosion")
+        //{
+        //   col.gameObject.transform.localScale = new Vector3(5,5,5);
+        //}
 
         if (col.gameObject.tag == "Enemy")
         {

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -894,6 +894,7 @@ GameObject:
   - component: {fileID: 1561417526}
   - component: {fileID: 1561417525}
   - component: {fileID: 1561417524}
+  - component: {fileID: 1561417527}
   m_Layer: 0
   m_Name: TitleManager
   m_TagString: Untagged
@@ -969,7 +970,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -1009,6 +1010,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1561417527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1561417523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d22378ef6f282404a9cbd1f9ed86cd40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnableIMU: 1
+  EnableLocalize: 1
 --- !u!1001 &1599029091
 Prefab:
   m_ObjectHideFlags: 0
