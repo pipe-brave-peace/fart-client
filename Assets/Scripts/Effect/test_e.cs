@@ -17,6 +17,7 @@ public class test_e : MonoBehaviour {
 		if( Input.GetKeyDown(KeyCode.E))
         {
             GameObject effet = Instantiate(m_Effect, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as GameObject;
+            effet.transform.position = transform.position;
         }
 	}
 }
