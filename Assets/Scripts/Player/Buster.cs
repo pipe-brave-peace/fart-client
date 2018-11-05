@@ -92,17 +92,6 @@ public class Buster : MonoBehaviour
                     GasShot();
                 }
             }
-
-            if (m_joyconR != null)
-            {
-                if (m_joyconR.GetButtonDown(Joycon.Button.SHOULDER_1))
-                {
-                    if (!m_Tank.GetFurzFlg())
-                    {
-                        BulletShot();
-                    }
-                }
-            }
         }
         else if (m_Player.GetPlayerNumber() == 1)
         {
@@ -137,16 +126,16 @@ public class Buster : MonoBehaviour
                 m_Tank.Farmer(0.5f);
             }
 
-            //if (m_joyconR != null)
-            //{
-            //    if (m_joyconR.GetButtonDown(Joycon.Button.SHOULDER_1))
-            //    {
-            //        if (!m_Tank.GetFurzFlg())
-            //        {
-            //            BulletShot();
-            //        }
-            //    }
-            //}
+            if (m_joyconR != null)
+            {
+                if (m_joyconR.GetButtonDown(Joycon.Button.SHOULDER_1))
+                {
+                    if (!m_Tank.GetFurzFlg())
+                    {
+                        BulletShot();
+                    }
+                }
+            }
         }
 
         if (m_bGasFlg)
@@ -186,7 +175,7 @@ public class Buster : MonoBehaviour
             {
                 int nNumber = m_Player.GetPlayerNumber();
 
-                //Instantiate(m_ExplosionObject, hit.collider.gameObject.transform.position, Quaternion.identity);
+                Instantiate(m_ExplosionObject, hit.collider.gameObject.transform.position, Quaternion.identity);
                 InfoManager.Instance.AddPlayerScore(nNumber, hit.collider.gameObject.GetComponent<Enemy_Score>().GetScore());
                 hit.collider.gameObject.GetComponent<Enemy_State>().SetState(Enemy_State.STATE.DAMAGE);
 
