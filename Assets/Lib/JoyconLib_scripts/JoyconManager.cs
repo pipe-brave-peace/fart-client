@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 using UnityEngine;
 using System;
-public class JoyconManager : SingletonMonoBehaviour<InfoManager>
+public class JoyconManager: MonoBehaviour
 {
 
     // Settings accessible via Unity

@@ -158,7 +158,7 @@ public class Enemy_Kuma : MonoBehaviour {
                     // 食べる状態に変更
                     m_State.CanSet(true);
                     m_State.SetState(Enemy_State.STATE.EAT);
-                    m_Animator.Play("Eat");
+                    m_Animator.SetBool("WalkToEat", true);
                     MoveHoming(gameObject);     // 止まる
                 }
                 break;
@@ -174,7 +174,7 @@ public class Enemy_Kuma : MonoBehaviour {
                 {
                     // 次を探す
                     m_State.SetState(Enemy_State.STATE.MOVE);
-                    m_Animator.Play("Walk");
+                    m_Animator.SetBool("WalkToEat", false);
                     break;
                 }
 
