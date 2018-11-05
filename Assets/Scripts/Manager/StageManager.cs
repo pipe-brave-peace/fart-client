@@ -15,9 +15,6 @@ public class StageManager : MonoBehaviour {
     [SerializeField]
     PhaseManager m_PhaseManager;
 
-    private List<Joycon> m_joycons;
-    private Joycon m_joyconR;
-
     // ステージモード定義
     enum STAGE_MODE
     {
@@ -39,10 +36,6 @@ public class StageManager : MonoBehaviour {
 	void Start () {
         Mode = STAGE_MODE.READY;
         m_Bgm.Play ();
-
-        m_joycons = JoyconManager.Instance.j;
-
-        m_joyconR = m_joycons.Find(c => !c.isLeft);
 
         m_GameClear.SetActive(false);
         m_GameOver.SetActive(false);
@@ -95,18 +88,6 @@ public class StageManager : MonoBehaviour {
     // ゲームメイン処理
     void ModeGame()
     {
-        if (m_joyconR != null)
-        {
-            if (m_GameClear.active)
-            {
-                if (m_joyconR.GetButtonDown(Joycon.Button.SHOULDER_1))
-                {
-                    // 次のモードに移行
-                    Mode = STAGE_MODE.TO_RESULT;
-                }
-            }
-        }
-
         // キー押し判定
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
         {
