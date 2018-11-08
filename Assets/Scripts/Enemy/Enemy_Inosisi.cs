@@ -16,11 +16,15 @@ public class Enemy_Inosisi : MonoBehaviour {
     [SerializeField]
     GameObject   m_TargetObj;           // 目標オブジェクト
     [SerializeField]
+    float        m_AttackTimer;         // 突進までのカウント
+    [SerializeField]
     GameObject[] m_NavCrops;            // 農作物リスト
     [SerializeField]
     float        m_Satiety;             // 満腹度
     [SerializeField]
     float        m_EatSpeed = 1.0f;     // 食べるスピード
+    [SerializeField]
+    SkinnedMeshRenderer m_Color;        // 自分の色
     [SerializeField]
     GameObject   m_AttackEffect;        // 攻撃エフェクト
     [SerializeField]
@@ -32,12 +36,14 @@ public class Enemy_Inosisi : MonoBehaviour {
 
     private Enemy_State     m_State;        // 状態
     private NavMeshAgent    m_Nav;          // ナビメッシュ
+    private float           m_MoveSpeed;    // 移動スピード
     private Vector3         m_FadePos;      // 退却座標
     private Life            m_Life;         // 体力
-    private Renderer        m_Color;        // 自分の色
     private Color           m_FadeColor;    // 退却時の色の変化用
     private bool            m_isAttack;     // 攻撃したかどうか
+    private bool            m_AttackMode;   // 攻撃モードの突進準備と突進の判別
     private bool            m_isBuff;       // オナラスプレー受けたかどうか
+    private Animator        m_Animator;     // アニメション
 
     // 初期化
     void Start()
@@ -46,18 +52,20 @@ public class Enemy_Inosisi : MonoBehaviour {
         if (!m_TargetObj) { m_TargetObj = m_NavCrops[0]; }
 
         // コンポーネントの取得
-        m_Life  = GetComponent<Life>();
-        m_State = GetComponent<Enemy_State>();
-        m_Nav   = GetComponent<NavMeshAgent>();
-        m_Color = GetComponent<Renderer>();
+        m_Life      = GetComponent<Life>();
+        m_State     = GetComponent<Enemy_State>();
+        m_Nav       = GetComponent<NavMeshAgent>();
+        m_Animator  = GetComponent<Animator>();
 
         // 変数初期化
-        m_FadeColor = m_Color.material.color;       // 現在の色をセット
-        m_isAttack  = false;                        // 攻撃していない
-        m_isBuff    = false;                        // オナラスプレーに攻撃されていない
+        m_MoveSpeed  = m_Nav.speed;                          // 移動スピードの代入
+        m_FadeColor  = new Color( 1.0f,1.0f,1.0f,1.0f);      // 現在の色をセット
+        m_isAttack   = false;                                // 攻撃していない
+        m_isBuff     = false;                                // オナラスプレーに攻撃されていない
+        m_AttackMode = false;                                // 攻撃モードに入ったら突進準備
         // 退却ポイントがない：生成座標を代入
         // 退却ポイントがある：退却ポイント座標を代入
-        if( m_FadePoint == null)
+        if ( m_FadePoint == null)
         {
             m_FadePos = transform.position;
         }
@@ -93,10 +101,12 @@ public class Enemy_Inosisi : MonoBehaviour {
                     {
                         // 満腹になる
                         m_State.SetState(Enemy_State.STATE.SATIETY);
+                        m_Animator.SetBool("MoveToEat", false);
                         break;
                     }
                     // まだ足りないなら次を探す
                     m_State.SetState(Enemy_State.STATE.MOVE);
+                    m_Animator.SetBool("MoveToEat", false);
                     break;
                 }
 
@@ -110,19 +120,52 @@ public class Enemy_Inosisi : MonoBehaviour {
                 // 満腹値をカウントダウン
                 m_Satiety -= Time.deltaTime;
                 // 0になったら満腹状態へ
-                if (m_Satiety <= 0.0f) { m_State.SetState(Enemy_State.STATE.SATIETY); }
+                if (m_Satiety <= 0.0f)
+                {
+                    m_State.SetState(Enemy_State.STATE.SATIETY);
+                    m_Animator.SetBool("MoveToEat", false);
+                }
                 break;
 
             case Enemy_State.STATE.ATTACK:      // 攻撃
-                Debug_State_Text.text = "STATE:攻撃している";   // テスト
-                // 攻撃のエフェクトを生成
-                GameObject attack_effect = Instantiate(m_AttackEffect, new Vector3(0.0f,0.0f,0.0f), Quaternion.identity) as GameObject;
-                // 攻撃するプレイヤーを判別
-                attack_effect.GetComponent<Effect_Damage>().Set(m_TargetObj.GetComponent<Player>().GetPlayerNumber());
-                // フラグを攻撃したに変更
-                m_isAttack = true;
-                // 満足状態へ
-                m_State.SetState(Enemy_State.STATE.SATIETY);
+                // モードの判別：false-突進準備、true-突進
+                if( !m_AttackMode)
+                {
+                    Debug_State_Text.text = "STATE:突進準備";   // テスト
+                    // アニメション終わった？
+                    if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
+                    {
+                        // 突進へ
+                        m_AttackMode = true;
+                        // 移動アニメーションへ
+                        m_Animator.Play("Move");
+                        // 対象の位置の方向に移動
+                        MoveHoming(m_TargetObj.transform.position);
+                        // 移動スピードアップ
+                        m_Nav.speed = m_MoveSpeed * 3.0f;
+                    }
+                }
+                else
+                {
+                    Debug_State_Text.text = "STATE:進め！！！";   // テスト
+                    // 対象の位置の方向に移動
+                    MoveHoming(m_TargetObj.transform.position);
+                    // 対象と近いなら
+                    if (DistanceNoneY(m_TargetObj.transform.position, 3.0f))
+                    {
+                        // 攻撃のエフェクトを生成
+                        GameObject attack_effect = Instantiate(m_AttackEffect, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as GameObject;
+                        // 攻撃するプレイヤーを判別
+                        attack_effect.GetComponent<Effect_Damage>().Set(m_TargetObj.GetComponent<Player>().GetPlayerNumber());
+                        // フラグを攻撃したに変更
+                        m_isAttack = true;
+                        // 満足状態へ
+                        m_State.SetState(Enemy_State.STATE.SATIETY);
+                        // 通常スピード
+                        m_Nav.speed = m_MoveSpeed;
+                        return;
+                    }
+                }
                 break;
 
             case Enemy_State.STATE.SATIETY:     // 満足（攻撃したら）
@@ -157,8 +200,14 @@ public class Enemy_Inosisi : MonoBehaviour {
                 }
                 // ダメージ処理
                 Debug_State_Text.text = "STATE:痛えぇ！";   // テスト
+                // 通常スピードに戻る
+                m_Nav.speed = m_MoveSpeed;
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
+                // フラグをスプレーを受けてないに変更
+                m_isBuff = false;
+                // 匂いのエフェクトの再生
+                m_BuffEffect.SetActive(false);
 
                 // エフェクトの生成
                 GameObject damage_effect = Instantiate(m_DamageEffect, transform.position, Quaternion.identity) as GameObject;
@@ -168,9 +217,10 @@ public class Enemy_Inosisi : MonoBehaviour {
                 {
                     // 透明できる描画モードに変更
                     BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
-                    m_FadeColor.a = 1.0f;                           // アルファ値セット
                     m_Color.material.color = m_FadeColor;           // 色の代入
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                    m_Animator.SetBool("MoveToEat", false);
+                    m_Animator.SetBool("MoveToAttack", false);
                     break;
                 }
                 m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
@@ -228,35 +278,53 @@ public class Enemy_Inosisi : MonoBehaviour {
     // 移動モード
     void StateMove()
     {
-        // だいたい食べた？攻撃した？
-        if (m_Satiety <= 0.5f || m_isAttack)
+        // 目標が農作物の場合
+        if (m_TargetObj.tag == "Crops")
         {
-            // 離脱する
-            m_State.SetState(Enemy_State.STATE.SATIETY);
-            return;
-        }
-        // 目標がなくなった？
-        if (m_TargetObj == null)
-        {
-            // 再検索
-            m_TargetObj = SerchCrops();          // 農作物をサーチ
-            return;
-        }
-        // 対象と近いなら
-        if (DistanceNoneY(m_TargetObj.transform.position, 5.0f))
-        {
-            // 目標が農作物の場合
-            if (m_TargetObj.tag == "Crops")
+            // だいたい食べた
+            if (m_Satiety <= 0.5f)
+            {
+                // 離脱する
+                m_State.SetState(Enemy_State.STATE.SATIETY);
+                return;
+            }
+            // 目標がなくなった？
+            if (m_TargetObj == null)
+            {
+                // 再検索
+                m_TargetObj = SerchCrops();          // 農作物をサーチ
+                return;
+            }
+            // 対象と近いなら
+            if (DistanceNoneY(m_TargetObj.transform.position, 3.0f))
             {
                 // 食べる状態に変更
                 m_State.SetState(Enemy_State.STATE.EAT);
+                m_Animator.SetBool("MoveToEat", true);
+                m_Nav.SetDestination(transform.position);       // 移動を止める
                 return;
             }
-            // 目標がプレイヤーの場合
-            // 攻撃状態に変更
-            m_State.SetState(Enemy_State.STATE.ATTACK);
-            m_Nav.SetDestination(transform.position);       // 移動を止める
-            return;
+        }
+        // 目標がプレイヤーの場合
+        else
+        {
+            // 攻撃した？
+            if (m_isAttack)
+            {
+                // 離脱する
+                m_State.SetState(Enemy_State.STATE.SATIETY);
+                return;
+            }
+            // 突進までのカウント
+            m_AttackTimer -= Time.deltaTime;
+            if( m_AttackTimer <= 0.0f)
+            {
+                // 攻撃準備状態に変更
+                m_State.SetState(Enemy_State.STATE.ATTACK);
+                m_Animator.Play("Attack");
+                m_Nav.SetDestination(transform.position);       // 移動を止める
+                return;
+            }
         }
         // 対象の位置の方向に移動
         MoveHoming(m_TargetObj.transform.position);

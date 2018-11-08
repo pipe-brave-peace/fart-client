@@ -100,27 +100,6 @@ public class Enemy_Kuma : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        // テスト
-        if( Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            m_Animator.Play("Walk");
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            m_Animator.Play("Eat");
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            m_Animator.Play("Bark");
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            m_Animator.Play("Claw");
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha5))
-        {
-            m_Animator.Play("Flinch");
-        }
         // フェーズ判定
         switch (m_Phase)
         {

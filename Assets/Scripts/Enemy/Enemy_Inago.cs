@@ -116,37 +116,23 @@ public class Enemy_Inago : MonoBehaviour
                 m_BuffEffect.SetActive(true);
 
                 m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
-                // 虫の場合
-                if (m_State.isMusi())
-                {
-                    // 体力を減らす
-                    m_Life.SubLife(1.0f);
 
-                    // 体力がなくなった？
-                    if (m_Life.GetLife() <= 0)
-                    {
-                        // 透明できる描画モードに変更
-                        BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
-                        m_FadeColor.a = 1.0f;
-                        m_Color.material.color = m_FadeColor;
-                        m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
-                        break;
-                    }
-                }
-                else
+                // 体力を減らす
+                m_Life.SubLife(1.0f);
+
+                // 体力がなくなった？
+                if (m_Life.GetLife() <= 0)
                 {
-                    StateMove();
+                    // 透明できる描画モードに変更
+                    BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
+                    m_FadeColor.a = 1.0f;
+                    m_Color.material.color = m_FadeColor;
+                    m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                    break;
                 }
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
-                // バフがない&&虫ではない？
-                if( !m_isBuff && !m_State.isMusi())
-                {
-                    m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
-                    StateMove();
-                    break;
-                }
 
                 Debug_State_Text.text = "STATE:痛えぇ！";
                 // 体力を減らす

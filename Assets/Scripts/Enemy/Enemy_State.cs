@@ -18,8 +18,6 @@ public class Enemy_State : MonoBehaviour {
         FAINT,      // 気絶
         MAX
     }
-    [SerializeField]
-    bool m_isMusi;
 
     private STATE m_State = STATE.MOVE;
     private bool m_canSet = true;
@@ -38,10 +36,5 @@ public class Enemy_State : MonoBehaviour {
     public void CanSet(bool CanSet)
     {
         m_canSet = CanSet;
-    }
-    
-    public bool isMusi()
-    {
-        return m_isMusi;
     }
 }
