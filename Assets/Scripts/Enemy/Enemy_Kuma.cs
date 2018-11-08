@@ -199,7 +199,7 @@ public class Enemy_Kuma : MonoBehaviour {
 
             case Enemy_State.STATE.SPRAY:
                 m_State.SetState(Enemy_State.STATE.MOVE);
-                m_Animator.Play("Walk");
+                //m_Animator.Play("Walk");
                 break;
                 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
