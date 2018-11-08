@@ -140,6 +140,9 @@ public class Enemy_Kamemusi : MonoBehaviour {
             case Enemy_State.STATE.ESCAPE:   // 逃げる
                 Debug_State_Text.text = "STATE:FadeOut";
 
+                // 状態遷移はもうできない
+                m_State.CanSet(false);
+
                 // 離脱の位置の方向に移動
                 m_Nav.SetDestination(m_PosOld);
 

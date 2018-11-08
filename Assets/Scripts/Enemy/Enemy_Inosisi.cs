@@ -215,7 +215,7 @@ public class Enemy_Inosisi : MonoBehaviour {
                 m_Life.SubLife(1.0f);
                 // フラグをスプレーを受けてないに変更
                 m_isBuff = false;
-                // 匂いのエフェクトの再生
+                // 匂いのエフェクトの停止
                 m_BuffEffect.SetActive(false);
 
                 // エフェクトの生成
@@ -249,13 +249,10 @@ public class Enemy_Inosisi : MonoBehaviour {
                 m_Color.material.color = m_FadeColor;
 
                 // 汗を止める
-                if( m_FadeColor.a <= 0.3f)
-                {
-                    m_EscapeEffect.SetActive(false);
-                }
+                if (m_FadeColor.a <= 0.3f) { m_EscapeEffect.SetActive(false); }
 
-                // 透明になった自分を消す
-                if (m_FadeColor.a <= 0.0f) { Destroy(gameObject); }
+                // 透明になった親を消す
+                if (m_FadeColor.a <= 0.0f) { Destroy(transform.parent.gameObject); }
                 return;
         }
     }
