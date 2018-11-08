@@ -73,48 +73,51 @@ public class Tank : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if (Input.GetKey(KeyCode.R))
+        switch (AllManager.Instance.GetStateScene())
         {
-            //m_FurzUI.value = 0;
-        }
+            case AllManager.STATE_SCENE.STATE_TITLE:
+                break;
 
-        if (m_joyconL != null)
-        {
-            if (OldPos < -0.2f)
-            {
-                if (m_joyconL.GetGyro().y < -0.2f)
+            case AllManager.STATE_SCENE.STATE_STAGE:
+                if (m_joyconL != null)
                 {
-                    if (m_nTime > 0)
+                    if (OldPos < -0.2f)
                     {
-                        m_nTime--;
-                    }
+                        if (m_joyconL.GetGyro().y < -0.2f)
+                        {
+                            if (m_nTime > 0)
+                            {
+                                m_nTime--;
+                            }
 
-                    if (m_nTime <= 0)
+                            if (m_nTime <= 0)
+                            {
+                                Farmer(0.5f);
+                                m_nTime = m_nOldTime;
+                            }
+                        }
+                        else if (m_joyconL.GetGyro().y < -0.1f)
+                        {
+                            Farmer(0.001f);
+                            m_nTime = m_nOldTime;
+                        }
+                    }
+                    else
                     {
-                        Farmer(0.5f);
                         m_nTime = m_nOldTime;
                     }
-                }
-                else if (m_joyconL.GetGyro().y < -0.1f)
-                {
-                    Farmer(0.001f);
-                    m_nTime = m_nOldTime;
-                }
-            }
-            else
-            {
-                m_nTime = m_nOldTime;
-            }
 
-            OldPos = m_joyconL.GetGyro().y;
+                    OldPos = m_joyconL.GetGyro().y;
+                }
+
+                GaugeAdjustment();
+
+                WidthAdjustment();
+                break;
+
+            case AllManager.STATE_SCENE.STATE_RESULT:
+                break;
         }
-
-        DebugController();
-
-        GaugeAdjustment();
-
-        WidthAdjustment();
     }
 
     //オナラ貯める
@@ -132,32 +135,12 @@ public class Tank : MonoBehaviour
     //オナラ発射
     public void FartingFarts(float fFartingValue)
     {
-        //Effect.Play();
         m_bFurzFlg = true;
         m_bFiring = true;
         m_FurzValue = 0.0f;
         m_ChargeValue = fFartingValue;
         m_fUvRectX = -0.01f;
         m_fMove = -m_fOldMove;
-    }
-
-    //デバッグ用キーボード入力
-    private void DebugController()
-    {
-        //if (Input.GetKeyDown(KeyCode.Q))
-        //{
-        //    Farmer(m_fWeak);
-        //}
-        //
-        //if (Input.GetKeyDown(KeyCode.W))
-        //{
-        //    Farmer(m_fNormal);
-        //}
-        //
-        //if (Input.GetKeyDown(KeyCode.E))
-        //{
-        //    Farmer(m_fStrength);
-        //}
     }
 
     //UI幅調整

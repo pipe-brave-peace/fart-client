@@ -24,8 +24,6 @@ public class PlayerAll : MonoBehaviour {
 
     private void Awake()
     {
-        // updateを自動で行わないように設定する
-        //m_Navigate.updatePosition = false;
         m_Navigate.updateRotation = false;
     }
 
@@ -37,60 +35,64 @@ public class PlayerAll : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (m_NavPoint.Length - 1 < nNumber)
+        switch (AllManager.Instance.GetStateScene())
         {
-            //対象の位置の方向に移動
-            //m_Navigate.SetDestination(transform.position);
-        }
-        else
-        {
-            //if (m_PhaseManager.GetNowPhaseIndex() == 1)
-            //{
-
-            //対象の位置の方向に移動
-            m_Navigate.SetDestination(m_NavPoint[nNumber].transform.position);
-            if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.MOVE ||
-                m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.ROTSTOP)
-            {
-                Vector();
-            }
-            //}
-
-            if (transform.position.x == m_NavPoint[nNumber].transform.position.x &&
-                transform.position.z == m_NavPoint[nNumber].transform.position.z)
-            {
-                if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetChangePhase())
+            case AllManager.STATE_SCENE.STATE_TITLE:
+                break;
+        
+            case AllManager.STATE_SCENE.STATE_STAGE:
+                if (m_NavPoint.Length - 1 < nNumber)
                 {
-                    m_PhaseManager.Play();
                 }
                 else
-                {
-                    m_PhaseManager.Stop();
-                }
-
-                if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.STOP)
-                {
-                    Vector();
-                }
-
-                if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.STOP ||
-                    m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.ROTSTOP)
-                {
-                    Vector();
-                    if (index != m_PhaseManager.GetNowPhaseIndex())
+                { 
+                    //対象の位置の方向に移動
+                    m_Navigate.SetDestination(m_NavPoint[nNumber].transform.position);
+                    if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.MOVE ||
+                        m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.ROTSTOP)
                     {
-                        nNumber ++;
+                        Vector();
                     }
-                }
-                else if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.MOVE)
-                {
-                    nNumber ++;
-                }
-            }
 
-            index = m_PhaseManager.GetNowPhaseIndex();
+                    if (transform.position.x == m_NavPoint[nNumber].transform.position.x &&
+                        transform.position.z == m_NavPoint[nNumber].transform.position.z)
+                    {
+                        if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetChangePhase())
+                        {
+                            m_PhaseManager.Play();
+                        }
+                        else
+                        {
+                            m_PhaseManager.Stop();
+                        }
+
+                        if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.STOP)
+                        {
+                            Vector();
+                        }
+
+                        if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.STOP ||
+                            m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.ROTSTOP)
+                        {
+                            Vector();
+                            if (index != m_PhaseManager.GetNowPhaseIndex())
+                            {
+                                nNumber++;
+                            }
+                        }
+                        else if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.MOVE)
+                        {
+                            nNumber++;
+                        }
+                    }
+
+                    index = m_PhaseManager.GetNowPhaseIndex();
+                }
+                break;
+        
+            case AllManager.STATE_SCENE.STATE_RESULT:
+                break;
         }
-
     }
 
     void Vector()

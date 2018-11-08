@@ -4,7 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class TitleManager : MonoBehaviour {
-    
+
+    [SerializeField]
+    GameObject m_TitleUI;
+
+    [SerializeField]
+    GameObject TitleCamera;
+
     public AudioSource m_Bgm;           // BGM
 
     // Use this for initialization
@@ -22,10 +28,13 @@ public class TitleManager : MonoBehaviour {
 	    // キー押し判定
 		if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
 		{
-			ModeManager.Instance.SetChangeScene (ModeManager.SCENE_TYPE.GAME);
+            AllManager.Instance.SetStateScene(AllManager.STATE_SCENE.STATE_STAGE);
             SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.PUSH_BUTTON);
 			m_Bgm.Stop();
             InfoManager.Instance.InitInfo();
-		}
+            m_TitleUI.SetActive(false);
+            gameObject.SetActive(false);
+            TitleCamera.SetActive(false);
+        }
 	}
 }

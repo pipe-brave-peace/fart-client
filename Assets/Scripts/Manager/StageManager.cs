@@ -7,6 +7,15 @@ public class StageManager : MonoBehaviour {
     
     public AudioSource m_Bgm;           // BGM
 
+    [SerializeField]
+    GameObject Stage_Object;
+
+    [SerializeField]
+    GameObject Stage_UI;
+
+    [SerializeField]
+    GameObject ResultCamera;
+
     // ゲーム終了表示
     [SerializeField]
     GameObject m_GameClear;
@@ -34,6 +43,11 @@ public class StageManager : MonoBehaviour {
 
 	// 初期化
 	void Start () {
+        AllManager.Instance.SetStateScene(AllManager.STATE_SCENE.STATE_STAGE);
+
+        Stage_Object.SetActive(true);
+        Stage_UI.SetActive(true);
+
         Mode = STAGE_MODE.READY;
         m_Bgm.Play ();
 
@@ -47,6 +61,7 @@ public class StageManager : MonoBehaviour {
         if (GameObject.FindGameObjectsWithTag("Enemy").Length <= 0 &&
             m_PhaseManager.GetNowPhaseIndex() >= 6)
         {
+            ResultCamera.SetActive(true);
             m_GameClear.SetActive(true);
             m_GameOver.SetActive(false);
         }
@@ -100,10 +115,13 @@ public class StageManager : MonoBehaviour {
     public void ModeToResult()
     {
         // シーン遷移処理
-        ModeManager.Instance.SetChangeScene(ModeManager.SCENE_TYPE.RESULT);
+        AllManager.Instance.SetStateScene(AllManager.STATE_SCENE.STATE_RESULT);
         SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.PUSH_BUTTON);
         m_Bgm.Stop();
 
+        Stage_Object.SetActive(false);
+        Stage_UI.SetActive(false);
+   
         // 次のモードに移行
         Mode = STAGE_MODE.MAX;
     }

@@ -164,56 +164,76 @@ public class Buster : MonoBehaviour
     //　敵を撃つ
     void BulletShot()
     {
-        if (m_FartsUI.uvRect.x > 0.6f) { return; }
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        Instantiate(m_ExplosionObject, gameObject.transform.position, Quaternion.identity);
-
-        if (m_Player.GetPlayerNumber() == 0)
+        switch (AllManager.Instance.GetStateScene())
         {
+            case AllManager.STATE_SCENE.STATE_TITLE:
+                break;
 
-            ray = Camera.main.ScreenPointToRay(m_ReticleUI.rectTransform.position);
-        }
-        else if (m_Player.GetPlayerNumber() == 1)
-        {
-            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        }
+            case AllManager.STATE_SCENE.STATE_STAGE:
+                if (m_FartsUI.uvRect.x > 0.6f) { return; }
 
-        RaycastHit hit;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out hit, 600f, LayerMask.GetMask("Enemy")))
-        {
-            if (hit.collider.gameObject.GetComponent<Enemy_State>().GetState() != Enemy_State.STATE.ESCAPE)
-            {
-                int nNumber = m_Player.GetPlayerNumber();
+                Instantiate(m_ExplosionObject, gameObject.transform.position, Quaternion.identity);
 
-                InfoManager.Instance.AddPlayerScore(nNumber, hit.collider.gameObject.GetComponent<Enemy_Score>().GetScore());
-                hit.collider.gameObject.GetComponent<Enemy_State>().SetState(Enemy_State.STATE.DAMAGE);
-
-                if (hit.collider.gameObject.GetComponent<Life>().GetLife() <= 0)
+                if (m_Player.GetPlayerNumber() == 0)
                 {
-                    InfoManager.Instance.AddPlayerCombo(nNumber);
-                    InfoManager.Instance.AddPlayerEnemy(nNumber);
+
+                    ray = Camera.main.ScreenPointToRay(m_ReticleUI.rectTransform.position);
                 }
-            }
+                else if (m_Player.GetPlayerNumber() == 1)
+                {
+                    ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                }
+
+                RaycastHit hit;
+
+                if (Physics.Raycast(ray, out hit, 600f, LayerMask.GetMask("Enemy")))
+                {
+                    if (hit.collider.gameObject.GetComponent<Enemy_State>().GetState() != Enemy_State.STATE.ESCAPE)
+                    {
+                        int nNumber = m_Player.GetPlayerNumber();
+
+                        InfoManager.Instance.AddPlayerScore(nNumber, hit.collider.gameObject.GetComponent<Enemy_Score>().GetScore());
+                        hit.collider.gameObject.GetComponent<Enemy_State>().SetState(Enemy_State.STATE.DAMAGE);
+
+                        if (hit.collider.gameObject.GetComponent<Life>().GetLife() <= 0)
+                        {
+                            InfoManager.Instance.AddPlayerCombo(nNumber);
+                            InfoManager.Instance.AddPlayerEnemy(nNumber);
+                        }
+                    }
+                }
+
+                m_Tank.FartingFarts(-0.5f);
+                break;
+
+            case AllManager.STATE_SCENE.STATE_RESULT:
+                break;
         }
-
-        m_Tank.FartingFarts(-0.5f);
-
-        //m_FartsUI.value -= m_FartsValue;
     }
 
     void GasShot()
     {
-        if (m_FartsUI.uvRect.x >= 0.99f) { return; }
+        switch (AllManager.Instance.GetStateScene())
+        {
+            case AllManager.STATE_SCENE.STATE_TITLE:
+                break;
 
-        m_Tank.FartingFarts(-0.01f);
+            case AllManager.STATE_SCENE.STATE_STAGE:
+                if (m_FartsUI.uvRect.x >= 0.99f) { return; }
 
-        GameObject newBullet = Instantiate(m_GasBulletObject, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
+                m_Tank.FartingFarts(-0.01f);
 
-        Vector3 force = transform.forward * m_VecPow;
+                GameObject newBullet = Instantiate(m_GasBulletObject, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
 
-        newBullet.GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
+                Vector3 force = transform.forward * m_VecPow;
+
+                newBullet.GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
+                break;
+
+            case AllManager.STATE_SCENE.STATE_RESULT:
+                break;
+        }
     }
 }
