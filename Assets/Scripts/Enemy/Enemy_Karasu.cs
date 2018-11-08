@@ -9,38 +9,49 @@ using UnityEngine;
 public class Enemy_Karasu : MonoBehaviour {
 
     [SerializeField]
-    TextMesh Debug_State_Text;
+    TextMesh     Debug_State_Text;      // テスト
     [SerializeField]
-    GameObject m_FadePoint;     // 退却ポイント
+    GameObject   m_FadePoint;           // 退却ポイント
     [SerializeField]
-    Renderer m_Color;               // 自分の色
+    Renderer     m_Color;               // 自分の色
     [SerializeField]
-    GameObject[] m_NavObj;          // 農作物リスト
+    GameObject[] m_NavObj;              // 農作物リスト
     [SerializeField]
-    float m_Speed = 0.05f;          // スピード
+    float        m_MoveSpeed = 0.05f;   // スピード
     [SerializeField]
-    float m_Satiety;            // 満腹度
+    float        m_Satiety;             // 満腹度
     [SerializeField]
-    float m_EatSpeed = 1.0f;        // 食べるスピード
+    float        m_EatSpeed = 1.0f;     // 食べるスピード
     [SerializeField]
-    GameObject m_TargetObj; // ターゲット
+    GameObject   m_TargetObj;           // ターゲット
     [SerializeField]
-    GameObject m_DamageEffect;          // ダメージエフェクト
+    GameObject   m_DamageEffect;        // ダメージエフェクト
 
-    private Enemy_State m_State;    // 状態
-    private Life m_Life;            // 体力
-    private Color m_FadeColor;
+    private Enemy_State m_State;        // 状態
+    private Life        m_Life;         // 体力
+    private Vector3     m_FadePos;      // 退却座標
+    private Color       m_FadeColor;    // 退却時の色
 
     // Use this for initialization
     void Start()
     {
         // ターゲットがなければ農作物をターゲットに
         if( !m_TargetObj) { m_TargetObj = m_NavObj[0]; }
-        // モードの取得
+        // コンポーネント取得
         m_State = GetComponent<Enemy_State>();
-        // 体力の取得
         m_Life = GetComponent<Life>();
+        // 変数初期化
         m_FadeColor = m_Color.material.color;
+        // 退却ポイントがない：生成座標を代入
+        // 退却ポイントがある：退却ポイント座標を代入
+        if( m_FadePoint == null)
+        {
+            m_FadePos = transform.position;
+        }
+        else
+        {
+            m_FadePos = m_FadePoint.transform.position;
+        }
         // スコアセット
         Enemy_Score score = GetComponent<Enemy_Score>();
         score.SetScore(Score_List.Enemy.Karasu);
@@ -53,18 +64,17 @@ public class Enemy_Karasu : MonoBehaviour {
         switch (m_State.GetState())
         {
             case Enemy_State.STATE.MOVE:     // 移動
-                Debug_State_Text.text = "STATE:Move";
-                // 目標がなくなった？
+                Debug_State_Text.text = "STATE:Move";  // テスト
+                // 目標がなくなったら再検索
                 if (m_TargetObj == null)
                 {
-                    // 再検索
-                    m_TargetObj = SerchCrops();          // 農作物をサーチ
+                    m_TargetObj = SerchCrops();
                     break;
                 }
-                //対象の位置の方向を向く
+                // 対象の位置の方向を向く
                 LookAtNoneY(m_TargetObj);
                 // 目標へ移動
-                MoveHoming(m_TargetObj, m_Speed);
+                MoveHoming(m_TargetObj, m_MoveSpeed);
 
                 // 目標が農作物？
                 if( m_TargetObj.tag != "Crops") { break; }
@@ -77,7 +87,7 @@ public class Enemy_Karasu : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.EAT:      // 食べる
-                Debug_State_Text.text = "STATE:食べているよ";
+                Debug_State_Text.text = "STATE:食べているよ";  // テスト
                 // 食べ終わった？
                 if (m_TargetObj == null)
                 {
@@ -110,7 +120,7 @@ public class Enemy_Karasu : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.SATIETY:  // 満腹
-                Debug_State_Text.text = "STATE:満腹";
+                Debug_State_Text.text = "STATE:満腹";  // テスト
                 // 目標に着いた？
                 if (m_TargetObj == null)
                 {
@@ -122,11 +132,11 @@ public class Enemy_Karasu : MonoBehaviour {
                 // 対象の位置の方向を向く
                 LookAtNoneY(m_TargetObj);
                 // 目標へ移動
-                MoveHoming(m_TargetObj, m_Speed * 0.5f);
+                MoveHoming(m_TargetObj, m_MoveSpeed);
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
-                Debug_State_Text.text = "STATE:痛えぇ！";
+                Debug_State_Text.text = "STATE:痛えぇ！";  // テスト
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
 
@@ -147,12 +157,12 @@ public class Enemy_Karasu : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
-                Debug_State_Text.text = "STATE:FadeOut";
+                Debug_State_Text.text = "STATE:FadeOut";  // テスト
 
                 // 離脱の位置の方向に移動
-                LookAtNoneY(m_FadePoint);
+                LookAtNoneY(m_FadePos);
                 // 目標へ移動
-                MoveHoming(m_FadePoint, m_Speed);
+                MoveHoming(m_FadePos, m_MoveSpeed);
 
                 // アルファ値を減らす
                 m_FadeColor.a -= 0.01f;
@@ -200,13 +210,13 @@ public class Enemy_Karasu : MonoBehaviour {
     {
         Vector3 move = Target.transform.position - transform.position;   // 目的へのベクトル
         move = move.normalized;                                             // 正規化
-        transform.position += move * m_Speed;
+        transform.position += move * Speed;
     }
     void MoveHoming(Vector3 TargetPos, float Speed)
     {
         Vector3 move = TargetPos - transform.position;   // 目的へのベクトル
         move = move.normalized;                                             // 正規化
-        transform.position += move * m_Speed;
+        transform.position += move * Speed;
     }
 
     void OnTriggerEnter(Collider other)

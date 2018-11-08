@@ -285,6 +285,8 @@ MonoBehaviour:
     type: 2}
   m_DamageEffect: {fileID: 1484713999219436, guid: 43a9b44292b4f71448eee55d06c4677c,
     type: 2}
+  m_EscapeEffect: {fileID: 1512656603426102, guid: 5961a97c72b6bed47a9d15ad8afdd1ce,
+    type: 2}
   m_BuffEffect: {fileID: 1190170675249728}
 --- !u!114 &114531902177245724
 MonoBehaviour:
@@ -309,7 +311,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b2c0acc59eea314594ddd256abe2ccd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_canBuff: 1
+  m_isMusi: 0
 --- !u!114 &114739495253811622
 MonoBehaviour:
   m_ObjectHideFlags: 1
