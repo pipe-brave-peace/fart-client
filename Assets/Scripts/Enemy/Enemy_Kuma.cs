@@ -187,7 +187,14 @@ public class Enemy_Kuma : MonoBehaviour {
 
             case Enemy_State.STATE.CRY:
                 Debug_State_Text.text = "STATE:がおぉぉ！！！";
-                m_Animator.Play("Bark");
+                m_Animator.SetBool("WalkToCry", true);
+
+                // アニメション終わった？
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+                {
+                    m_State.SetState(Enemy_State.STATE.MOVE);
+                    m_Animator.SetBool("WalkToCry", false);
+                }
                 break;
 
             case Enemy_State.STATE.SPRAY:

@@ -9,7 +9,7 @@ namespace WiimoteApi {
 
 public class WiimoteManager
 {
-    private const ushort vendor_id_wiimote = 0x057e;
+    private const ushort vendor_id_wiimote = 0x57e;
     private const ushort product_id_wiimote = 0x0306;
     private const ushort product_id_wiimoteplus = 0x0330;
 
