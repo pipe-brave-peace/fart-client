@@ -19,22 +19,19 @@ public class Enemy_State : MonoBehaviour {
         MAX
     }
 
-    private STATE m_State = STATE.MOVE;
-    private bool m_canSet = true;
+    private STATE m_State    = STATE.MOVE;
+    private STATE m_StateOld = STATE.MOVE;
+    private bool  m_canSet   = true;
    
     public void SetState(STATE State)
     {
         if(!m_canSet) { return; }
+        if( m_State != m_StateOld) { m_StateOld = m_State; }
         m_State = State;
     }
 
-    public STATE GetState()
-    {
-        return m_State;
-    }
+    public STATE GetState()     { return m_State; }
+    public STATE GetStateOld()  { return m_StateOld; }
 
-    public void CanSet(bool CanSet)
-    {
-        m_canSet = CanSet;
-    }
+    public void CanSet(bool CanSet) { m_canSet = CanSet; }
 }
