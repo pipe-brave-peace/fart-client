@@ -21,6 +21,8 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
     float        m_MoveSpeed = 0.05f;   // スピード
     [SerializeField]
     float        m_FadeTimer;           // 退却までのカウント
+
+    [Header("以下編集しないこと！")]
     [SerializeField]
     SkinnedMeshRenderer m_Color;        // 自分の色
     [SerializeField]

@@ -23,6 +23,8 @@ public class Enemy_Inosisi : MonoBehaviour {
     float        m_Satiety;             // 満腹度
     [SerializeField]
     float        m_EatSpeed = 1.0f;     // 食べるスピード
+
+    [Header("以下編集しないこと！")]
     [SerializeField]
     SkinnedMeshRenderer m_Color;        // 自分の色
     [SerializeField]

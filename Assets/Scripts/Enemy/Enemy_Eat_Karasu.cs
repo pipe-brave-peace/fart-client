@@ -20,6 +20,8 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
     float        m_Satiety = 5;         // 満腹度
     [SerializeField]
     float        m_EatSpeed = 1.0f;     // 食べるスピード
+
+    [Header("以下編集しないこと！")]
     [SerializeField]
     SkinnedMeshRenderer m_Color;        // 自分の色
     [SerializeField]
