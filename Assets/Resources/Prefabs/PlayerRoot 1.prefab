@@ -2314,7 +2314,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_state: 0
-  m_ChangePhase: 1
+  m_ChangePhase: 0
 --- !u!114 &114411867040628930
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2366,7 +2366,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_state: 0
-  m_ChangePhase: 0
+  m_ChangePhase: 1
 --- !u!114 &114460036119111026
 MonoBehaviour:
   m_ObjectHideFlags: 1

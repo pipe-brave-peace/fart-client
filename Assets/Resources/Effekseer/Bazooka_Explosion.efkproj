@@ -5,9 +5,6 @@
     <Children>
       <Node>
         <CommonValues>
-          <LocationEffectType>1</LocationEffectType>
-          <RotationEffectType>1</RotationEffectType>
-          <ScaleEffectType>1</ScaleEffectType>
           <Life>
             <Center>50</Center>
             <Max>50</Max>
@@ -51,9 +48,6 @@
                   <MaxGeneration>
                     <Value>7</Value>
                   </MaxGeneration>
-                  <LocationEffectType>1</LocationEffectType>
-                  <RotationEffectType>1</RotationEffectType>
-                  <ScaleEffectType>1</ScaleEffectType>
                   <Life>
                     <Center>720</Center>
                     <Max>720</Max>
@@ -1259,19 +1253,19 @@
                                 <ColorAll_Random>
                                   <R>
                                     <Center>240</Center>
-                                    <Max>229</Max>
+                                    <Max>240</Max>
                                     <Min>240</Min>
                                     <DrawnAs>0</DrawnAs>
                                   </R>
                                   <G>
                                     <Center>224</Center>
-                                    <Max>160</Max>
+                                    <Max>224</Max>
                                     <Min>224</Min>
                                     <DrawnAs>0</DrawnAs>
                                   </G>
                                   <B>
                                     <Center>192</Center>
-                                    <Max>23</Max>
+                                    <Max>192</Max>
                                     <Min>192</Min>
                                     <DrawnAs>0</DrawnAs>
                                   </B>
@@ -1410,19 +1404,19 @@
                                 <ColorAll_Random>
                                   <R>
                                     <Center>240</Center>
-                                    <Max>195</Max>
+                                    <Max>240</Max>
                                     <Min>240</Min>
                                     <DrawnAs>0</DrawnAs>
                                   </R>
                                   <G>
                                     <Center>224</Center>
-                                    <Max>144</Max>
+                                    <Max>224</Max>
                                     <Min>224</Min>
                                     <DrawnAs>0</DrawnAs>
                                   </G>
                                   <B>
                                     <Center>192</Center>
-                                    <Max>42</Max>
+                                    <Max>192</Max>
                                     <Min>192</Min>
                                     <DrawnAs>0</DrawnAs>
                                   </B>
@@ -1567,19 +1561,19 @@
                                 <ColorAll_Random>
                                   <R>
                                     <Center>240</Center>
-                                    <Max>239</Max>
+                                    <Max>240</Max>
                                     <Min>240</Min>
                                     <DrawnAs>0</DrawnAs>
                                   </R>
                                   <G>
                                     <Center>224</Center>
-                                    <Max>174</Max>
+                                    <Max>224</Max>
                                     <Min>224</Min>
                                     <DrawnAs>0</DrawnAs>
                                   </G>
                                   <B>
                                     <Center>192</Center>
-                                    <Max>45</Max>
+                                    <Max>192</Max>
                                     <Min>192</Min>
                                     <DrawnAs>0</DrawnAs>
                                   </B>
@@ -1718,20 +1712,20 @@
                                 </ColorAll_Fixed>
                                 <ColorAll_Random>
                                   <R>
-                                    <Center>240</Center>
+                                    <Center>243</Center>
                                     <Max>246</Max>
                                     <Min>240</Min>
                                     <DrawnAs>0</DrawnAs>
                                   </R>
                                   <G>
                                     <Center>224</Center>
-                                    <Max>176</Max>
+                                    <Max>224</Max>
                                     <Min>224</Min>
                                     <DrawnAs>0</DrawnAs>
                                   </G>
                                   <B>
                                     <Center>192</Center>
-                                    <Max>37</Max>
+                                    <Max>192</Max>
                                     <Min>192</Min>
                                     <DrawnAs>0</DrawnAs>
                                   </B>

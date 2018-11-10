@@ -36,6 +36,9 @@ public class Buster : MonoBehaviour
     [SerializeField]
     Player m_Player;
 
+    [SerializeField]
+    GameObject BusterPoint;
+
     int m_nOldTime;
 
     bool m_bGasFlg = false;
@@ -58,7 +61,7 @@ public class Buster : MonoBehaviour
         Vector3 rayPos = new Vector3(m_ReticleUI.rectTransform.position.x, m_ReticleUI.rectTransform.position.y, m_ReticleUI.rectTransform.position.z);
 
         Ray ray = Camera.main.ScreenPointToRay(rayPos);
-        transform.rotation = Quaternion.LookRotation(ray.direction);
+        transform.rotation = Quaternion.LookRotation(new Vector3(-ray.direction.x, -ray.direction.y, -ray.direction.z));
 
         if (m_Player.GetPlayerNumber() == 0)
         {
@@ -174,7 +177,11 @@ public class Buster : MonoBehaviour
 
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                Instantiate(m_ExplosionObject, gameObject.transform.position, Quaternion.identity);
+                GameObject buster_effect = Instantiate(m_ExplosionObject, transform.position, Quaternion.identity) as GameObject;
+
+                buster_effect.transform.parent = BusterPoint.gameObject.transform;
+                buster_effect.transform.localPosition = new Vector3(0, 0, 0);
+                buster_effect.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
                 if (m_Player.GetPlayerNumber() == 0)
                 {
