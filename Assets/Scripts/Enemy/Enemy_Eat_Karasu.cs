@@ -35,6 +35,9 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
     private Vector3     m_FadePos;      // 退却座標
     private Color       m_FadeColor;    // 退却時の色
     private bool        m_isBuff;       // オナラスプレー受けたかどうか
+    private Animator    m_Animator;     // アニメション
+    private int         m_MoveMode;     // 移動モード：0、上に飛ぶ　1、目標に移動　2、着地
+    private float       m_MoveUpTimer;  // 上に飛ぶ時間
 
     // Use this for initialization
     void Start()
@@ -42,10 +45,13 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
         // コンポーネント取得
         m_State     = GetComponent<Enemy_State>();
         m_Life      = GetComponent<Life>();
+        m_Animator  = GetComponent<Animator>();
         // 変数初期化
-        m_TargetObj = m_NavObj[0];                          // 最優先の農作物を代入
-        m_FadeColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);    // 現在の色をセット
-        m_isBuff    = false;                                // オナラスプレーに攻撃されていない
+        m_TargetObj   = m_NavObj[0];                          // 最優先の農作物を代入
+        m_FadeColor   = new Color(1.0f, 1.0f, 1.0f, 1.0f);    // 現在の色をセット
+        m_isBuff      = false;                                // オナラスプレーに攻撃されていない
+        m_MoveMode    = 1;                                    // 目標に移動
+        m_MoveUpTimer = 1.0f;                                 // 上に飛ぶ時間の初期化
         // 退却ポイントがない：生成座標を代入
         // 退却ポイントがある：退却ポイント座標を代入
         if ( m_FadePoint == null)
@@ -75,16 +81,34 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
                     m_TargetObj = SerchCrops();
                     break;
                 }
-                // 対象の位置の方向を向く
-                LookAtNoneY(m_TargetObj.transform.position);
-                // 目標へ移動
-                MoveHoming(m_TargetObj.transform.position, m_MoveSpeed);
-                
-                // 近い？
-                if (Vector3.Distance(transform.position, m_TargetObj.transform.position) <= 1.0f)
+
+                switch (m_MoveMode)
                 {
-                    // 食べる状態に変更
-                    m_State.SetState(Enemy_State.STATE.EAT);
+                    case 0:
+                        // 飛行
+                        transform.Translate(0, m_MoveSpeed, 0);
+                        m_MoveUpTimer -= Time.deltaTime;
+                        if( m_MoveUpTimer <= 0.0f)
+                        {
+                            m_MoveMode++;
+                            m_MoveUpTimer = 1.0f;
+                        }
+                        break;
+                    case 1:
+                        // 対象の位置の方向を向く
+                        LookAtNoneY(m_TargetObj.transform.position);
+                        // 目標へ移動
+                        MoveHoming(m_TargetObj.transform.position, m_MoveSpeed);
+                        // 近くなったら着地準備
+                        if (Vector3.Distance(transform.position, m_TargetObj.transform.position) <= 1.0f)
+                        {
+                            m_MoveMode++;
+                        }
+                        break;
+                    case 2:
+                        // 着地移動
+                        transform.Translate(0, -m_MoveSpeed, 0);
+                        break;
                 }
                 break;
 
@@ -98,10 +122,14 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
                     {
                         // 満腹になる
                         m_State.SetState(Enemy_State.STATE.SATIETY);
+                        m_Animator.SetBool("MoveToEat", false);
                         break;
                     }
                     // まだ足りないなら次を探す
                     m_State.SetState(Enemy_State.STATE.MOVE);
+                    m_Animator.SetBool("MoveToEat", false);
+                    m_Animator.Play("Move");
+                    m_MoveMode = 0;
                     break;
                 }
 
@@ -123,7 +151,7 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.SPRAY:      // スプレー状態
-                //Debug_State_Text.text = "STATE:見えねぇ！！";   // テスト
+                Debug_State_Text.text = "STATE:見えねぇ！！";   // テスト
                 // フラグをスプレーを受けたに変更
                 m_isBuff = true;
                 // 匂いのエフェクトの再生
@@ -132,12 +160,14 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
                 // 直前が食事状態なら
                 if (m_State.GetStateOld() == Enemy_State.STATE.EAT)
                 {
-                    // 移動状態へ
+                    // 食事状態へ
                     m_State.SetState(Enemy_State.STATE.EAT);
+                    m_Animator.SetBool("MoveToEat", true);
                     break;
                 }
                 // 移動状態へ
                 m_State.SetState(Enemy_State.STATE.MOVE);
+                m_Animator.SetBool("MoveToEat", false);
                 // 対象の位置の方向を向く
                 LookAtNoneY(m_TargetObj.transform.position);
                 // 目標へ移動
@@ -173,6 +203,8 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
                     BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
                     m_Color.material.color = m_FadeColor;
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                    m_Animator.SetBool("MoveToEat", false);
+                    m_Animator.Play("Move");
                     break;
                 }
                 m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
@@ -226,10 +258,11 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
         //目標を配列で取得する
         foreach (GameObject obs in m_NavObj)
         {
-            if( obs.tag == "Crops") { return obs; }
+            if( obs != null) { return obs; }
         }
         // リストがなくなったら満腹になる
         m_State.SetState(Enemy_State.STATE.SATIETY);
+        m_Animator.SetBool("MoveToEat", false);
         return null;
     }
 
@@ -238,6 +271,7 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
     {
         TargetPos.y = transform.position.y;       // y軸無視
         transform.LookAt(TargetPos);              // ターゲットに向く
+        transform.Rotate(new Vector3(0, 60, 0));  // 向きの微調整
     }
 
     // 目標に移動
@@ -246,5 +280,15 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
         Vector3 move = TargetPos - transform.position;   // 目的へのベクトル
         move = move.normalized;                          // 正規化
         transform.position += move * Speed;              // 移動処理
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Terrain")
+        {
+            // 食べる状態に変更
+            m_State.SetState(Enemy_State.STATE.EAT);
+            m_Animator.SetBool("MoveToEat", true);
+        }
     }
 }
