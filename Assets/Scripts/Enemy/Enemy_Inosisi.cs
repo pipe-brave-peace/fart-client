@@ -156,7 +156,8 @@ public class Enemy_Inosisi : MonoBehaviour {
                         // 攻撃のエフェクトを生成
                         GameObject attack_effect = Instantiate(m_AttackEffect, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as GameObject;
                         // 攻撃するプレイヤーを判別
-                        attack_effect.GetComponent<Effect_Damage>().Set(m_TargetObj.GetComponent<Player>().GetPlayerNumber());
+                        //attack_effect.GetComponent<Effect_Damage>().Set(m_TargetObj.GetComponent<Player>().GetPlayerNumber());
+                        attack_effect.GetComponent<Effect_Damage>().Set(0);
                         // フラグを攻撃したに変更
                         m_isAttack = true;
                         // 満足状態へ
