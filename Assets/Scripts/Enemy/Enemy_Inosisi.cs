@@ -9,8 +9,8 @@ using UnityEngine.AI;
 
 public class Enemy_Inosisi : MonoBehaviour {
 
-    [SerializeField]
-    TextMesh     Debug_State_Text;      // テスト
+    //[SerializeField]
+    //TextMesh     Debug_State_Text;      // テスト
     [SerializeField]
     GameObject   m_FadePoint;           // 退却ポイント
     [SerializeField]
@@ -86,13 +86,13 @@ public class Enemy_Inosisi : MonoBehaviour {
         switch (m_State.GetState())
         {
             case Enemy_State.STATE.MOVE:     // 移動
-                Debug_State_Text.text = "STATE:Move";   // テスト
+                //Debug_State_Text.text = "STATE:Move";   // テスト
                 // 移動処理
                 StateMove();
                 break;
 
             case Enemy_State.STATE.EAT:      // 食べる
-                Debug_State_Text.text = "STATE:食べているよ";   // テスト
+                //Debug_State_Text.text = "STATE:食べているよ";   // テスト
                 // 食べ終わったら
                 if (m_TargetObj == null)
                 {
@@ -131,7 +131,7 @@ public class Enemy_Inosisi : MonoBehaviour {
                 // モードの判別：false-突進準備、true-突進
                 if( !m_AttackMode)
                 {
-                    Debug_State_Text.text = "STATE:突進準備";   // テスト
+                    //Debug_State_Text.text = "STATE:突進準備";   // テスト
                     // アニメション終わった？
                     if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
                     {
@@ -147,7 +147,7 @@ public class Enemy_Inosisi : MonoBehaviour {
                 }
                 else
                 {
-                    Debug_State_Text.text = "STATE:進め！！！";   // テスト
+                    //Debug_State_Text.text = "STATE:進め！！！";   // テスト
                     // 対象の位置の方向に移動
                     MoveHoming(m_TargetObj.transform.position);
                     // 対象と近いなら
@@ -169,7 +169,7 @@ public class Enemy_Inosisi : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.SATIETY:     // 満足（攻撃したら）
-                Debug_State_Text.text = "STATE:満足した";   // テスト
+                //Debug_State_Text.text = "STATE:満足した";   // テスト
                 
                 // 退却座標に向かう
                 MoveHoming(m_FadePos);
@@ -179,11 +179,20 @@ public class Enemy_Inosisi : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.SPRAY:      // スプレー状態
-                Debug_State_Text.text = "STATE:見えねぇ！！";   // テスト
+                //Debug_State_Text.text = "STATE:見えねぇ！！";   // テスト
                 // フラグをスプレーを受けたに変更
                 m_isBuff = true;
                 // 匂いのエフェクトの再生
                 m_BuffEffect.SetActive(true);
+
+                // 直前が攻撃状態なら
+                if( m_State.GetStateOld() == Enemy_State.STATE.ATTACK)
+                {
+                    // 攻撃を続く
+                    m_State.SetState(Enemy_State.STATE.ATTACK);
+                    break;
+                }
+
                 // 移動状態へ
                 m_State.SetState(Enemy_State.STATE.MOVE);
                 // 移動処理
@@ -199,14 +208,14 @@ public class Enemy_Inosisi : MonoBehaviour {
                     break;
                 }
                 // ダメージ処理
-                Debug_State_Text.text = "STATE:痛えぇ！";   // テスト
+                //Debug_State_Text.text = "STATE:痛えぇ！";   // テスト
                 // 通常スピードに戻る
                 m_Nav.speed = m_MoveSpeed;
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
                 // フラグをスプレーを受けてないに変更
                 m_isBuff = false;
-                // 匂いのエフェクトの再生
+                // 匂いのエフェクトの停止
                 m_BuffEffect.SetActive(false);
 
                 // エフェクトの生成
@@ -227,7 +236,7 @@ public class Enemy_Inosisi : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
-                Debug_State_Text.text = "STATE:FadeOut";   // テスト
+               // Debug_State_Text.text = "STATE:FadeOut";   // テスト
                 // 状態遷移はもうできない
                 m_State.CanSet(false);
                 // 汗のエフェクトを出す
@@ -236,11 +245,14 @@ public class Enemy_Inosisi : MonoBehaviour {
                 m_Nav.SetDestination(m_FadePos);
 
                 // 消えていく
-                m_FadeColor.a -= 0.01f;
+                m_FadeColor.a -= 0.02f;
                 m_Color.material.color = m_FadeColor;
 
-                // 透明になった自分を消す
-                if (m_FadeColor.a <= 0.0f) { Destroy(gameObject); }
+                // 汗を止める
+                if (m_FadeColor.a <= 0.3f) { m_EscapeEffect.SetActive(false); }
+
+                // 透明になった親を消す
+                if (m_FadeColor.a <= 0.0f) { Destroy(transform.parent.gameObject); }
                 return;
         }
     }

@@ -11,6 +11,7 @@ TagManager:
   - Explosion
   - Gas
   - Boos
+  - Terrain
   layers:
   - Default
   - TransparentFX

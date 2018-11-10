@@ -140,11 +140,14 @@ public class Enemy_Kamemusi : MonoBehaviour {
             case Enemy_State.STATE.ESCAPE:   // 逃げる
                 Debug_State_Text.text = "STATE:FadeOut";
 
+                // 状態遷移はもうできない
+                m_State.CanSet(false);
+
                 // 離脱の位置の方向に移動
                 m_Nav.SetDestination(m_PosOld);
 
                 // アルファ値を減らす
-                m_FadeColor.a -= 0.01f;
+                m_FadeColor.a -= 0.02f;
                 m_Color.material.color = m_FadeColor;
 
                 // 透明になった？

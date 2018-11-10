@@ -161,7 +161,7 @@ public class Enemy_Inago : MonoBehaviour
                 Jump(m_PosOld);
 
                 // アルファ値を減らす
-                m_FadeColor.a -= 0.01f;
+                m_FadeColor.a -= 0.02f;
                 m_Color.material.color = m_FadeColor;
 
                 // 透明になった？
