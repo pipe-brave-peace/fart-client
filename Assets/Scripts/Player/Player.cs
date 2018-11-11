@@ -5,15 +5,15 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
 
-    public enum STATE
-    {
-        NORMAL = 0, // 通常
-        DAMAGE,     // ダメージ
-        MAX
-    }
 
     [SerializeField]
-    STATE m_State;
+    bool m_bStan;
+
+    [SerializeField]
+    Transform m_PlayerPoint;
+
+    [SerializeField]
+    GameObject m_PlayerStanUI;
 
     [SerializeField]
     int m_nTime = 0;
@@ -24,10 +24,17 @@ public class Player : MonoBehaviour {
     [SerializeField]
     int m_nPlayerNumber = 0;
 
+    [SerializeField]
+    GameObject m_BazookaObject;
+
     int m_nOldTime = 0;
+
+    bool m_bUse;
 
     // Use this for initialization
     void Start () {
+
+        m_bUse = true;
 
         m_nOldTime = m_nTime;
 
@@ -37,30 +44,34 @@ public class Player : MonoBehaviour {
 	void Update () {
         ScoreUI.text = InfoManager.Instance.GetPlayerInfo(m_nPlayerNumber).GetScore().ToString();
 
-        if (m_State == STATE.DAMAGE)
+        if (m_bStan)
         {
+            m_PlayerStanUI.SetActive(true);
+
+            m_bUse = !m_bUse;
+
             m_nTime--;
 
             if (m_nTime <= 0)
             {
-                m_State = STATE.NORMAL;
+                m_bStan = false;
                 m_nTime = m_nOldTime;
             }
         }
-	}
+        else
+        {
+            m_bUse = true;
+            m_nTime = m_nOldTime;
+            m_PlayerStanUI.SetActive(false);
+        }
 
-    public STATE GetState() { return m_State; }
+        m_BazookaObject.SetActive(m_bUse);
+
+    }
+
+    public bool GetStan() { return m_bStan; }
 
     public int GetPlayerNumber() { return m_nPlayerNumber; }
 
-    void OnCollisionEnter(Collision col)
-    {
-        if (col.gameObject.tag == "Enemy")
-        {
-            if (m_State != STATE.DAMAGE)
-            {
-                m_State = STATE.DAMAGE;
-            }
-        }
-    }
+    public Vector3 GetPlayerPosition() { return m_PlayerPoint.position; }
 }

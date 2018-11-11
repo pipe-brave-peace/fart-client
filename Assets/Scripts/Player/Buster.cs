@@ -41,6 +41,8 @@ public class Buster : MonoBehaviour
 
     int m_nOldTime;
 
+    Vector2 m_OldPoint;
+
     bool m_bGasFlg = false;
 
     private List<Joycon> m_joycons;
@@ -48,6 +50,8 @@ public class Buster : MonoBehaviour
 
     void Start()
     {
+        m_OldPoint = new Vector2(0, 0);
+
         m_nOldTime = m_nTime;
 
         m_joycons = JoyconManager.Instance.j;
@@ -69,40 +73,57 @@ public class Buster : MonoBehaviour
             {
                 float[] pointer = m_WiimoteSharing.GetWiimote().Ir.GetPointingPosition();
                 var point = new Vector2(pointer[0], pointer[1]);
-                m_ReticleUI.rectTransform.anchorMax = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMax, point, 0.5f);
-                m_ReticleUI.rectTransform.anchorMin = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMin, point, 0.5f);
 
-                if (m_WiimoteSharing.GetWiimote().Button.plus)
+                if (point.x < 0)
                 {
-                    m_Tank.Farmer(0.5f);
+                    m_ReticleUI.rectTransform.anchorMax = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMax, m_OldPoint, 0.5f);
+                    m_ReticleUI.rectTransform.anchorMin = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMin, m_OldPoint, 0.5f);
+                }
+                else
+                {
+                    m_ReticleUI.rectTransform.anchorMax = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMax, point, 0.5f);
+                    m_ReticleUI.rectTransform.anchorMin = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMin, point, 0.5f);
+
+                    m_OldPoint = point;
                 }
 
-                if (m_WiimoteSharing.GetWiimote().Button.minus)
+                if (!m_Player.GetStan())
                 {
-                    m_Tank.Farmer(0.1f);
-                }
-
-                if (m_WiimoteSharing.GetWiimote().Button.b)
-                {
-                    if (!m_Tank.GetFurzFlg())
+                    if (m_WiimoteSharing.GetWiimote().Button.plus)
                     {
-                        BulletShot();
+                        m_Tank.Farmer(0.5f);
                     }
-                }
 
-                if (m_WiimoteSharing.GetWiimote().Button.a)
-                {
-                    GasShot();
+                    if (m_WiimoteSharing.GetWiimote().Button.minus)
+                    {
+                        m_Tank.Farmer(0.1f);
+                    }
+
+                    if (m_WiimoteSharing.GetWiimote().Button.b)
+                    {
+                        if (!m_Tank.GetFurzFlg())
+                        {
+                            BulletShot();
+                        }
+                    }
+
+                    if (m_WiimoteSharing.GetWiimote().Button.a)
+                    {
+                        GasShot();
+                    }
                 }
             }
 
             if (m_joyconR != null)
             {
-                if (m_joyconR.GetButtonDown(Joycon.Button.SHOULDER_1))
+                if (!m_Player.GetStan())
                 {
-                    if (!m_Tank.GetFurzFlg())
+                    if (m_joyconR.GetButtonDown(Joycon.Button.SHOULDER_1))
                     {
-                        BulletShot();
+                        if (!m_Tank.GetFurzFlg())
+                        {
+                            BulletShot();
+                        }
                     }
                 }
             }
@@ -113,43 +134,46 @@ public class Buster : MonoBehaviour
             var position = Input.mousePosition;
             m_ReticleUI.rectTransform.position = position;
 
-            if (Input.GetKeyDown(KeyCode.A))
+            if (!m_Player.GetStan())
             {
-                if (!m_Tank.GetFurzFlg())
+                if (Input.GetKeyDown(KeyCode.A))
                 {
-                    BulletShot();
+                    if (!m_Tank.GetFurzFlg())
+                    {
+                        BulletShot();
+                    }
+                }
+
+                if (!m_bGasFlg)
+                {
+                    if (Input.GetKey(KeyCode.B))
+                    {
+                        GasShot();
+                        m_bGasFlg = true;
+                    }
+                }
+
+                if (Input.GetKeyDown(KeyCode.Q))
+                {
+                    m_Tank.Farmer(0.1f);
+                }
+
+                if (Input.GetKeyDown(KeyCode.W))
+                {
+                    m_Tank.Farmer(0.5f);
+                }
+
+                if (m_joyconR != null)
+                {
+                    if (m_joyconR.GetButtonDown(Joycon.Button.SHOULDER_1))
+                    {
+                        if (!m_Tank.GetFurzFlg())
+                        {
+                            BulletShot();
+                        }
+                    }
                 }
             }
-
-            if (!m_bGasFlg)
-            {
-                if (Input.GetKey(KeyCode.B))
-                {
-                    GasShot();
-                    m_bGasFlg = true;
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                m_Tank.Farmer(0.1f);
-            }
-
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                m_Tank.Farmer(0.5f);
-            }
-
-            //if (m_joyconR != null)
-            //{
-            //    if (m_joyconR.GetButtonDown(Joycon.Button.SHOULDER_1))
-            //    {
-            //        if (!m_Tank.GetFurzFlg())
-            //        {
-            //            BulletShot();
-            //        }
-            //    }
-            //}
         }
 
         if (m_bGasFlg)
@@ -236,7 +260,7 @@ public class Buster : MonoBehaviour
 
                 Vector3 force = transform.forward * m_VecPow;
 
-                newBullet.GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
+                newBullet.GetComponent<Rigidbody>().AddForce(-force, ForceMode.Impulse);
                 break;
 
             case AllManager.STATE_SCENE.STATE_RESULT:

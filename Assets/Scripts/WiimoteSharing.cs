@@ -18,13 +18,6 @@ public class WiimoteSharing : MonoBehaviour {
     {
         if (!WiimoteManager.HasWiimote()) { return; }
 
-        counter += 1;
-        if (counter < sendWiimoteCount)
-        {
-            return;
-        }
-        counter = 0;
-
         wiimote = WiimoteManager.Wiimotes[0];
 
         int ret;

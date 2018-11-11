@@ -12,6 +12,7 @@ TagManager:
   - Gas
   - Boos
   - Terrain
+  - Fire
   layers:
   - Default
   - TransparentFX
@@ -23,7 +24,7 @@ TagManager:
   - 
   - Enemy
   - LifeReticle
-  - 
+  - FireLayer
   - 
   - 
   - 
