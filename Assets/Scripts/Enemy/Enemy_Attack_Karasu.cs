@@ -16,8 +16,6 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
     [SerializeField]
     GameObject   m_FadePoint;           // 退却ポイント
     [SerializeField]
-    GameObject[] m_LifeList;            // ライフリスト
-    [SerializeField]
     float        m_MoveSpeed = 0.05f;   // スピード
     [SerializeField]
     float        m_FadeTimer;           // 退却までのカウント
@@ -32,6 +30,7 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
     private Vector3     m_FadePos;      // 退却座標
     private Color       m_FadeColor;    // 退却時の色
     private Animator    m_Animator;     // アニメション
+    private GameObject  m_LifeList;     // ライフ照準のリスト
 
     // Use this for initialization
     void Start()
@@ -41,9 +40,10 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
         m_Animator = GetComponent<Animator>();
         // 変数初期化
         m_FadeColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);      // 現在の色をセット
+        m_LifeList = null;
         // 退却ポイントがない：生成座標を代入
         // 退却ポイントがある：退却ポイント座標を代入
-        if( m_FadePoint == null)
+        if ( m_FadePoint == null)
         {
             m_FadePos = transform.position;
         }
@@ -79,6 +79,16 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
                     m_State.CanSet(true);
                     m_State.SetState(Enemy_State.STATE.ATTACK);
                     m_Animator.SetBool("MoveToAttack", true);
+                    if(m_LifeList == null)
+                    {
+                        // プレハブを取得
+                        GameObject prefab = (GameObject)Resources.Load("Prefabs/Enemy/P_Karasu_Life");
+
+                        // プレハブからインスタンスを生成
+                        m_LifeList = (GameObject)Instantiate(prefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+                        // 作成したオブジェクトを子として登録
+                        m_LifeList.transform.parent = transform;
+                    }
                 }
                 break;
 
@@ -86,6 +96,16 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
                 Debug_State_Text.text = "STATE:ジャマジャマ";  // テスト
                 // 状態遷移はできない
                 m_State.CanSet(false);
+                // ライフリストのライフがなくなったら離脱する
+                if (m_LifeList.transform.childCount <= 0)
+                {
+                    // 透明できる描画モードに変更
+                    BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
+                    m_Color.material.color = m_FadeColor;
+                    m_State.CanSet(true);
+                    m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                    break;
+                }
                 // 目標へ移動
                 MoveHoming(m_TargetObj.transform.position, m_MoveSpeed*0.01f);
                 LookAtNoneY(m_TargetCamera.transform.position);
@@ -162,21 +182,6 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
                 // 透明になった親を消す
                 if (m_FadeColor.a <= 0.0f) { Destroy(transform.parent.gameObject); }
                 return;
-        }
-        // ライフリストのチェック
-        int cnt_life = 0;
-        for (int i = 0; i < m_LifeList.Length; ++i)
-        {
-            if (m_LifeList[i] == null) { cnt_life++; }
-            // ライフがなくなったら
-            if (cnt_life >= m_LifeList.Length)
-            {
-                // 透明できる描画モードに変更
-                BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
-                m_Color.material.color = m_FadeColor;
-                m_State.CanSet(true);
-                m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
-            }
         }
     }
 

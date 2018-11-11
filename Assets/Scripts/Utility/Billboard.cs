@@ -5,8 +5,12 @@ using UnityEngine;
 public class Billboard : MonoBehaviour {
 
     // 対象カメラ
-    [SerializeField]
-    Camera targetCamera;
+    private Camera targetCamera;
+
+    private void Start()
+    {
+        targetCamera = Camera.main;
+    }
 
     void Update()
     {
