@@ -137,7 +137,7 @@ public class Enemy_Kuma : MonoBehaviour {
                     // 食べる状態に変更
                     m_State.CanSet(true);
                     m_State.SetState(Enemy_State.STATE.EAT);
-                    m_Animator.SetBool("WalkToEat", true);
+                    m_Animator.SetBool("MoveToEat", true);
                     MoveHoming(gameObject);     // 止まる
                 }
                 break;
@@ -153,7 +153,7 @@ public class Enemy_Kuma : MonoBehaviour {
                 {
                     // 次を探す
                     m_State.SetState(Enemy_State.STATE.MOVE);
-                    m_Animator.SetBool("WalkToEat", false);
+                    m_Animator.SetBool("MoveToEat", false);
                     break;
                 }
 
@@ -166,13 +166,13 @@ public class Enemy_Kuma : MonoBehaviour {
 
             case Enemy_State.STATE.CRY:
                 Debug_State_Text.text = "STATE:がおぉぉ！！！";
-                m_Animator.SetBool("WalkToCry", true);
+                m_Animator.SetBool("MoveToCry", true);
 
                 // アニメション終わった？
                 if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
                 {
                     m_State.SetState(Enemy_State.STATE.MOVE);
-                    m_Animator.SetBool("WalkToCry", false);
+                    m_Animator.SetBool("MoveToCry", false);
                 }
                 break;
 
