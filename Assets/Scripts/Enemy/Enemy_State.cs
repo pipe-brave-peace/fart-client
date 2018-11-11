@@ -29,6 +29,11 @@ public class Enemy_State : MonoBehaviour {
         if( m_State != m_StateOld) { m_StateOld = m_State; }
         m_State = State;
     }
+    public void EnemySetState(STATE State)
+    {
+        if (m_State != m_StateOld) { m_StateOld = m_State; }
+        m_State = State;
+    }
 
     public STATE GetState()     { return m_State; }
     public STATE GetStateOld()  { return m_StateOld; }

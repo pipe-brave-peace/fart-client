@@ -117,7 +117,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                     m_isCry = true;
                     m_State.CanSet(true);
                     m_State.SetState(Enemy_State.STATE.CRY);
-                    m_Animator.SetBool("MoveToCry", true);
+                    m_Animator.SetBool("ToCry", true);
                 }
             }
             else
@@ -135,7 +135,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
 
                 // 攻撃不可
                 m_State.CanSet(false);
-                m_Animator.SetBool("FearToMove", false);
+                m_Animator.SetBool("ToMove", false);
 
                 // 目標がなくなった？
                 if (m_TargetObj == null)
@@ -153,7 +153,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                     // 食べる状態に変更
                     m_State.CanSet(true);
                     m_State.SetState(Enemy_State.STATE.EAT);
-                    m_Animator.SetBool("MoveToEat", true);
+                    m_Animator.SetBool("ToEat", true);
                     MoveHoming(transform.position);     // 止まる
                 }
                 break;
@@ -169,7 +169,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                 {
                     // 次を探す
                     m_State.SetState(Enemy_State.STATE.MOVE);
-                    m_Animator.SetBool("MoveToEat", false);
+                    m_Animator.SetBool("ToEat", false);
                     break;
                 }
 
@@ -196,7 +196,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                     {
                         m_State.CanSet(true);
                         m_State.SetState(Enemy_State.STATE.MOVE);
-                        m_Animator.SetBool("MoveToCry", false);
+                        m_Animator.SetBool("ToCry", false);
                         m_Nav.updatePosition = true;
                     }
                     break;
@@ -248,7 +248,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                 {
                     m_FearCnt = m_FearCntMax;                     // カウントのクリア
                     m_State.SetState(Enemy_State.STATE.FEAR);     // 怯む状態へ
-                    m_Animator.SetBool("EatToFear", true);
+                    m_Animator.SetBool("ToFear", true);
                     break;
                 }
 
@@ -268,9 +268,8 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                     m_FearTimer = FEAR_TIME;
                     m_State.CanSet(true);
                     m_State.SetState(Enemy_State.STATE.MOVE);
-                    m_Animator.SetBool("MoveToEat", false);
-                    m_Animator.SetBool("EatToFear", false);
-                    m_Animator.SetBool("FearToMove", true);
+                    AnimatorFuraguInit();
+                    m_Animator.SetBool("ToMove", true);
                     // 次の農作物を狙う
                     m_CropIndex++;
                     m_TargetObj = SerchCrops(m_CropIndex);          // 農作物をサーチ
@@ -283,6 +282,9 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
 
                 // 攻撃不能
                 m_State.CanSet(false);
+
+                // 汗のエフェクトを出す
+                m_EscapeEffect.SetActive(true);
 
                 // 離脱の位置の方向に移動
                 MoveHoming(m_FadePos);
@@ -357,5 +359,15 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
         if ( Index >= m_NavCrops.Count ) { Index = 0; }
         m_CropIndex = Index;
         return m_NavCrops[Index];
+    }
+    void AnimatorFuraguInit()
+    {
+        m_Animator.SetBool("ToEat"      , false);
+        m_Animator.SetBool("ToCry"      , false);
+        m_Animator.SetBool("ToAttack"   , false);
+        m_Animator.SetBool("ToFear"     , false);
+        m_Animator.SetBool("ToMove"     , false);
+        m_Animator.SetBool("ToDamage"   , false);
+        m_Animator.SetBool("ToFaint"    , false);
     }
 }

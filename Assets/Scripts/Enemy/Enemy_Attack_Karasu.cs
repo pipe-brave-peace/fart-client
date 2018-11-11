@@ -104,20 +104,20 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
                     m_Color.material.color = m_FadeColor;
                     m_State.CanSet(true);
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                    m_Animator.SetBool("MoveToAttack", false);
+                    Destroy(m_LifeList.gameObject);
                     break;
                 }
-                // 目標へ移動
-                MoveHoming(m_TargetObj.transform.position, m_MoveSpeed*0.01f);
-                LookAtNoneY(m_TargetCamera.transform.position);
-
                 // 退却までのカウント
                 m_FadeTimer -= Time.deltaTime;
-                if( m_FadeTimer <= 0.0f)
+                if (m_FadeTimer <= 0.0f)
                 {
                     // 満足状態に変更
                     m_State.CanSet(true);
                     m_State.SetState(Enemy_State.STATE.SATIETY);
                     m_Animator.SetBool("MoveToAttack", false);
+                    Destroy(m_LifeList.gameObject);
+                    break;
                 }
                 // 遠い？
                 if (Vector3.Distance(transform.position, m_TargetObj.transform.position) > 1.0f)
@@ -126,7 +126,11 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
                     m_State.CanSet(true);
                     m_State.SetState(Enemy_State.STATE.MOVE);
                     m_Animator.SetBool("MoveToAttack", false);
+                    break;
                 }
+                // 目標へ移動
+                MoveHoming(m_TargetObj.transform.position, m_MoveSpeed*0.01f);
+                LookAtNoneY(m_TargetCamera.transform.position);
                 break;
 
             case Enemy_State.STATE.SATIETY:  // 満足

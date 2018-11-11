@@ -1,0 +1,212 @@
+fileFormatVersion: 2
+guid: 15d56b81fe0f514499bfade8e9c96269
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: chest_con
+    100004: head
+    100006: head_con
+    100008: Hip
+    100010: joint17
+    100012: joint19
+    100014: L_arm
+    100016: L_hand
+    100018: L_hand_con
+    100020: L_hand_Rotate_con
+    100022: L_leg1
+    100024: L_leg2
+    100026: L_leg3
+    100028: L_leg_con
+    100030: L_Rotate_con
+    100032: L_shoulder
+    100034: mouse
+    100036: Mouse_top
+    100038: Mouse_unser
+    100040: mune
+    100042: Neck
+    100044: pSphere17
+    100046: R_arm
+    100048: R_hand
+    100050: R_hand_con
+    100052: R_hand_Rotate_con
+    100054: R_leg1
+    100056: R_leg2
+    100058: R_leg3
+    100060: R_shoulder
+    100062: root
+    100064: Root_con
+    100066: spine1
+    100068: spine2
+    100070: spine3
+    400000: //RootNode
+    400002: chest_con
+    400004: head
+    400006: head_con
+    400008: Hip
+    400010: joint17
+    400012: joint19
+    400014: L_arm
+    400016: L_hand
+    400018: L_hand_con
+    400020: L_hand_Rotate_con
+    400022: L_leg1
+    400024: L_leg2
+    400026: L_leg3
+    400028: L_leg_con
+    400030: L_Rotate_con
+    400032: L_shoulder
+    400034: mouse
+    400036: Mouse_top
+    400038: Mouse_unser
+    400040: mune
+    400042: Neck
+    400044: pSphere17
+    400046: R_arm
+    400048: R_hand
+    400050: R_hand_con
+    400052: R_hand_Rotate_con
+    400054: R_leg1
+    400056: R_leg2
+    400058: R_leg3
+    400060: R_shoulder
+    400062: root
+    400064: Root_con
+    400066: spine1
+    400068: spine2
+    400070: spine3
+    2100000: lambert3
+    2100002: lambert1
+    2300000: head_con
+    2300002: L_hand_con
+    2300004: L_hand_Rotate_con
+    2300006: L_leg_con
+    2300008: L_Rotate_con
+    2300010: R_hand_con
+    2300012: R_hand_Rotate_con
+    3300000: head_con
+    3300002: L_hand_con
+    3300004: L_hand_Rotate_con
+    3300006: L_leg_con
+    3300008: L_Rotate_con
+    3300010: R_hand_con
+    3300012: R_hand_Rotate_con
+    4300000: pSphere17
+    4300002: L_leg_con
+    4300004: L_Rotate_con
+    4300006: L_hand_con
+    4300008: L_hand_Rotate_con
+    4300010: R_hand_con
+    4300012: R_hand_Rotate_con
+    4300014: head_con
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: pSphere17
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Take 001
+      takeName: Take 001
+      firstFrame: 1
+      lastFrame: 30
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: root
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
