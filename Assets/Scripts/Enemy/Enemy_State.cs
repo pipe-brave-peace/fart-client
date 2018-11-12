@@ -11,6 +11,7 @@ public class Enemy_State : MonoBehaviour {
         ATTACK,     // 攻撃
         CRY,        // 叫ぶ
         SPRAY,      // スプレー
+        BACK,       // 後退
         DAMAGE,     // ダメージ
         FEAR,       // 怯む
         SATIETY,    // 満腹

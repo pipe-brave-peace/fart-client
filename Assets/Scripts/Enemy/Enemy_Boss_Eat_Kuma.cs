@@ -9,7 +9,10 @@ using System.Linq;
 [RequireComponent(typeof(Enemy_Score))]
 
 public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
-    
+
+    private const float FEAR_TIME = 5.0f;
+    private const float CRY_TIME = 1.0f;
+
     [SerializeField]
     TextMesh Debug_State_Text;
     [Header("吼える場所")]
@@ -21,9 +24,6 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
     [Header("農作物の優先順位")]
     [SerializeField]
     List<GameObject> m_NavCrops;    // 農作物リスト
-    [Header("怯むまでダメージを受ける回数")]
-    [SerializeField]
-    int m_FearCnt;
     [Header("逃げるまでの時間")]
     [SerializeField]
     float m_EscapeTimer;
@@ -33,11 +33,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
 
     [Header("以下編集しないこと！")]
     [SerializeField]
-    float FEAR_TIME;                // 怯む時間
-    [SerializeField]
-    GameObject m_CryEffect;         // 吼えるのエフェクト
-    [SerializeField]
-    GameObject m_DamageEffect;        // 弾の爆発エフェクト
+    GameObject m_DamageEffect;      // 弾の爆発エフェクト
     [SerializeField]
     GameObject m_EscapeEffect;      // 退却時汗のエフェクト
     [SerializeField]
@@ -47,13 +43,13 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
     private NavMeshAgent    m_Nav;              // ナビメッシュ
     private GameObject      m_TargetObj;        // 移動目標
     private Vector3         m_FadePos;          // 退却時向かうの座標
-    private int             m_FearCntMax;       // 怯むまでダメージを受ける回数
     private int             m_CropIndex;        // 農作物リストのインデックス
     private Animator        m_Animator;         // アニメション
     private bool            m_isCry;            // 吼えたかどうか
     private float           m_CryTimer;         // 吼えるまでのカウント
     private bool            m_isBuff;           // オナラスプレー受けたかどうか
     private float           m_FearTimer;        // 怯む時間
+    private GameObject      m_CryEffect;        // 吼えるのエフェクト
 
     // 初期化
     void Start()
@@ -64,10 +60,9 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
         m_Animator   = GetComponent<Animator>();
 
         // 変数の初期化
-        m_FearCntMax    = m_FearCnt;
         m_CropIndex     = 0;
         m_isCry         = false;
-        m_CryTimer      = 1.0f;
+        m_CryTimer      = CRY_TIME;
         m_isBuff        = false;                 // オナラスプレーに攻撃されていない
         m_FearTimer     = FEAR_TIME;
         // 退却ポイントがない：生成座標を代入
@@ -188,7 +183,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                     // 吼えるエフェクトの再生
                     if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.4f && m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.5f)
                     {
-                        m_CryEffect.SetActive(true);
+                        CreateCryEffect();
                     }
 
                     // アニメション終わった？
@@ -242,18 +237,9 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                 // エフェクトの生成
                 GameObject damage_effect = Instantiate(m_DamageEffect, transform.position, Quaternion.identity) as GameObject;
 
-                // 怯むまでのカウント
-                m_FearCnt--;
-                if (m_FearCnt <= 0)
-                {
-                    m_FearCnt = m_FearCntMax;                     // カウントのクリア
-                    m_State.SetState(Enemy_State.STATE.FEAR);     // 怯む状態へ
-                    m_Animator.SetBool("ToFear", true);
-                    break;
-                }
-
-                m_State.SetState(Enemy_State.STATE.EAT);     // 食べる状態へ
-                m_Animator.Play("Eat");
+                // 怯む
+                m_State.SetState(Enemy_State.STATE.FEAR);
+                m_Animator.SetBool("ToFear", true);
                 break;
 
             case Enemy_State.STATE.FEAR:        // 怯む
@@ -359,6 +345,19 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
         if ( Index >= m_NavCrops.Count ) { Index = 0; }
         m_CropIndex = Index;
         return m_NavCrops[Index];
+    }
+    void CreateCryEffect()
+    {
+        // プレハブを取得
+        GameObject prefab = (GameObject)Resources.Load("Prefabs/Effect/E_BossCry");
+
+        // プレハブからインスタンスを生成
+        m_CryEffect = (GameObject)Instantiate(prefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+        // 作成したオブジェクトを子として登録
+        m_CryEffect.transform.parent = transform;
+        m_CryEffect.transform.localPosition = new Vector3(0.0f, 1.14f, 0.3f);
+        m_CryEffect.transform.localRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+        m_CryEffect.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
     }
     void AnimatorFuraguInit()
     {

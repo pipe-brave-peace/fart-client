@@ -11,8 +11,9 @@ using System.Linq;
 public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
 
     private const float FEAR_TIME   = 5.0f;
-    private const float DAMAGE_TIME = 1.0f;
+    private const float BACK_TIME   = 1.0f;
     private const float CRY_TIME    = 1.0f;
+    private const float CAN_DAMAGE_LEN = 20.0f;
     
     [SerializeField]
     TextMesh Debug_State_Text;
@@ -35,8 +36,6 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
 
     [Header("以下編集しないこと！")]
     [SerializeField]
-    GameObject m_CryEffect;         // 吼えるのエフェクト
-    [SerializeField]
     GameObject m_AttackEffect;      // クマのジャマのエフェクト
     [SerializeField]
     GameObject m_EscapeEffect;      // 退却時汗のエフェクト
@@ -52,8 +51,9 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
     private bool            m_isCry;            // 吼えたかどうか
     private float           m_CryTimer;         // 吼えるまでのカウント
     private float           m_FearTimer;        // 怯む時間
-    private float           m_DamageTimer;      // 後退するカウント
+    private float           m_BackTimer;        // 後退するカウント
     private GameObject      m_LifeList;         // ライフ照準のリスト
+    private GameObject      m_CryEffect;        // 吼えるのエフェクト
 
     // 初期化
     void Start()
@@ -72,7 +72,7 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
         m_isCry          = false;
         m_CryTimer       = CRY_TIME;
         m_FearTimer      = FEAR_TIME;
-        m_DamageTimer    = DAMAGE_TIME;
+        m_BackTimer      = BACK_TIME;
         m_LifeList       = null;
         // 退却ポイントがない：生成座標を代入
         // 退却ポイントがある：退却ポイント座標を代入
@@ -121,9 +121,10 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
             // ライフリストのライフがなくなったら離脱する
             if (m_LifeList.transform.childCount <= 0)
             {
-                m_State.EnemySetState(Enemy_State.STATE.DAMAGE);     // ダメージ状態へ
+                m_State.EnemySetState(Enemy_State.STATE.BACK);     // 後退状態へ
                 m_Animator.SetBool("ToDamage", true);
                 Destroy(m_LifeList.gameObject);
+                m_Nav.updatePosition = true;
             }
         }
         // 状態判定
@@ -153,20 +154,6 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
                 }
                 else                            // プレイヤー？
                 {
-                    if (m_LifeList == null)
-                    {
-                        // プレハブを取得
-                        GameObject prefab = (GameObject)Resources.Load("Prefabs/Enemy/P_Boss_LifeList0");
-
-                        // プレハブからインスタンスを生成
-                        m_LifeList = (GameObject)Instantiate(prefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
-                        // 作成したオブジェクトを子として登録
-                        m_LifeList.transform.parent = transform;
-                        m_LifeList.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
-                        m_LifeList.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-                        m_LifeList.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-                    }
-
                     // 近い？
                     if (DistanceNoneY(m_TargetObj.transform.position, 5.0f))
                     {
@@ -174,6 +161,13 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
                         m_State.EnemySetState(Enemy_State.STATE.ATTACK);
                         m_Animator.SetBool("ToAttack", true);
                         m_Nav.updatePosition = false;
+                        break;
+                    }
+
+                    // 攻撃出来条件
+                    if (m_LifeList == null && DistanceNoneY(m_TargetObj.transform.position, CAN_DAMAGE_LEN))
+                    {
+                        CreateLifeList();
                     }
                 }
                 break;
@@ -186,7 +180,7 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
                     // 吼えるエフェクトの再生
                     if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.4f && m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.5f)
                     {
-                        m_CryEffect.SetActive(true);
+                        CreateCryEffect();
                     }
 
                     // アニメション終わった？
@@ -214,32 +208,30 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
 
                 break;
 
-            case Enemy_State.STATE.DAMAGE:      // ダメージ
-                Debug_State_Text.text = "STATE:喰らえ！！";
+            case Enemy_State.STATE.BACK:      // 後退
+                Debug_State_Text.text = "STATE:あ！！！！";
 
                 // 後退処理
                 m_Nav.updateRotation = false;
                 Vector3 pos = transform.position;
                 pos = m_TargetObj.transform.position - pos;
-                pos *= -1.0f;
+                pos = -10.0f * Vector3.Normalize(pos);
                 pos += transform.position;
                 MoveHoming(pos);
-                m_Nav.speed = m_NavMoveSpeed * m_DamageTimer*30.0f;
+                m_Nav.speed = m_NavMoveSpeed * m_BackTimer*30.0f;
                 m_Nav.acceleration = m_Nav.speed;
 
                 // カウント処理
-                m_DamageTimer -= Time.deltaTime;
-                if( m_DamageTimer <= 0.0f)
+                m_BackTimer -= Time.deltaTime;
+                if(m_BackTimer <= 0.0f)
                 {
-                    m_DamageTimer = DAMAGE_TIME;
+                    m_BackTimer = BACK_TIME;
                     m_State.EnemySetState(Enemy_State.STATE.FEAR);
                     m_Animator.SetBool("ToFear", true);
                     m_Nav.enabled = false;
                 }
-
                 break;
-
-
+                
             case Enemy_State.STATE.FEAR:        // 怯む
                 Debug_State_Text.text = "STATE:怖いよ、怖いよぉ～";
                 
@@ -247,12 +239,14 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
                 if( m_FearTimer <= 0.0f)
                 {
                     m_FearTimer = FEAR_TIME;
-                    m_State.EnemySetState(Enemy_State.STATE.MOVE);
+                    m_State.EnemySetState(Enemy_State.STATE.CRY);
                     AnimatorFuraguInit();
                     m_Animator.SetBool("ToMove", true);
-                    m_Nav.enabled = true;
+                    m_Animator.SetBool("ToCry" , true);
+                    m_Nav.enabled        = true;
                     m_Nav.updateRotation = true;
-                    m_Nav.speed = m_NavMoveSpeed;
+                    m_Nav.speed          = m_NavMoveSpeed;
+                    m_Nav.acceleration   = 8;
                 }
 
                 break;
@@ -277,7 +271,7 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
         if (m_State.GetState() == Enemy_State.STATE.ESCAPE) return;
         if (m_State.GetState() == Enemy_State.STATE.ATTACK) return;
         if (m_State.GetState() == Enemy_State.STATE.CRY) return;
-        if (m_State.GetState() == Enemy_State.STATE.DAMAGE) return;
+        if (m_State.GetState() == Enemy_State.STATE.BACK) return;
         if (m_State.GetState() == Enemy_State.STATE.FEAR) return;
         m_State.EnemySetState(Enemy_State.STATE.ESCAPE);
         m_Animator.Play("Move");
@@ -311,6 +305,34 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
         int max = m_NavPoints.Count;
         int pointID = Random.Range(0, max);
         return m_NavPoints[pointID];
+    }
+    void CreateCryEffect()
+    {
+        if (m_CryEffect != null) return;
+        // プレハブを取得
+        GameObject prefab = (GameObject)Resources.Load("Prefabs/Effect/E_BossCry");
+
+        // プレハブからインスタンスを生成
+        m_CryEffect = (GameObject)Instantiate(prefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+        // 作成したオブジェクトを子として登録
+        m_CryEffect.transform.parent = transform;
+        m_CryEffect.transform.localPosition = new Vector3(0.0f, 1.14f, 0.3f);
+        m_CryEffect.transform.localRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+        m_CryEffect.transform.localScale    = new Vector3(1.0f, 1.0f, 1.0f);
+    }
+    void CreateLifeList()
+    {
+        if (m_LifeList != null) return;
+        // プレハブを取得
+        GameObject prefab = (GameObject)Resources.Load("Prefabs/Enemy/P_Boss_LifeList");
+
+        // プレハブからインスタンスを生成
+        m_LifeList = (GameObject)Instantiate(prefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+        // 作成したオブジェクトを子として登録
+        m_LifeList.transform.parent = transform;
+        m_LifeList.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
+        m_LifeList.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+        m_LifeList.transform.localScale    = new Vector3(1.0f, 1.0f, 1.0f);
     }
     void AnimatorFuraguInit()
     {
