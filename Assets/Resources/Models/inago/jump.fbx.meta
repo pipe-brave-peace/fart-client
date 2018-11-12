@@ -1,21 +1,32 @@
 fileFormatVersion: 2
-guid: 8808ef17c84ab61468893c767cbcc570
+guid: 0022bf78b9368204ba22c8fa7d38a3a4
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
-    100000: //RootNode
-    400000: //RootNode
-    2100000: lambert1
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: Inoshishi1
+    100000: inago
+    100002: //RootNode
+    100004: L_foot
+    100006: L_knee
+    100008: L_leg
+    100010: R_foot
+    100012: R_knee
+    100014: R_leg
+    100016: Root
+    400000: inago
+    400002: //RootNode
+    400004: L_foot
+    400006: L_knee
+    400008: L_leg
+    400010: R_foot
+    400012: R_knee
+    400014: R_leg
+    400016: Root
+    2100000: lambert5
+    4300000: inago
+    7400000: Take 001
     9500000: //RootNode
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: lambert1
-    second: {fileID: 2100000, guid: 36ffc4e15dd3e994fb92b6f049fe8f43, type: 2}
+    13700000: inago
+  externalObjects: {}
   materials:
     importMaterials: 1
     materialName: 0
@@ -83,7 +94,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    rootMotionBoneName: 
+    rootMotionBoneName: Root
     rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
