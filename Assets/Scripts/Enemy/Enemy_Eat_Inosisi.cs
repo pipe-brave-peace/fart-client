@@ -48,7 +48,7 @@ public class Enemy_Eat_Inosisi : MonoBehaviour {
         m_State     = GetComponent<Enemy_State>();
         m_Nav       = GetComponent<NavMeshAgent>();
         m_Animator  = GetComponent<Animator>();
-
+        
         // 変数初期化
         m_FadeColor  = new Color( 1.0f,1.0f,1.0f,1.0f);      // 現在の色をセット
         m_isBuff     = false;                                // オナラスプレーに攻撃されていない
