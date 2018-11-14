@@ -7,12 +7,10 @@ using UnityEngine;
 
 public class Enemy_Attack_Karasu : MonoBehaviour {
 
-    [SerializeField]
-    TextMesh     Debug_State_Text;      // テスト
+    //[SerializeField]
+    //TextMesh     Debug_State_Text;      // テスト
     [SerializeField]
     GameObject   m_TargetObj;           // 止まる位置
-    [SerializeField]
-    GameObject   m_TargetCamera;        // 向くカメラ
     [SerializeField]
     GameObject   m_FadePoint;           // 退却ポイント
     [SerializeField]
@@ -63,7 +61,7 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
         switch (m_State.GetState())
         {
             case Enemy_State.STATE.MOVE:     // 移動
-                Debug_State_Text.text = "STATE:Move";  // テスト
+                //Debug_State_Text.text = "STATE:Move";  // テスト
                 // 状態遷移はできない
                 m_State.CanSet(false);
 
@@ -93,7 +91,7 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.ATTACK:  // ジャマ
-                Debug_State_Text.text = "STATE:ジャマジャマ";  // テスト
+                //Debug_State_Text.text = "STATE:ジャマジャマ";  // テスト
                 // 状態遷移はできない
                 m_State.CanSet(false);
                 // ライフリストのライフがなくなったら離脱する
@@ -130,11 +128,11 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
                 }
                 // 目標へ移動
                 MoveHoming(m_TargetObj.transform.position, m_MoveSpeed*0.01f);
-                LookAtNoneY(m_TargetCamera.transform.position);
+                LookAtNoneY(Camera.main.transform.position);
                 break;
 
             case Enemy_State.STATE.SATIETY:  // 満足
-                Debug_State_Text.text = "STATE:満足";  // テスト
+                //ebug_State_Text.text = "STATE:満足";  // テスト
 
                 // 状態遷移はできない
                 m_State.CanSet(false);
@@ -153,7 +151,7 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
-                Debug_State_Text.text = "STATE:痛えぇ！";  // テスト
+                //ebug_State_Text.text = "STATE:痛えぇ！";  // テスト
 
                 if( m_State.GetState() == Enemy_State.STATE.MOVE)
                 {
@@ -165,7 +163,7 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
-                Debug_State_Text.text = "STATE:FadeOut";  // テスト
+                //Debug_State_Text.text = "STATE:FadeOut";  // テスト
 
                 // 状態遷移はもうできない
                 m_State.CanSet(false);

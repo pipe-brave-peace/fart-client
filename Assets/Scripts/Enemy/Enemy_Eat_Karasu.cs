@@ -8,8 +8,8 @@ using UnityEngine;
 
 public class Enemy_Eat_Karasu : MonoBehaviour {
 
-    [SerializeField]
-    TextMesh     Debug_State_Text;      // テスト
+    //[SerializeField]
+    //TextMesh     Debug_State_Text;      // テスト
     [SerializeField]
     GameObject[] m_NavObj;              // 農作物リスト
     [SerializeField]
@@ -76,7 +76,7 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
         switch (m_State.GetState())
         {
             case Enemy_State.STATE.MOVE:     // 移動
-                Debug_State_Text.text = "STATE:Move";  // テスト
+                //Debug_State_Text.text = "STATE:Move";  // テスト
                 // 目標がなくなったら再検索
                 if (m_TargetObj == null)
                 {
@@ -115,7 +115,7 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.EAT:      // 食べる
-                Debug_State_Text.text = "STATE:食べているよ";  // テスト
+                //Debug_State_Text.text = "STATE:食べているよ";  // テスト
                 // 食べ終わったら
                 if (m_TargetObj == null)
                 {
@@ -153,7 +153,7 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.SPRAY:      // スプレー状態
-                Debug_State_Text.text = "STATE:見えねぇ！！";   // テスト
+                //Debug_State_Text.text = "STATE:見えねぇ！！";   // テスト
                 // フラグをスプレーを受けたに変更
                 m_isBuff = true;
                 // 匂いのエフェクトの再生
@@ -177,7 +177,7 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
-                Debug_State_Text.text = "STATE:痛えぇ！";  // テスト
+                //Debug_State_Text.text = "STATE:痛えぇ！";  // テスト
                 // オナラスプレーに攻撃されていないならダメージ処理しない
                 if (!m_isBuff)
                 {
@@ -213,7 +213,7 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.SATIETY:  // 満足
-                Debug_State_Text.text = "STATE:満足";  // テスト
+                //Debug_State_Text.text = "STATE:満足";  // テスト
 
                 // 離脱の位置の方向に移動
                 LookAtNoneY(m_FadePos);
@@ -230,7 +230,7 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
-                Debug_State_Text.text = "STATE:FadeOut";  // テスト
+                //Debug_State_Text.text = "STATE:FadeOut";  // テスト
 
                 // 状態遷移はもうできない
                 m_State.CanSet(false);

@@ -9,8 +9,8 @@ using UnityEngine.AI;
 
 public class Enemy_Kamemusi : MonoBehaviour {
 
-    [SerializeField]
-    TextMesh Debug_State_Text;      // テスト
+    //[SerializeField]
+    //TextMesh Debug_State_Text;      // テスト
     [SerializeField]
     GameObject m_FadePoint;         // 退却ポイント
     [SerializeField]
@@ -75,7 +75,7 @@ public class Enemy_Kamemusi : MonoBehaviour {
         switch (m_State.GetState())
         {
             case Enemy_State.STATE.MOVE:     // 移動
-                Debug_State_Text.text = "STATE:Move";
+                //Debug_State_Text.text = "STATE:Move";
                 // 近い？
                 if (DistanceNoneY(m_TargetObj.transform.position, 5.0f))
                 {
@@ -89,7 +89,7 @@ public class Enemy_Kamemusi : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.ATTACK:      // 攻撃
-                Debug_State_Text.text = "STATE:攻撃している";
+                //Debug_State_Text.text = "STATE:攻撃している";
                 m_Animator.speed = 0.0f;
 
                 // 攻撃モード処理
@@ -124,7 +124,7 @@ public class Enemy_Kamemusi : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.SATIETY:     // 攻撃した
-                Debug_State_Text.text = "STATE:満足した";
+                //Debug_State_Text.text = "STATE:満足した";
 
                 //対象の位置の方向に移動
                 MoveHoming(m_FadePos);
@@ -138,7 +138,7 @@ public class Enemy_Kamemusi : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.SPRAY:      // スプレー状態
-                Debug_State_Text.text = "STATE:見えねぇ！！";
+                //Debug_State_Text.text = "STATE:見えねぇ！！";
 
                 // エフェクトの生成
                 m_BuffEffect.SetActive(true);
@@ -160,7 +160,7 @@ public class Enemy_Kamemusi : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
-                Debug_State_Text.text = "STATE:痛えぇ！";
+                //Debug_State_Text.text = "STATE:痛えぇ！";
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
 
@@ -187,7 +187,7 @@ public class Enemy_Kamemusi : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
-                Debug_State_Text.text = "STATE:FadeOut";   // テスト
+                //Debug_State_Text.text = "STATE:FadeOut";   // テスト
                 // 状態遷移はもうできない
                 m_State.CanSet(false);
                 // 汗のエフェクトを出す
