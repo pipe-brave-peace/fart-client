@@ -18,9 +18,25 @@ public class PlayerAll : MonoBehaviour {
     [SerializeField]
     PhaseManager m_PhaseManager;
 
+    [SerializeField]
+    StageManager m_StageManager;
+
+    [SerializeField]
+    GameObject m_StageObject;
+
+    [SerializeField]
+    GameObject m_NarrationObject3;
+
+    [SerializeField]
+    GameObject m_IventCamera1;
+
     int nNumber = 0;
 
     int index = 0;
+
+    bool m_bIvent3;
+
+    int m_nTime = 100;
 
     private void Awake()
     {
@@ -41,6 +57,7 @@ public class PlayerAll : MonoBehaviour {
                 break;
         
             case AllManager.STATE_SCENE.STATE_STAGE:
+                if (!m_StageManager.isGameMode()) { return; }
                 if (m_NavPoint.Length - 1 < nNumber)
                 {
                 }
@@ -48,11 +65,6 @@ public class PlayerAll : MonoBehaviour {
                 { 
                     //対象の位置の方向に移動
                     m_Navigate.SetDestination(m_NavPoint[nNumber].transform.position);
-                    if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.MOVE ||
-                        m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.ROTSTOP)
-                    {
-                        Vector();
-                    }
 
                     if (transform.position.x == m_NavPoint[nNumber].transform.position.x &&
                         transform.position.z == m_NavPoint[nNumber].transform.position.z)
@@ -66,14 +78,29 @@ public class PlayerAll : MonoBehaviour {
                             m_PhaseManager.Stop();
                         }
 
-                        if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.STOP)
-                        {
-                            Vector();
-                        }
-
                         if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.STOP ||
                             m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.ROTSTOP)
                         {
+                            if (m_PhaseManager.GetNowPhaseIndex() == 0)
+                            {
+                                if (!m_bIvent3)
+                                {
+                                    m_NarrationObject3.SetActive(true);
+
+                                    if (m_nTime > 0)
+                                    {
+                                        m_nTime--;
+                                    }
+                                    else if (m_nTime <= 0)
+                                    {
+                                        m_IventCamera1.SetActive(false);
+                                        m_bIvent3 = true;
+
+                                    }
+                                }
+                                m_StageObject.SetActive(true);
+                            }
+
                             Vector();
                             if (index != m_PhaseManager.GetNowPhaseIndex())
                             {

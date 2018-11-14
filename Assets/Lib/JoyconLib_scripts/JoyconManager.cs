@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 using UnityEngine;
 using System;
-public class JoyconManager: MonoBehaviour
+public class JoyconManager : SingletonMonoBehaviour<JoyconManager>
 {
 
     // Settings accessible via Unity
@@ -18,17 +18,9 @@ public class JoyconManager: MonoBehaviour
 	private const ushort product_r = 0x2007;
 
     public List<Joycon> j; // Array of all connected Joy-Cons
-    static JoyconManager instance;
-
-    public static JoyconManager Instance
-    {
-        get { return instance; }
-    }
 
     void Awake()
     {
-        if (instance != null) return;
-        instance = this;
 		int i = 0;
 
 		j = new List<Joycon>();

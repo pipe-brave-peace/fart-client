@@ -13,6 +13,8 @@ public class TitleManager : MonoBehaviour {
 
     public AudioSource m_Bgm;           // BGM
 
+    bool m_bUse = false;
+
     // Use this for initialization
     void Start () {
 		m_Bgm.Play ();
@@ -28,13 +30,25 @@ public class TitleManager : MonoBehaviour {
 	    // キー押し判定
 		if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
 		{
-            AllManager.Instance.SetStateScene(AllManager.STATE_SCENE.STATE_STAGE);
             SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.PUSH_BUTTON);
-			m_Bgm.Stop();
-            InfoManager.Instance.InitInfo();
-            m_TitleUI.SetActive(false);
-            gameObject.SetActive(false);
-            TitleCamera.SetActive(false);
+            m_bUse = true;
         }
-	}
+
+
+        if (m_bUse)
+        {
+            if (m_TitleUI.GetComponent<CanvasGroup>().alpha > 0)
+            {
+                m_TitleUI.GetComponent<CanvasGroup>().alpha -= 0.05f;
+            }
+            else if (m_TitleUI.GetComponent<CanvasGroup>().alpha <= 0)
+            {
+                AllManager.Instance.SetStateScene(AllManager.STATE_SCENE.STATE_STAGE);
+                m_Bgm.Stop();
+                InfoManager.Instance.InitInfo();
+                gameObject.SetActive(false);
+                TitleCamera.SetActive(false);
+            }
+        }
+    }
 }

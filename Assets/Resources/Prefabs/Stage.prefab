@@ -26302,7 +26302,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 36ffc4e15dd3e994fb92b6f049fe8f43, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -26642,7 +26642,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 36ffc4e15dd3e994fb92b6f049fe8f43, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -26676,7 +26676,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 36ffc4e15dd3e994fb92b6f049fe8f43, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -27288,7 +27288,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 36ffc4e15dd3e994fb92b6f049fe8f43, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -30326,7 +30326,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c167317d140583469c65115b352e811, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Debug_State_Text: {fileID: 102707106697245738}
   m_FadePoint: {fileID: 1229583220799552}
   m_TargetObj: {fileID: 0}
   m_AttackTimer: 0
@@ -30355,7 +30354,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c167317d140583469c65115b352e811, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Debug_State_Text: {fileID: 102690156789601966}
   m_FadePoint: {fileID: 0}
   m_TargetObj: {fileID: 0}
   m_AttackTimer: 0
@@ -30722,7 +30720,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Enemy:
   - Enemy: {fileID: 1578221996748304}
-    Timer: 5
+    Timer: 0
 --- !u!114 &114605201568058518
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -31012,7 +31010,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c167317d140583469c65115b352e811, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Debug_State_Text: {fileID: 102981407836763880}
   m_FadePoint: {fileID: 1752283469723120}
   m_TargetObj: {fileID: 0}
   m_AttackTimer: 0
@@ -31510,7 +31507,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c167317d140583469c65115b352e811, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Debug_State_Text: {fileID: 102837086091149412}
   m_FadePoint: {fileID: 1475315435461042}
   m_TargetObj: {fileID: 0}
   m_AttackTimer: 0

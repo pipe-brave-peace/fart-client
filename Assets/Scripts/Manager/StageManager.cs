@@ -2,19 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Cinemachine;
 
 public class StageManager : MonoBehaviour {
     
     public AudioSource m_Bgm;           // BGM
 
     [SerializeField]
-    GameObject Stage_Object;
+    GameObject m_Stage_Object;
 
     [SerializeField]
-    GameObject Stage_UI;
+    GameObject m_Stage_UI;
 
     [SerializeField]
-    GameObject ResultCamera;
+    GameObject m_ResultCamera;
+
+    [SerializeField]
+    CinemachineBrain m_MainChine;
+
+    [SerializeField]
+    GameObject m_NarrationObject;
 
     // ゲーム終了表示
     [SerializeField]
@@ -45,8 +52,8 @@ public class StageManager : MonoBehaviour {
 	void Start () {
         AllManager.Instance.SetStateScene(AllManager.STATE_SCENE.STATE_STAGE);
 
-        Stage_Object.SetActive(true);
-        Stage_UI.SetActive(true);
+        //m_Stage_Object.SetActive(true);
+        m_Stage_UI.SetActive(true);
 
         Mode = STAGE_MODE.READY;
         m_Bgm.Play ();
@@ -61,7 +68,7 @@ public class StageManager : MonoBehaviour {
         if (GameObject.FindGameObjectsWithTag("Enemy").Length <= 0 &&
             m_PhaseManager.GetNowPhaseIndex() >= 6)
         {
-            ResultCamera.SetActive(true);
+            m_ResultCamera.SetActive(true);
             m_GameClear.SetActive(true);
             m_GameOver.SetActive(false);
         }
@@ -96,8 +103,29 @@ public class StageManager : MonoBehaviour {
             return;
         }
 
-        // 次のモードに移行
-        Mode = STAGE_MODE.GAME;
+        if (m_MainChine.IsBlending)
+        {
+            if (m_MainChine.ActiveBlend.BlendWeight >= 0.9f)
+            {
+                m_NarrationObject.SetActive(true);
+            }
+        }
+
+        if (m_Stage_UI.GetComponent<CanvasGroup>().alpha < 1)
+        {
+            m_Stage_UI.GetComponent<CanvasGroup>().alpha += 0.05f;
+        }
+        else if (m_Stage_UI.GetComponent<CanvasGroup>().alpha >= 1)
+        {
+            m_Stage_UI.GetComponent<CanvasGroup>().alpha = 1;
+        }
+
+        if (m_NarrationObject.GetComponent<UI_Narration>().GetTurn())
+        {
+            // 次のモードに移行
+            Mode = STAGE_MODE.GAME;
+        }
+
     }
 
     // ゲームメイン処理
@@ -119,8 +147,8 @@ public class StageManager : MonoBehaviour {
         SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.PUSH_BUTTON);
         m_Bgm.Stop();
 
-        Stage_Object.SetActive(false);
-        Stage_UI.SetActive(false);
+        m_Stage_Object.SetActive(false);
+        m_Stage_UI.SetActive(false);
    
         // 次のモードに移行
         Mode = STAGE_MODE.MAX;
