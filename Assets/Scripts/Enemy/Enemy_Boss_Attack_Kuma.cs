@@ -15,8 +15,8 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
     private const float CRY_TIME    = 1.0f;
     private const float CAN_DAMAGE_LEN = 20.0f;
     
-    [SerializeField]
-    TextMesh Debug_State_Text;
+    //[SerializeField]
+    //TextMesh Debug_State_Text;
     [Header("吼える場所")]
     [SerializeField]
     GameObject CryPoint;
@@ -131,7 +131,7 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
         switch (m_State.GetState())
         {
             case Enemy_State.STATE.MOVE:     // 移動
-                Debug_State_Text.text = "STATE:Move";
+                //Debug_State_Text.text = "STATE:Move";
                 
                 m_Animator.SetBool("ToMove", false);
 
@@ -174,7 +174,7 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
                 
             case Enemy_State.STATE.CRY:
                 {
-                    Debug_State_Text.text = "STATE:がおぉぉ！！！";
+                    //Debug_State_Text.text = "STATE:がおぉぉ！！！";
 
                     if (m_LifeList != null) { Destroy(m_LifeList.gameObject); }
                     // 吼えるエフェクトの再生
@@ -194,7 +194,7 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
                 }
 
             case Enemy_State.STATE.ATTACK:      // 攻撃
-                Debug_State_Text.text = "STATE:喰らえ！！";
+                //Debug_State_Text.text = "STATE:喰らえ！！";
 
                 // アニメション終わった？
                 if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f && m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
@@ -209,7 +209,7 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.BACK:      // 後退
-                Debug_State_Text.text = "STATE:あ！！！！";
+                //Debug_State_Text.text = "STATE:あ！！！！";
 
                 // 後退処理
                 m_Nav.updateRotation = false;
@@ -233,7 +233,7 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
                 break;
                 
             case Enemy_State.STATE.FEAR:        // 怯む
-                Debug_State_Text.text = "STATE:怖いよ、怖いよぉ～";
+                //Debug_State_Text.text = "STATE:怖いよ、怖いよぉ～";
                 
                 m_FearTimer -= Time.deltaTime;
                 if( m_FearTimer <= 0.0f)
@@ -252,7 +252,7 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
-                Debug_State_Text.text = "STATE:FadeOut";
+                //Debug_State_Text.text = "STATE:FadeOut";
 
                 // 汗のエフェクトを出す
                 m_EscapeEffect.SetActive(true);
@@ -274,6 +274,7 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
         if (m_State.GetState() == Enemy_State.STATE.BACK) return;
         if (m_State.GetState() == Enemy_State.STATE.FEAR) return;
         m_State.EnemySetState(Enemy_State.STATE.ESCAPE);
+        if (m_LifeList != null) { Destroy(m_LifeList.gameObject); }
         m_Animator.Play("Move");
     }
 

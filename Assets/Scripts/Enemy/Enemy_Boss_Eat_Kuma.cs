@@ -13,8 +13,8 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
     private const float FEAR_TIME = 5.0f;
     private const float CRY_TIME = 1.0f;
 
-    [SerializeField]
-    TextMesh Debug_State_Text;
+    //[SerializeField]
+    //TextMesh Debug_State_Text;
     [Header("吼える場所")]
     [SerializeField]
     GameObject CryPoint;
@@ -126,7 +126,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
         switch (m_State.GetState())
         {
             case Enemy_State.STATE.MOVE:     // 移動
-                Debug_State_Text.text = "STATE:Move";
+                //Debug_State_Text.text = "STATE:Move";
 
                 // 攻撃不可
                 m_State.CanSet(false);
@@ -154,7 +154,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.EAT:      // 食べる
-                Debug_State_Text.text = "STATE:食べているよ";
+                //Debug_State_Text.text = "STATE:食べているよ";
 
                 // 攻撃可能
                 m_State.CanSet(true);
@@ -177,7 +177,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
 
             case Enemy_State.STATE.CRY:
                 {
-                    Debug_State_Text.text = "STATE:がおぉぉ！！！";
+                    //Debug_State_Text.text = "STATE:がおぉぉ！！！";
                     m_State.CanSet(false);
 
                     // 吼えるエフェクトの再生
@@ -198,7 +198,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                 }
 
             case Enemy_State.STATE.SPRAY:
-                Debug_State_Text.text = "STATE:見えねぇ！！";   // テスト
+                //Debug_State_Text.text = "STATE:見えねぇ！！";   // テスト
                 // フラグをスプレーを受けたに変更
                 m_isBuff = true;
                 // 匂いのエフェクトの再生
@@ -217,7 +217,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
-                Debug_State_Text.text = "STATE:痛えぇ！";
+                //Debug_State_Text.text = "STATE:痛えぇ！";
 
                 if (!m_isBuff)
                 {
@@ -243,7 +243,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.FEAR:        // 怯む
-                Debug_State_Text.text = "STATE:怖いよ、怖いよぉ～";
+                //Debug_State_Text.text = "STATE:怖いよ、怖いよぉ～";
 
                 // 攻撃不能
                 m_State.CanSet(false);
@@ -264,7 +264,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
-                Debug_State_Text.text = "STATE:FadeOut";
+                //Debug_State_Text.text = "STATE:FadeOut";
 
                 // 攻撃不能
                 m_State.CanSet(false);
