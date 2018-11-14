@@ -506,7 +506,7 @@ MonoBehaviour:
   m_EatSpeed: 1
   m_Jump: 1.5
   m_MoveSpeed: 0.2
-  m_CntJump: 2
+  m_CntJump: 1
   m_Color: {fileID: 137416386913060442}
   m_DamageEffect: {fileID: 1484713999219436, guid: 43a9b44292b4f71448eee55d06c4677c,
     type: 2}
