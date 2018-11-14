@@ -38,6 +38,7 @@ public class Enemy_Attack_Inosisi : MonoBehaviour {
     private bool            m_AttackMode;   // 攻撃モードの突進準備と突進の判別
     private bool            m_isBuff;       // オナラスプレー受けたかどうか
     private Animator        m_Animator;     // アニメション
+    private Vector3         m_TargetPos;    //目標オブジェクト位置
 
     // 初期化
     void Start()
@@ -73,6 +74,8 @@ public class Enemy_Attack_Inosisi : MonoBehaviour {
     // 更新処理
     void Update()
     {
+        m_TargetPos = m_TargetObj.GetComponent<Player>().GetPlayerPosition();
+
         // 状態判定
         switch (m_State.GetState())
         {
@@ -93,7 +96,7 @@ public class Enemy_Attack_Inosisi : MonoBehaviour {
                         // 移動アニメーションへ
                         m_Animator.Play("Move");
                         // 対象の位置の方向に移動
-                        MoveHoming(m_TargetObj.transform.position);
+                        MoveHoming(m_TargetPos);
                         // 移動スピードアップ
                         m_Nav.speed = m_MoveSpeed * 3.0f;
                     }
@@ -101,15 +104,15 @@ public class Enemy_Attack_Inosisi : MonoBehaviour {
                 else
                 {
                     // 対象の位置の方向に移動
-                    MoveHoming(m_TargetObj.transform.position);
+                    MoveHoming(m_TargetPos);
                     // 対象と近いなら
-                    if (DistanceNoneY(m_TargetObj.transform.position, 3.0f))
+                    if (DistanceNoneY(m_TargetPos, 3.0f))
                     {
                         // 攻撃のエフェクトを生成
                         GameObject attack_effect = Instantiate(m_AttackEffect, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as GameObject;
                         // 攻撃するプレイヤーを判別
-                        //attack_effect.GetComponent<Effect_Damage>().Set(m_TargetObj.GetComponent<Player>().GetPlayerNumber());
-                        attack_effect.GetComponent<Effect_Damage>().Set(0);
+                        attack_effect.GetComponent<Effect_Damage>().Set(m_TargetObj.GetComponent<Player>().GetPlayerNumber());
+                        
                         // フラグを攻撃したに変更
                         m_isAttack = true;
                         // 満足状態へ
@@ -243,6 +246,6 @@ public class Enemy_Attack_Inosisi : MonoBehaviour {
             return;
         }
         // 対象の位置の方向に移動
-        MoveHoming(m_TargetObj.transform.position);
+        MoveHoming(m_TargetPos);
     }
 }

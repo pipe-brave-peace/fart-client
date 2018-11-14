@@ -40,7 +40,7 @@ MonoBehaviour:
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 9dd6c8338d7fe4845aa5646ad6b12338, type: 2}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
@@ -48,7 +48,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 2f12db74545730249ada9d72cc88ae4c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -69,6 +69,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ChildImage: []
   m_SubVal: 0.01
+  m_StartTimer: 0
 --- !u!222 &222447556707702558
 CanvasRenderer:
   m_ObjectHideFlags: 1
