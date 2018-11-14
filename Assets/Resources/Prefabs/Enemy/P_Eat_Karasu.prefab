@@ -2097,10 +2097,6 @@ MonoBehaviour:
   Debug_State_Text: {fileID: 102662244696393396}
   m_NavObj:
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   m_FadePoint: {fileID: 0}
   m_MoveSpeed: 1
   m_Satiety: 90

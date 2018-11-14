@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class Result_InfoNum : MonoBehaviour {
 
+    private string[] RANK_NUM = { "C", "B", "A", "S" };
+
     [SerializeField]
     GameObject m_Player1_Score;
     [SerializeField]
@@ -145,10 +147,19 @@ public class Result_InfoNum : MonoBehaviour {
                 }
                 break;
             case MODE.RANK:
-                m_Player1_Text_Rank.text = InfoManager.Instance.GetPlayerRank(0);
-                m_Player2_Text_Rank.text = InfoManager.Instance.GetPlayerRank(1);
-                m_CntFrame = 0.0f;
-                m_Mode++;
+                num = Random.Range(0, 3);
+                m_Player1_Text_Rank.text = RANK_NUM[num];
+                m_Player2_Text_Rank.text = RANK_NUM[num];
+
+                if (m_CntFrame >= m_Time)
+                {
+                    m_Player1_Text_Rank.text = InfoManager.Instance.GetPlayerRank(0);
+                    m_Player2_Text_Rank.text = InfoManager.Instance.GetPlayerRank(1);
+                    m_Player1_Rank.GetComponent<UI_CreateNum>().CreateNum();
+                    m_Player2_Rank.GetComponent<UI_CreateNum>().CreateNum();
+                    m_CntFrame = 0.0f;
+                    m_Mode++;
+                }
                 break;
             case MODE.MAX:
                 return;

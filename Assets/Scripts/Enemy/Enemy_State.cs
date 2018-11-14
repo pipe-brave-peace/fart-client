@@ -11,6 +11,7 @@ public class Enemy_State : MonoBehaviour {
         ATTACK,     // 攻撃
         CRY,        // 叫ぶ
         SPRAY,      // スプレー
+        BACK,       // 後退
         DAMAGE,     // ダメージ
         FEAR,       // 怯む
         SATIETY,    // 満腹
@@ -27,6 +28,11 @@ public class Enemy_State : MonoBehaviour {
     {
         if(!m_canSet) { return; }
         if( m_State != m_StateOld) { m_StateOld = m_State; }
+        m_State = State;
+    }
+    public void EnemySetState(STATE State)
+    {
+        if (m_State != m_StateOld) { m_StateOld = m_State; }
         m_State = State;
     }
 
