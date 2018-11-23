@@ -106,10 +106,22 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
                         {
                             m_MoveMode++;
                         }
+                        if (transform.position.y <= m_TargetObj.transform.position.y + 0.5f)
+                        {
+                            // 食べる状態に変更
+                            m_State.SetState(Enemy_State.STATE.EAT);
+                            m_Animator.SetBool("MoveToEat", true);
+                        }
                         break;
                     case 2:
                         // 着地移動
                         transform.Translate(0, -m_MoveSpeed, 0);
+                        if( transform.position.y <= m_TargetObj.transform.position.y+0.5f)
+                        {
+                            // 食べる状態に変更
+                            m_State.SetState(Enemy_State.STATE.EAT);
+                            m_Animator.SetBool("MoveToEat", true);
+                        }
                         break;
                 }
                 break;
@@ -282,15 +294,5 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
         Vector3 move = TargetPos - transform.position;   // 目的へのベクトル
         move = move.normalized;                          // 正規化
         transform.position += move * Speed;              // 移動処理
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(collision.gameObject.tag == "Terrain")
-        {
-            // 食べる状態に変更
-            m_State.SetState(Enemy_State.STATE.EAT);
-            m_Animator.SetBool("MoveToEat", true);
-        }
     }
 }
