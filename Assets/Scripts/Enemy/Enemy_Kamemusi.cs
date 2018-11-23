@@ -9,6 +9,8 @@ using UnityEngine.AI;
 
 public class Enemy_Kamemusi : MonoBehaviour {
 
+    private const float BACK_TIME = 1.0f;
+
     //[SerializeField]
     //TextMesh Debug_State_Text;      // テスト
     [SerializeField]
@@ -30,6 +32,9 @@ public class Enemy_Kamemusi : MonoBehaviour {
     [SerializeField]
     Animator m_Animator;     // アニメション
 
+    private float m_NavMoveSpeed;     // 移動スピード
+    private float m_BackTimer;        // 後退するカウント
+
     private Enemy_State  m_State;       // 状態
     private NavMeshAgent m_Nav;         // ナビメッシュ
     private Life         m_Life;        // 体力
@@ -48,6 +53,8 @@ public class Enemy_Kamemusi : MonoBehaviour {
         m_Nav      = GetComponent<NavMeshAgent>();
 
         // 変数初期化
+        m_NavMoveSpeed = m_Nav.speed;
+        m_BackTimer = BACK_TIME;
         m_FadeColor     = new Color(1.0f, 1.0f, 1.0f, 1.0f);    // 現在の色をセット
         m_AttackMode    = 0;                                    // 攻撃モード
         m_AttackTimer   = 1.0f;                                 // 攻撃モード用カウント
@@ -152,8 +159,8 @@ public class Enemy_Kamemusi : MonoBehaviour {
                     // 透明できる描画モードに変更
                     BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
                     m_FadeColor.a = 1.0f;
-                    m_Color.material.color = m_FadeColor;
-                    m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                   m_Color.material.SetColor("_MainColor", m_FadeColor);
+                    m_State.SetState(Enemy_State.STATE.BACK);     // 離脱状態へ
                     break;
                 }
                 m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
@@ -173,7 +180,7 @@ public class Enemy_Kamemusi : MonoBehaviour {
                     // 透明できる描画モードに変更
                     BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
                     m_FadeColor.a = 1.0f;
-                    m_Color.material.color = m_FadeColor;
+                   m_Color.material.SetColor("_MainColor", m_FadeColor);
                     m_State.SetState(Enemy_State.STATE.ESCAPE);         // 離脱状態へ
                     break;
                 }
@@ -184,6 +191,34 @@ public class Enemy_Kamemusi : MonoBehaviour {
                     break;
                 }
                 m_State.SetState(Enemy_State.STATE.MOVE);     // 移動状態へ
+                break;
+
+            case Enemy_State.STATE.BACK:      // 後退
+                //Debug_State_Text.text = "STATE:あ！！！！";
+
+                // 汗のエフェクトを出す
+                m_EscapeEffect.SetActive(true);
+
+                // 後退処理
+                m_Nav.updateRotation = false;
+                Vector3 pos = transform.position;
+                pos = m_TargetObj.transform.position - pos;
+                pos = -10.0f * Vector3.Normalize(pos);
+                pos += transform.position;
+                MoveHoming(pos);
+                m_Nav.speed = m_NavMoveSpeed * m_BackTimer * 30.0f;
+                m_Nav.acceleration = m_Nav.speed;
+
+                gameObject.transform.Rotate(0, 25, 0);
+
+                // カウント処理
+                m_BackTimer -= Time.deltaTime;
+                if (m_BackTimer <= 0.0f)
+                {
+                    m_BackTimer = BACK_TIME;
+                    m_State.EnemySetState(Enemy_State.STATE.ESCAPE);
+                    m_Nav.enabled = true;
+                }
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
@@ -197,7 +232,7 @@ public class Enemy_Kamemusi : MonoBehaviour {
 
                 // 消えていく
                 m_FadeColor.a -= 0.02f;
-                m_Color.material.color = m_FadeColor;
+               m_Color.material.SetColor("_MainColor", m_FadeColor);
 
                 // 汗を止める
                 if (m_FadeColor.a <= 0.3f) { m_EscapeEffect.SetActive(false); }

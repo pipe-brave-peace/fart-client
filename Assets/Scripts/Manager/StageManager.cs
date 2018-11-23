@@ -15,6 +15,9 @@ public class StageManager : MonoBehaviour {
     GameObject m_Stage_UI;
 
     [SerializeField]
+    GameObject m_Display2Stage_UI;
+
+    [SerializeField]
     GameObject m_ResultCamera;
 
     [SerializeField]
@@ -23,6 +26,9 @@ public class StageManager : MonoBehaviour {
     [SerializeField]
     GameObject m_NarrationObject;
 
+    [SerializeField]
+    UI_IventAll m_IventUI;
+
     // ゲーム終了表示
     [SerializeField]
     GameObject m_GameClear;
@@ -30,6 +36,9 @@ public class StageManager : MonoBehaviour {
     GameObject m_GameOver;
     [SerializeField]
     PhaseManager m_PhaseManager;
+
+    [SerializeField]
+    Enemy_State m_Boss;
 
     // ステージモード定義
     enum STAGE_MODE
@@ -65,8 +74,7 @@ public class StageManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         // テスト
-        if (GameObject.FindGameObjectsWithTag("Enemy").Length <= 0 &&
-            m_PhaseManager.GetNowPhaseIndex() >= 6)
+        if (m_Boss.GetState() == Enemy_State.STATE.FAINT)
         {
             m_ResultCamera.SetActive(true);
             m_GameClear.SetActive(true);
@@ -111,12 +119,20 @@ public class StageManager : MonoBehaviour {
             }
         }
 
+        if (m_NarrationObject.GetComponent<UI_Narration>().GetTurn())
+        {
+            m_IventUI.SetIventFlg(false);
+        }
+
         if (m_Stage_UI.GetComponent<CanvasGroup>().alpha < 1)
         {
+            m_Display2Stage_UI.GetComponent<CanvasGroup>().alpha += 0.05f;
+
             m_Stage_UI.GetComponent<CanvasGroup>().alpha += 0.05f;
         }
         else if (m_Stage_UI.GetComponent<CanvasGroup>().alpha >= 1)
         {
+            m_Display2Stage_UI.GetComponent<CanvasGroup>().alpha = 1f;
             m_Stage_UI.GetComponent<CanvasGroup>().alpha = 1;
         }
 
@@ -142,15 +158,23 @@ public class StageManager : MonoBehaviour {
     // リザルトへの処理
     public void ModeToResult()
     {
-        // シーン遷移処理
-        AllManager.Instance.SetStateScene(AllManager.STATE_SCENE.STATE_RESULT);
         SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.PUSH_BUTTON);
         m_Bgm.Stop();
 
-        m_Stage_Object.SetActive(false);
-        m_Stage_UI.SetActive(false);
-   
-        // 次のモードに移行
-        Mode = STAGE_MODE.MAX;
+        if (m_Stage_UI.GetComponent<CanvasGroup>().alpha > 0)
+        {
+            m_Stage_UI.GetComponent<CanvasGroup>().alpha -= 0.05f;
+        }
+        else if (m_Stage_UI.GetComponent<CanvasGroup>().alpha <= 0)
+        {
+            // シーン遷移処理
+            AllManager.Instance.SetStateScene(AllManager.STATE_SCENE.STATE_RESULT);
+
+            m_Stage_Object.SetActive(false);
+            m_Stage_UI.SetActive(false);
+
+            // 次のモードに移行
+            Mode = STAGE_MODE.MAX;
+        }
     }
 }

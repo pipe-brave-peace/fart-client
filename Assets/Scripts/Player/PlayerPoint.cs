@@ -7,6 +7,7 @@ public class PlayerPoint : MonoBehaviour {
     public enum STATE
     {
         MOVE,       // 移動
+        CORNER,       // 角
         STOP,       //停止
         ROTSTOP,
         MAX

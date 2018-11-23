@@ -203,7 +203,7 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
                 {
                     // 透明できる描画モードに変更
                     BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
-                    m_Color.material.color = m_FadeColor;
+                   m_Color.material.SetColor("_MainColor", m_FadeColor);
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
                     m_Animator.SetBool("MoveToEat", false);
                     m_Animator.Play("Move");
@@ -243,7 +243,7 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
 
                 // アルファ値を減らす
                 m_FadeColor.a -= 0.02f;
-                m_Color.material.color = m_FadeColor;
+               m_Color.material.SetColor("_MainColor", m_FadeColor);
 
                 // 汗を止める
                 if (m_FadeColor.a <= 0.3f) { m_EscapeEffect.SetActive(false); }

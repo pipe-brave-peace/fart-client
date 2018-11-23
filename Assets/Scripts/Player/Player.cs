@@ -71,6 +71,8 @@ public class Player : MonoBehaviour {
 
     public bool GetStan() { return m_bStan; }
 
+    public void SetStan(bool bstan) { m_bStan = bstan; }
+
     public int GetPlayerNumber() { return m_nPlayerNumber; }
 
     public Vector3 GetPlayerPosition() { return m_PlayerPoint.position; }

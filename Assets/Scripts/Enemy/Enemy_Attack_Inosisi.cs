@@ -8,7 +8,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(Enemy_Score))]
 
 public class Enemy_Attack_Inosisi : MonoBehaviour {
-    
+
     [SerializeField]
     GameObject   m_FadePoint;           // 退却ポイント
     [SerializeField]
@@ -25,6 +25,8 @@ public class Enemy_Attack_Inosisi : MonoBehaviour {
     GameObject   m_DamageEffect;        // 弾の爆発エフェクト
     [SerializeField]
     GameObject   m_EscapeEffect;        // 退却時汗のエフェクト
+    [SerializeField]
+    GameObject m_BlowEffect;            // 吹っ飛びのエフェクト
     [SerializeField]
     GameObject   m_BuffEffect;          // バフ時オナラのエフェクト
 
@@ -112,7 +114,9 @@ public class Enemy_Attack_Inosisi : MonoBehaviour {
                         GameObject attack_effect = Instantiate(m_AttackEffect, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as GameObject;
                         // 攻撃するプレイヤーを判別
                         attack_effect.GetComponent<Effect_Damage>().Set(m_TargetObj.GetComponent<Player>().GetPlayerNumber());
-                        
+
+                        m_TargetObj.GetComponent<Player>().SetStan(true);
+
                         // フラグを攻撃したに変更
                         m_isAttack = true;
                         // 満足状態へ
@@ -177,8 +181,8 @@ public class Enemy_Attack_Inosisi : MonoBehaviour {
                 if (m_Life.GetLife() <= 0)
                 {
                     // 透明できる描画モードに変更
-                    BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
-                    m_Color.material.color = m_FadeColor;           // 色の代入
+                    //BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
+                    m_Color.material.SetColor("_MainColor", m_FadeColor);
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
                     m_Animator.SetBool("MoveToEat", false);
                     m_Animator.SetBool("MoveToAttack", false);
@@ -192,15 +196,31 @@ public class Enemy_Attack_Inosisi : MonoBehaviour {
                 m_State.CanSet(false);
                 // 汗のエフェクトを出す
                 m_EscapeEffect.SetActive(true);
+                m_BlowEffect.SetActive(true);
                 // 離脱の位置の方向に移動
-                m_Nav.SetDestination(m_FadePos);
+                //m_Nav.SetDestination(m_FadePos);
+
+                m_Nav.enabled = false;
+
+                Vector3 pos = transform.position;
+                pos = m_TargetObj.transform.position - pos;
+                pos = -Vector3.Normalize(pos);
+
+                gameObject.GetComponent<Rigidbody>().freezeRotation = false;
+
+                gameObject.GetComponent<Rigidbody>().AddTorque(Vector3.right * Mathf.PI * 100);
+
+
+                transform.position += new Vector3(pos.x, 1, pos.z) * 50f * Time.deltaTime;
+
+                m_BlowEffect.transform.localPosition = transform.localPosition;
 
                 // 消えていく
                 m_FadeColor.a -= 0.02f;
-                m_Color.material.color = m_FadeColor;
+               m_Color.material.SetColor("_MainColor", m_FadeColor);
 
                 // 汗を止める
-                if (m_FadeColor.a <= 0.3f) { m_EscapeEffect.SetActive(false); }
+                if (m_FadeColor.a <= 0.3f) { m_EscapeEffect.SetActive(false); m_BlowEffect.SetActive(true); }
 
                 // 透明になった親を消す
                 if (m_FadeColor.a <= 0.0f) { Destroy(transform.parent.gameObject); }

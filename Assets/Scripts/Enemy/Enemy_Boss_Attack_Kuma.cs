@@ -99,7 +99,7 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
             if (DistanceNoneY(CryPoint.transform.position, 1.0f))
             {
                 m_Nav.updatePosition = false;
-                MoveHoming(Camera.main.transform.position);
+                MoveHoming(m_TargetObj.transform.position);
                 m_CryTimer -= Time.deltaTime;
                 if( m_CryTimer <= 0.0f)
                 {

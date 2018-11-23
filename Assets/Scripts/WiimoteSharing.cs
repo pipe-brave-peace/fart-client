@@ -4,7 +4,8 @@ using UnityEngine.UI;
 
 public class WiimoteSharing : MonoBehaviour {
 
-    private Wiimote wiimote;
+    private Wiimote wiimote1;
+    private Wiimote wiimote2;
 
     private int counter = 0;
     private int sendWiimoteCount = 3;
@@ -18,23 +19,20 @@ public class WiimoteSharing : MonoBehaviour {
     {
         if (!WiimoteManager.HasWiimote()) { return; }
 
-        wiimote = WiimoteManager.Wiimotes[0];
+        wiimote1 = WiimoteManager.Wiimotes[0];
+        wiimote2 = WiimoteManager.Wiimotes[1];
 
         int ret;
         do
         {
-            ret = wiimote.ReadWiimoteData();
+            ret = wiimote1.ReadWiimoteData();
+            ret = wiimote2.ReadWiimoteData();
         } while (ret > 0);
 
-        var keyA = wiimote.Button.a;
-        var keyB = wiimote.Button.b;
-
-        float[] pointer = wiimote.Ir.GetPointingPosition();
-        var point = new Vector2(pointer[0], pointer[1]);
     }
 
-    public Wiimote GetWiimote()
+    public Wiimote GetWiimote(int index)
     {
-        return wiimote;
+        return WiimoteManager.Wiimotes[index];
     }
 }

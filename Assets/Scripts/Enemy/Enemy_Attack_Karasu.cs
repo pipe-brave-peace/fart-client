@@ -99,7 +99,7 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
                 {
                     // 透明できる描画モードに変更
                     BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
-                    m_Color.material.color = m_FadeColor;
+                   m_Color.material.SetColor("_MainColor", m_FadeColor);
                     m_State.CanSet(true);
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
                     m_Animator.SetBool("MoveToAttack", false);
@@ -127,7 +127,8 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
                     break;
                 }
                 // 目標へ移動
-                MoveHoming(m_TargetObj.transform.position, m_MoveSpeed*0.01f);
+                //MoveHoming(m_TargetObj.transform.position, m_MoveSpeed*0.01f);
+                transform.position = m_TargetObj.transform.position;
                 LookAtNoneY(Camera.main.transform.position);
                 break;
 
@@ -176,7 +177,7 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
 
                 // アルファ値を減らす
                 m_FadeColor.a -= 0.02f;
-                m_Color.material.color = m_FadeColor;
+               m_Color.material.SetColor("_MainColor", m_FadeColor);
 
                 // 汗を止める
                 if (m_FadeColor.a <= 0.3f) { m_EscapeEffect.SetActive(false); }

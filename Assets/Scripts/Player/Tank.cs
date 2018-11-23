@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class Tank : MonoBehaviour
 {
-    [SerializeField]
-    Effect_Trigger Effect;
 
     [SerializeField]
     float m_ChargeValue = 0.0f;
@@ -38,6 +36,23 @@ public class Tank : MonoBehaviour
 
     [SerializeField]
     float m_fMove = 0;
+
+    [SerializeField]
+    GameObject m_Boss;
+
+    [SerializeField]
+    PlayerAll m_PlayerAll;
+
+    [SerializeField]
+    Player m_Player;
+
+    [SerializeField]
+    LED m_LED;
+
+
+    public float m_fTank = 1;
+
+    float m_RectX = 0.0f;
 
     private float m_fOldMove = 0.0f;
 
@@ -73,12 +88,15 @@ public class Tank : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         switch (AllManager.Instance.GetStateScene())
         {
             case AllManager.STATE_SCENE.STATE_TITLE:
                 break;
 
             case AllManager.STATE_SCENE.STATE_STAGE:
+                Debug.Log(m_RectX);
+
                 if (m_joyconL != null)
                 {
                     if (OldPos < -0.2f)
@@ -113,6 +131,17 @@ public class Tank : MonoBehaviour
                 GaugeAdjustment();
 
                 WidthAdjustment();
+
+                m_LED.Gage(m_Player.GetPlayerNumber(), m_FurzUI.uvRect.x);
+
+                if (m_Boss.GetComponent<Enemy_Boss_Mix_Kuma>().m_isLastAttack)
+                {
+                    if (m_FurzUI.uvRect.x == 0)
+                    {
+                        m_PlayerAll.m_bTankMax = true;
+                    }
+                }
+
                 break;
 
             case AllManager.STATE_SCENE.STATE_RESULT:
@@ -124,6 +153,7 @@ public class Tank : MonoBehaviour
     public void Farmer(float fChargeValue)
     {
         if (m_bFurzFlg){ return; }
+        m_fTank -= fChargeValue;
         m_bFurzFlg = true;
         m_bFiring = false;
         m_FurzValue = 0.0f;
@@ -135,6 +165,7 @@ public class Tank : MonoBehaviour
     //オナラ発射
     public void FartingFarts(float fFartingValue)
     {
+        m_fTank -= fFartingValue;
         m_bFurzFlg = true;
         m_bFiring = true;
         m_FurzValue = 0.0f;
@@ -151,6 +182,7 @@ public class Tank : MonoBehaviour
             var uvRect = m_FurzUI.uvRect;
             m_FurzValue += m_fUvRectX;
             uvRect.x -= m_fUvRectX;
+            m_RectX += m_fUvRectX;
             m_FurzUI.uvRect = uvRect;
             m_FurzUI.rectTransform.localPosition -= new Vector3(m_fMove, 0, 0);
             if (!m_bFiring)
@@ -177,6 +209,8 @@ public class Tank : MonoBehaviour
         {
             var uvRect = m_FurzUI.uvRect;
             uvRect.x = 1;
+            m_RectX = 0;
+            m_fTank = 1;
             m_FurzUI.uvRect = uvRect;
             m_FurzUI.rectTransform.localPosition = new Vector3(EndPos,
                                                m_FurzUI.rectTransform.localPosition.y,
@@ -187,6 +221,8 @@ public class Tank : MonoBehaviour
         {
             var uvRect = m_FurzUI.uvRect;
             uvRect.x = 0;
+            m_RectX = 1;
+            m_fTank = 0;
             m_FurzUI.uvRect = uvRect;
             m_FurzUI.rectTransform.localPosition = new Vector3(StartPos,
                                                            m_FurzUI.rectTransform.localPosition.y,

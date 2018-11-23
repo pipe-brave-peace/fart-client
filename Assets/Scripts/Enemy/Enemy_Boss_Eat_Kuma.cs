@@ -97,31 +97,31 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if ( !m_isCry)
-        {
-            // 攻撃不可
-            m_State.CanSet(false);
-            // 近い？
-            if (DistanceNoneY(CryPoint.transform.position, 1.0f))
-            {
-                m_Nav.updatePosition = false;
-                MoveHoming(Camera.main.transform.position);
-                m_CryTimer -= Time.deltaTime;
-                if( m_CryTimer <= 0.0f)
-                {
-                    m_isCry = true;
-                    m_State.CanSet(true);
-                    m_State.SetState(Enemy_State.STATE.CRY);
-                    m_Animator.SetBool("ToCry", true);
-                }
-            }
-            else
-            {
-                // 目標へ移動
-                MoveHoming(CryPoint.transform.position);
-            }
-            return;
-        }
+        //if ( !m_isCry)
+        //{
+        //    // 攻撃不可
+        //    m_State.CanSet(false);
+        //    // 近い？
+        //    if (DistanceNoneY(CryPoint.transform.position, 1.0f))
+        //    {
+        //        m_Nav.updatePosition = false;
+        //        MoveHoming(Camera.main.transform.position);
+        //        m_CryTimer -= Time.deltaTime;
+        //        if( m_CryTimer <= 0.0f)
+        //        {
+        //            m_isCry = true;
+        //            m_State.CanSet(true);
+        //            m_State.SetState(Enemy_State.STATE.CRY);
+        //            m_Animator.SetBool("ToCry", true);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        // 目標へ移動
+        //        MoveHoming(CryPoint.transform.position);
+        //    }
+        //    return;
+        //}
         // 状態判定
         switch (m_State.GetState())
         {

@@ -12,8 +12,12 @@ public class Enemy_Eat_Inago : MonoBehaviour
     [SerializeField]
     float GRAVITY = 0.1f;
 
+    private const float BACK_TIME = 1.0f;
+
     //[SerializeField]
     //TextMesh     Debug_State_Text;
+    [SerializeField]
+    GameObject m_PlayerObject;
     [SerializeField]
     GameObject   m_FadePoint;           // 退却ポイント
     [SerializeField]
@@ -41,6 +45,9 @@ public class Enemy_Eat_Inago : MonoBehaviour
     private Animator    m_Animator;         // アニメション
     private NavMeshAgent m_Nav;              // ナビメッシュ
 
+    private float m_NavMoveSpeed;     // 移動スピード
+    private float m_BackTimer;        // 後退するカウント
+
     private GameObject  m_TargetObj;        // ターゲットオブジェクト
     private Vector3     m_TargetPos;        // ターゲット座標
     private Vector3     m_Move;             // 移動量
@@ -62,6 +69,8 @@ public class Enemy_Eat_Inago : MonoBehaviour
         m_Nav = GetComponent<NavMeshAgent>();
 
         // 変数初期化
+        m_NavMoveSpeed = m_Nav.speed;
+        m_BackTimer = BACK_TIME;
         m_Animator.speed = 0.0f;
         m_FadeColor  = new Color(1.0f, 1.0f, 1.0f, 1.0f);    // 現在の色をセット
         m_Move       = new Vector3(0.0f, 0.0f, 0.0f);
@@ -86,30 +95,33 @@ public class Enemy_Eat_Inago : MonoBehaviour
     void Update()
     {
         // 移動処理
-        if ( m_isTerrain)    // 着地
+        if (m_State.GetState() != Enemy_State.STATE.BACK)
         {
-            m_Animator.Play("Jump", 0, 0.0f);
-            m_CntJump -= Time.deltaTime;
-            if (m_CntJump <= 0.0f)
+            if (m_isTerrain)    // 着地
             {
-                m_CntJump = m_JumpTiming;
-                //対象の位置の方向を計算
-                m_Move = m_TargetPos - transform.position;     // 目的へのベクトル
-                m_Move.y = 0.0f;
-                m_Move = m_Move.normalized * m_MoveSpeed;     // 目的へのベクトル
-                m_Move.y = m_Jump;
-                m_isTerrain = false;
+                m_Animator.Play("Jump", 0, 0.0f);
+                m_CntJump -= Time.deltaTime;
+                if (m_CntJump <= 0.0f)
+                {
+                    m_CntJump = m_JumpTiming;
+                    //対象の位置の方向を計算
+                    m_Move = m_TargetPos - transform.position;     // 目的へのベクトル
+                    m_Move.y = 0.0f;
+                    m_Move = m_Move.normalized * m_MoveSpeed;     // 目的へのベクトル
+                    m_Move.y = m_Jump;
+                    m_isTerrain = false;
+                }
             }
-        }
-        else                // ジャンプ中
-        {
-            m_Animator.Play("Jump");
-            m_Animator.speed = 0.7f;
-            LookAtNoneY(m_TargetPos);
-            m_CntJump = m_JumpTiming;
-            m_Move.y = Mathf.Max(m_Move.y - GRAVITY, -1.0f);
-            transform.position += m_Move;
-            m_Nav.enabled = false;
+            else                // ジャンプ中
+            {
+                m_Animator.Play("Jump");
+                m_Animator.speed = 0.7f;
+                LookAtNoneY(m_TargetPos);
+                m_CntJump = m_JumpTiming;
+                m_Move.y = Mathf.Max(m_Move.y - GRAVITY, -1.0f);
+                transform.position += m_Move;
+                m_Nav.enabled = false;
+            }
         }
         // 状態判定
         switch (m_State.GetState())
@@ -176,10 +188,10 @@ public class Enemy_Eat_Inago : MonoBehaviour
                 if (m_Life.GetLife() <= 0)
                 {
                     // 透明できる描画モードに変更
-                    BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
+                    //BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
                     m_FadeColor.a = 1.0f;
-                    m_Color.material.color = m_FadeColor;
-                    m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
+                    m_Color.material.SetColor("_MainColor", m_FadeColor);
+                    m_State.SetState(Enemy_State.STATE.BACK);     // 離脱状態へ
                     m_TargetPos = m_FadePos;
                     break;
                 }
@@ -202,9 +214,9 @@ public class Enemy_Eat_Inago : MonoBehaviour
                 if (m_Life.GetLife() <= 0)
                 {
                     // 透明できる描画モードに変更
-                    BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
+                   // BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
                     m_FadeColor.a = 1.0f;
-                    m_Color.material.color = m_FadeColor;
+                    m_Color.material.SetColor("_MainColor", m_FadeColor);
                     m_State.SetState(Enemy_State.STATE.ESCAPE);     // 離脱状態へ
                     m_TargetPos = m_FadePos;
                     break;
@@ -214,17 +226,43 @@ public class Enemy_Eat_Inago : MonoBehaviour
                 StateMove();
                 break;
 
+            case Enemy_State.STATE.BACK:      // 後退
+                //Debug_State_Text.text = "STATE:あ！！！！";
+
+                // 汗のエフェクトを出す
+                m_EscapeEffect.SetActive(true);
+
+                // 後退処理
+                m_Nav.updateRotation = false;
+                Vector3 pos = transform.position;
+                pos = m_PlayerObject.transform.position - pos;
+                pos = -10.0f * Vector3.Normalize(pos);
+                pos += transform.position;
+                MoveHoming(pos);
+                m_Nav.speed = m_NavMoveSpeed * m_BackTimer * 30.0f;
+                m_Nav.acceleration = m_Nav.speed;
+
+                gameObject.transform.Rotate(0, 25, 0);
+
+                // カウント処理
+                m_BackTimer -= Time.deltaTime;
+                if (m_BackTimer <= 0.0f)
+                {
+                    m_BackTimer = BACK_TIME;
+                    m_State.EnemySetState(Enemy_State.STATE.ESCAPE);
+                    m_Nav.enabled = false;
+                }
+                break;
+
             case Enemy_State.STATE.ESCAPE:   // 逃げる
                 //Debug_State_Text.text = "STATE:FadeOut";
 
                 // 状態遷移はもうできない
                 m_State.CanSet(false);
-                // 汗のエフェクトを出す
-                m_EscapeEffect.SetActive(true);
 
                 // アルファ値を減らす
                 m_FadeColor.a -= 0.02f;
-                m_Color.material.color = m_FadeColor;
+                m_Color.material.SetColor("_MainColor", m_FadeColor);
 
                 // 汗を止める
                 if (m_FadeColor.a <= 0.3f) { m_EscapeEffect.SetActive(false); }
@@ -286,8 +324,19 @@ public class Enemy_Eat_Inago : MonoBehaviour
             return;
         }
     }
+
+    // Y軸無視でターゲットに向く
+    void MoveHoming(Vector3 Target)
+    {
+        m_Nav.enabled = true;
+        Target.y = transform.position.y;       // y軸無視
+        m_Nav.SetDestination(Target);          // ナビメッシュ上での移動処理
+    }
+
     private void OnTriggerEnter(Collider col)
     {
+        string layerName = LayerMask.LayerToName(col.gameObject.layer);
+
         if (col.gameObject.tag == "Terrain")
         {
             m_isTerrain = true;

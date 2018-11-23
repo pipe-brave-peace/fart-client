@@ -28,7 +28,46 @@ public class PlayerAll : MonoBehaviour {
     GameObject m_NarrationObject3;
 
     [SerializeField]
+    GameObject m_NarrationObject4;
+
+    [SerializeField]
     GameObject m_IventCamera1;
+
+    [SerializeField]
+    GameObject m_IventCamera2;
+
+    [SerializeField]
+    UI_IventAll[] m_IventAll;
+
+    [SerializeField]
+    Buster[] m_Buster;
+
+    [SerializeField]
+    GameObject[] m_Operation;
+
+    [SerializeField]
+    int[] m_fPointMove;
+
+    [SerializeField]
+    GameObject[] m_PlayerModelObject;
+
+    PlayerModel[] m_PlayerModel;
+
+    [SerializeField]
+    GameObject[] m_BusterObject;
+
+    [SerializeField]
+    GameObject[] m_Reticle;
+
+    [SerializeField]
+    GameObject[] m_BossObject;
+
+    [SerializeField]
+    PlayerWalk m_PlayerWalk;
+
+    public bool m_bTankMax;
+
+    public bool m_bLastBuster;
 
     int nNumber = 0;
 
@@ -36,20 +75,32 @@ public class PlayerAll : MonoBehaviour {
 
     bool m_bIvent3;
 
-    int m_nTime = 100;
+    bool m_bIvent4;
+
+    int m_nTime = 150;
+
+    int m_nOldTime;
+
+    [SerializeField]
+    bool[] m_bBossForcus;
 
     private void Awake()
     {
         m_Navigate.updateRotation = false;
+
+        m_nOldTime = m_nTime;
     }
 
     // Use this for initialization
     void Start () {
-		
-	}
+
+        //m_PlayerModel[0] = m_PlayerModelObject[0].GetComponent<PlayerModel>();
+        //m_PlayerModel[1] = m_PlayerModelObject[1].GetComponent<PlayerModel>();
+    }
 	
 	// Update is called once per frame
 	void Update () {
+
 
         switch (AllManager.Instance.GetStateScene())
         {
@@ -57,64 +108,203 @@ public class PlayerAll : MonoBehaviour {
                 break;
         
             case AllManager.STATE_SCENE.STATE_STAGE:
-                if (!m_StageManager.isGameMode()) { return; }
-                if (m_NavPoint.Length - 1 < nNumber)
+                if (!m_PlayerModelObject[0].GetComponent<PlayerModel>().m_bStart || !m_PlayerModelObject[1].GetComponent<PlayerModel>().m_bStart)
                 {
+                    m_PlayerModelObject[0].GetComponent<PlayerModel>().m_bStart = true;
+                    m_PlayerModelObject[1].GetComponent<PlayerModel>().m_bStart = true;
+                }
+
+
+                if (!m_StageManager.isGameMode()) { return; }
+
+                if (nNumber == 12)
+                {
+                    m_PlayerModelObject[1].SetActive(true);
+                    m_PlayerModelObject[0].SetActive(true);
+                    m_PlayerModelObject[0].GetComponent<PlayerModel>().m_bStart = true;
+                    m_PlayerModelObject[1].GetComponent<PlayerModel>().m_bStart = true;
                 }
                 else
-                { 
-                    //対象の位置の方向に移動
-                    m_Navigate.SetDestination(m_NavPoint[nNumber].transform.position);
-
-                    if (transform.position.x == m_NavPoint[nNumber].transform.position.x &&
-                        transform.position.z == m_NavPoint[nNumber].transform.position.z)
-                    {
-                        if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetChangePhase())
-                        {
-                            m_PhaseManager.Play();
-                        }
-                        else
-                        {
-                            m_PhaseManager.Stop();
-                        }
-
-                        if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.STOP ||
-                            m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.ROTSTOP)
-                        {
-                            if (m_PhaseManager.GetNowPhaseIndex() == 0)
-                            {
-                                if (!m_bIvent3)
-                                {
-                                    m_NarrationObject3.SetActive(true);
-
-                                    if (m_nTime > 0)
-                                    {
-                                        m_nTime--;
-                                    }
-                                    else if (m_nTime <= 0)
-                                    {
-                                        m_IventCamera1.SetActive(false);
-                                        m_bIvent3 = true;
-
-                                    }
-                                }
-                                m_StageObject.SetActive(true);
-                            }
-
-                            Vector();
-                            if (index != m_PhaseManager.GetNowPhaseIndex())
-                            {
-                                nNumber++;
-                            }
-                        }
-                        else if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.MOVE)
-                        {
-                            nNumber++;
-                        }
-                    }
-
-                    index = m_PhaseManager.GetNowPhaseIndex();
+                {
+                    m_PlayerModelObject[0].SetActive(false);
+                    m_PlayerModelObject[1].SetActive(false);
                 }
+
+                m_BusterObject[0].SetActive(true);
+                m_BusterObject[1].SetActive(true);
+
+                if (m_Buster[0].m_bBuster)
+                {
+                    if (m_Buster[1].m_bBuster)
+                    {
+                        m_bLastBuster = true;
+                    }
+                }
+
+                if (m_Buster[1].m_bBuster)
+                {
+                    if (m_Buster[0].m_bBuster)
+                    {
+                        m_bLastBuster = true;
+                    }
+                }
+               //対象の位置の方向に移動
+               m_Navigate.SetDestination(m_NavPoint[nNumber].transform.position);
+               m_Navigate.speed = m_fPointMove[nNumber];
+
+                if (m_fPointMove[nNumber] == 2)
+                {
+                    m_PlayerWalk.m_fValue = 0.01f;
+                }
+                else if (m_fPointMove[nNumber] == 4)
+                {
+                    m_PlayerWalk.m_fValue = 0.05f;
+                }
+                else if (m_fPointMove[nNumber] == 10)
+                {
+                    m_PlayerWalk.m_fValue = 0.1f;
+                }
+
+                if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.STOP ||
+                       m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.ROTSTOP ||
+                    m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.CORNER)
+                { 
+                   // m_Navigate.autoBraking = true;
+                }
+                else if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.MOVE)
+                {
+                        //m_Navigate.autoBraking = false;
+                }
+
+                if (!m_Navigate.pathPending && m_Navigate.remainingDistance <= 0)
+               {
+                   if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetChangePhase())
+                   {
+                       m_PhaseManager.Play();
+                   }
+                   else
+                   {
+                       m_PhaseManager.Stop();
+                   }
+
+                   if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.STOP ||
+                       m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.ROTSTOP)
+                   {
+                        m_PlayerWalk.m_bStop = true;
+
+                        if (m_PhaseManager.GetNowPhaseIndex() == 0)
+                       {
+                            if (!m_bIvent3)
+                            {
+                                m_NarrationObject3.SetActive(true);
+
+                                m_Reticle[0].SetActive(false);
+                                m_Reticle[1].SetActive(false);
+
+                                m_IventAll[0].SetIventFlg(true);
+                                m_IventAll[1].SetIventFlg(true);
+
+                                if (m_nTime > 0)
+                                {
+                                    m_nTime--;
+                                }
+                                else if (m_nTime <= 0)
+                                {
+                                    m_Reticle[0].SetActive(true);
+                                    m_Reticle[1].SetActive(true);
+                                    m_Operation[0].SetActive(true);
+                                    m_nTime = m_nOldTime;
+                                    m_IventAll[0].SetIventFlg(false);
+                                    m_IventAll[1].SetIventFlg(false);
+                                    m_IventCamera1.SetActive(false);
+                                    m_bIvent3 = true;
+
+                                }
+                            }
+
+                           m_StageObject.SetActive(true);
+                       }
+
+                       if (m_PhaseManager.GetNowPhaseIndex() == 1)
+                       {
+                            if (!m_bIvent4)
+                            {
+                                m_Operation[0].SetActive(false);
+
+                                m_Reticle[0].SetActive(false);
+                                m_Reticle[1].SetActive(false);
+
+                                m_IventAll[0].SetIventFlg(true);
+                                m_IventAll[1].SetIventFlg(true);
+
+                                m_NarrationObject4.SetActive(true);
+
+                                if (m_nTime > 0)
+                                {
+                                    m_nTime--;
+                                }
+                                else if (m_nTime <= 0)
+                                {
+                                    m_Reticle[0].SetActive(true);
+                                    m_Reticle[1].SetActive(true);
+
+                                    m_Operation[1].SetActive(true);
+
+                                    m_IventAll[0].SetIventFlg(false);
+                                    m_IventAll[1].SetIventFlg(false);
+
+                                    m_nTime = m_nOldTime;
+                                    m_IventCamera2.SetActive(false);
+                                    m_bIvent4 = true;
+
+                                }
+                            }
+                           m_StageObject.SetActive(true);
+                       }
+                       else
+                       {
+                           m_Operation[1].SetActive(false);
+                       }
+
+                       Vector();
+                       if (index != m_PhaseManager.GetNowPhaseIndex())
+                       {
+                           if (m_PhaseManager.GetNowPhaseIndex() > 1)
+                           {
+                               nNumber++;
+                           }
+                       }
+                   }
+                   else if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.MOVE ||
+                        m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.CORNER)
+                   {
+
+                        if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.CORNER)
+                        {
+                            m_PlayerWalk.m_bStop = true;
+                        }
+
+                        Vector();
+                        if (m_PhaseManager.GetNowPhaseIndex() > 1)
+                       {
+                           nNumber++;
+                       }
+                   }
+               }
+               else
+               {
+                    m_PlayerWalk.m_bStop = false;
+
+                    if (m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.MOVE ||
+                       m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.ROTSTOP ||
+                        m_NavPoint[nNumber].GetComponent<PlayerPoint>().GetState() == PlayerPoint.STATE.CORNER)
+                   {
+                       Vector();
+                   }
+               }
+
+               index = m_PhaseManager.GetNowPhaseIndex();
+            
                 break;
         
             case AllManager.STATE_SCENE.STATE_RESULT:
@@ -124,8 +314,55 @@ public class PlayerAll : MonoBehaviour {
 
     void Vector()
     {
-        // 次の位置への方向を求める
-        var dir = m_rotPoint[nNumber].transform.position - transform.position;
+        Vector3 dir = Vector3.zero;
+
+        if (nNumber == 12 || nNumber == 18 || nNumber == 23)
+        {
+            if (m_PhaseManager.GetNowPhaseIndex() == 4)
+            {
+                if (!m_bBossForcus[0])
+                {
+                    if (m_BossObject[0].GetComponent<Enemy_State>().GetState() == Enemy_State.STATE.ESCAPE)
+                    {
+                        m_bBossForcus[0] = true;
+                    }
+
+                    // 次の位置への方向を求める
+                    dir = m_BossObject[0].transform.position - transform.position;
+                }
+            }
+            else if (m_PhaseManager.GetNowPhaseIndex() == 5)
+            {
+                if (!m_bBossForcus[1])
+                {
+                    if (m_BossObject[1].GetComponent<Enemy_State>().GetState() == Enemy_State.STATE.ESCAPE)
+                    {
+                        m_bBossForcus[1] = true;
+                    }
+
+                    // 次の位置への方向を求める
+                    dir = m_BossObject[1].transform.position - transform.position;
+                }
+            }
+            else if (m_PhaseManager.GetNowPhaseIndex() == 6)
+            {
+                if (!m_bBossForcus[2])
+                {
+                    if (m_BossObject[2].GetComponent<Enemy_State>().GetState() == Enemy_State.STATE.ESCAPE)
+                    {
+                        m_bBossForcus[2] = true;
+                    }
+
+                    // 次の位置への方向を求める
+                    dir = m_BossObject[2].transform.position - transform.position;
+                }
+            }
+        }
+        else
+        {
+            // 次の位置への方向を求める
+            dir = m_rotPoint[nNumber].transform.position - transform.position;
+        }
 
         // 方向と現在の前方との角度を計算（スムーズに回転するように係数を掛ける）
         float smooth = Mathf.Min(1.0f, Time.deltaTime / 0.5f);
@@ -136,7 +373,13 @@ public class PlayerAll : MonoBehaviour {
 
         // 回転の更新
         var rot = Quaternion.AngleAxis(angle, axis);
-        transform.forward = rot * transform.forward;
+
+        if (rot * transform.forward != Vector3.zero)
+        {
+            transform.forward = rot * transform.forward;
+        }
+
+        transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
 
         //transform.position = m_Navigate.nextPosition;
     }

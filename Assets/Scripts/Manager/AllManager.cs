@@ -24,6 +24,15 @@ public class AllManager : SingletonMonoBehaviour<AllManager>
     [SerializeField]
     GameObject m_ResultManager;
 
+    private void Start()
+    {
+        int maxDisplayCount = 2;
+        for (int i = 0; i < maxDisplayCount && i < Display.displays.Length; i++)
+        {
+            Display.displays[i].Activate();
+        }
+    }
+
     private void Update()
     {
         switch (m_StateScene)

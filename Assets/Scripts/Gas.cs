@@ -8,7 +8,8 @@ public class Gas : MonoBehaviour {
 
     Rigidbody m_rb;
 
-    Material m_material;
+    [SerializeField]
+    ParticleSystem m_material;
 
     [SerializeField]
     int m_nTime = 0;
@@ -18,8 +19,6 @@ public class Gas : MonoBehaviour {
     {
         m_rb = GetComponent<Rigidbody>();
         m_rb.useGravity = false;
-
-        m_material = GetComponent<Renderer>().material;
 
         m_localGravity = new Vector3(0, -1, 0);
     }
@@ -31,9 +30,9 @@ public class Gas : MonoBehaviour {
 
         gameObject.transform.localScale += new Vector3(0.01f, 0.01f, 0.01f);
 
-        m_material.color -= new Color(0, 0, 0, 0.001f);
+        m_material.startColor -= new Color(0, 0, 0, 0.0025f);
 
-        if (m_material.color.a <= 0)
+        if (m_material.startColor.a <= 0)
         {
             Destroy(gameObject);
         }

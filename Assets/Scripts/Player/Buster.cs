@@ -39,6 +39,17 @@ public class Buster : MonoBehaviour
     [SerializeField]
     GameObject BusterPoint;
 
+    [SerializeField]
+    GameObject m_BusterExplosion;
+
+    [SerializeField]
+    PlayerAll m_PlayerAll;
+
+    [SerializeField]
+    StageManager m_StageManager;
+
+    public bool m_bBuster;
+
     int m_nOldTime;
 
     Vector2 m_OldPoint;
@@ -46,16 +57,25 @@ public class Buster : MonoBehaviour
     bool m_bGasFlg = false;
 
     private List<Joycon> m_joycons;
+
     private Joycon m_joyconR;
+    
+    Vector2 point;
+
+    bool m_bStart;
+
+    [SerializeField]
+    int m_nStartTime;
 
     void Start()
     {
+        point = new Vector2(0, 0);
+
         m_OldPoint = new Vector2(0, 0);
 
         m_nOldTime = m_nTime;
 
         m_joycons = JoyconManager.Instance.j;
-
         m_joyconR = m_joycons.Find(c => !c.isLeft);
     }
 
@@ -65,53 +85,121 @@ public class Buster : MonoBehaviour
         Vector3 rayPos = new Vector3(m_ReticleUI.rectTransform.position.x, m_ReticleUI.rectTransform.position.y, m_ReticleUI.rectTransform.position.z);
 
         Ray ray = Camera.main.ScreenPointToRay(rayPos);
-        transform.rotation = Quaternion.LookRotation(new Vector3(-ray.direction.x, -ray.direction.y, -ray.direction.z));
+
+        if (m_StageManager.isGameMode())
+        {
+            if (transform.rotation.x > 0)
+            {
+                transform.Rotate(-10, 0, 0);
+            }
+            else if (transform.rotation.x <= 0)
+            {
+                m_nStartTime--;
+
+                if (m_nStartTime <= 0)
+                {
+                    m_bStart = true;
+                }
+            }
+        }
+
+        if (m_bStart) { transform.rotation =   Quaternion.LookRotation(new Vector3(-ray.direction.x, -ray.direction.y, -ray.direction.z)); }
 
         if (m_Player.GetPlayerNumber() == 0)
         {
-            if (m_WiimoteSharing.GetWiimote() != null)
+            //if (m_WiimoteSharing.GetWiimote(0) != null)
+            //{
+            //    float[] pointer = m_WiimoteSharing.GetWiimote(0).Ir.GetPointingPosition();
+            //    point = new Vector2(pointer[0], pointer[1]);
+            //
+            //    if (!m_Player.GetStan())
+            //    {
+            //        if (m_WiimoteSharing.GetWiimote(0).Button.plus)
+            //        {
+            //            m_Tank.Farmer(0.5f);
+            //        }
+            //
+            //        if (m_WiimoteSharing.GetWiimote(0).Button.minus)
+            //        {
+            //            m_Tank.Farmer(0.1f);
+            //        }
+            //
+            //        if (m_WiimoteSharing.GetWiimote(0).Button.b)
+            //        {
+            //            if (!m_Tank.GetFurzFlg())
+            //            {
+            //                BulletShot();
+            //            }
+            //        }
+            //
+            //        if (m_WiimoteSharing.GetWiimote(0).Button.a)
+            //        {
+            //            GasShot();
+            //        }
+            //    }
+            //}
+
+            if (!m_Player.GetStan())
             {
-                float[] pointer = m_WiimoteSharing.GetWiimote().Ir.GetPointingPosition();
-                var point = new Vector2(pointer[0], pointer[1]);
-
-                if (point.x < 0)
+                if (Input.GetKeyDown(KeyCode.F))
                 {
-                    m_ReticleUI.rectTransform.anchorMax = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMax, m_OldPoint, 0.5f);
-                    m_ReticleUI.rectTransform.anchorMin = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMin, m_OldPoint, 0.5f);
-                }
-                else
-                {
-                    m_ReticleUI.rectTransform.anchorMax = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMax, point, 0.5f);
-                    m_ReticleUI.rectTransform.anchorMin = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMin, point, 0.5f);
-
-                    m_OldPoint = point;
+                    if (!m_Tank.GetFurzFlg())
+                    {
+                        BulletShot();
+                    }
                 }
 
-                if (!m_Player.GetStan())
+                if (!m_bGasFlg)
                 {
-                    if (m_WiimoteSharing.GetWiimote().Button.plus)
-                    {
-                        m_Tank.Farmer(0.5f);
-                    }
-
-                    if (m_WiimoteSharing.GetWiimote().Button.minus)
-                    {
-                        m_Tank.Farmer(0.1f);
-                    }
-
-                    if (m_WiimoteSharing.GetWiimote().Button.b)
-                    {
-                        if (!m_Tank.GetFurzFlg())
-                        {
-                            BulletShot();
-                        }
-                    }
-
-                    if (m_WiimoteSharing.GetWiimote().Button.a)
+                    if (Input.GetKey(KeyCode.G))
                     {
                         GasShot();
+                        m_bGasFlg = true;
                     }
                 }
+
+                if (Input.GetKeyDown(KeyCode.Q))
+                {
+                    m_Tank.Farmer(0.1f);
+                }
+
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    m_Tank.Farmer(0.5f);
+                }
+            }
+
+            if (Input.GetKey(KeyCode.A))
+            {
+                point.x -= 0.01f;
+            }
+
+            if (Input.GetKey(KeyCode.D))
+            {
+                point.x += 0.01f;
+            }
+
+            if (Input.GetKey(KeyCode.W))
+            {
+                point.y += 0.01f;
+            }
+
+            if (Input.GetKey(KeyCode.S))
+            {
+                point.y -= 0.01f;
+            }
+
+            if (point.x < 0)
+            {
+                m_ReticleUI.rectTransform.anchorMax = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMax, m_OldPoint, 0.5f);
+                m_ReticleUI.rectTransform.anchorMin = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMin, m_OldPoint, 0.5f);
+            }
+            else
+            {
+                m_ReticleUI.rectTransform.anchorMax = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMax, point, 0.5f);
+                m_ReticleUI.rectTransform.anchorMin = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMin, point, 0.5f);
+
+                m_OldPoint = point;
             }
 
             if (m_joyconR != null)
@@ -130,13 +218,59 @@ public class Buster : MonoBehaviour
         }
         else if (m_Player.GetPlayerNumber() == 1)
         {
+            //if (m_WiimoteSharing.GetWiimote(1) != null)
+            //{
+            //    float[] pointer = m_WiimoteSharing.GetWiimote(1).Ir.GetPointingPosition();
+            //    point = new Vector2(pointer[0], pointer[1]);
+            //
+            //    if (!m_Player.GetStan())
+            //    {
+            //        if (m_WiimoteSharing.GetWiimote(1).Button.plus)
+            //        {
+            //            m_Tank.Farmer(0.5f);
+            //        }
+            //
+            //        if (m_WiimoteSharing.GetWiimote(1).Button.minus)
+            //        {
+            //            m_Tank.Farmer(0.1f);
+            //        }
+            //
+            //        if (m_WiimoteSharing.GetWiimote(1).Button.b)
+            //        {
+            //            if (!m_Tank.GetFurzFlg())
+            //            {
+            //                BulletShot();
+            //            }
+            //        }
+            //
+            //        if (m_WiimoteSharing.GetWiimote(1).Button.a)
+            //        {
+            //            GasShot();
+            //        }
+            //    }
+            //}
+
+
             Cursor.visible = false;
             var position = Input.mousePosition;
             m_ReticleUI.rectTransform.position = position;
 
+            if (point.x < 0)
+            {
+                m_ReticleUI.rectTransform.anchorMax = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMax, m_OldPoint, 0.5f);
+                m_ReticleUI.rectTransform.anchorMin = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMin, m_OldPoint, 0.5f);
+            }
+            else
+            {
+                m_ReticleUI.rectTransform.anchorMax = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMax, point, 0.5f);
+                m_ReticleUI.rectTransform.anchorMin = Vector2.Lerp(m_ReticleUI.rectTransform.anchorMin, point, 0.5f);
+
+                m_OldPoint = point;
+            }
+
             if (!m_Player.GetStan())
             {
-                if (Input.GetKeyDown(KeyCode.A))
+                if (Input.GetKeyDown(KeyCode.B))
                 {
                     if (!m_Tank.GetFurzFlg())
                     {
@@ -146,19 +280,19 @@ public class Buster : MonoBehaviour
 
                 if (!m_bGasFlg)
                 {
-                    if (Input.GetKey(KeyCode.B))
+                    if (Input.GetKey(KeyCode.N))
                     {
                         GasShot();
                         m_bGasFlg = true;
                     }
                 }
 
-                if (Input.GetKeyDown(KeyCode.Q))
+                if (Input.GetKeyDown(KeyCode.C))
                 {
                     m_Tank.Farmer(0.1f);
                 }
 
-                if (Input.GetKeyDown(KeyCode.W))
+                if (Input.GetKeyDown(KeyCode.V))
                 {
                     m_Tank.Farmer(0.5f);
                 }
@@ -197,7 +331,7 @@ public class Buster : MonoBehaviour
                 break;
 
             case AllManager.STATE_SCENE.STATE_STAGE:
-                if (m_FartsUI.uvRect.x > 0.6f) { return; }
+                if (m_Tank.m_fTank > 0.7f) { return; }
 
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -219,24 +353,34 @@ public class Buster : MonoBehaviour
 
                 RaycastHit hit;
 
-                if (Physics.Raycast(ray, out hit, 600f, LayerMask.GetMask("Enemy")))
+                if (Physics.Raycast(ray, out hit, 600f, LayerMask.GetMask("LifeReticle")))
+                {
+                    if (m_PlayerAll.m_bTankMax)
+                    {
+                        m_bBuster = true;
+                    }
+                    GameObject newExplosion = Instantiate(m_BusterExplosion, hit.collider.gameObject.transform.position, Quaternion.identity);
+                    newExplosion.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+                    Destroy(hit.collider.gameObject);
+                }
+                else if (Physics.Raycast(ray, out hit, 600f, LayerMask.GetMask("Enemy")))
                 {
                     if (hit.collider.gameObject.GetComponent<Enemy_State>().GetState() != Enemy_State.STATE.ESCAPE)
                     {
-                        int nNumber = m_Player.GetPlayerNumber();
+                       int nNumber = m_Player.GetPlayerNumber();
 
-                        InfoManager.Instance.AddPlayerScore(nNumber, hit.collider.gameObject.GetComponent<Enemy_Score>().GetScore());
-                        hit.collider.gameObject.GetComponent<Enemy_State>().SetState(Enemy_State.STATE.DAMAGE);
+                       InfoManager.Instance.AddPlayerScore(nNumber, hit.collider.gameObject.GetComponent<Enemy_Score>().GetScore());
+                       hit.collider.gameObject.GetComponent<Enemy_State>().SetState(Enemy_State.STATE.DAMAGE);
 
-                        if (hit.collider.gameObject.GetComponent<Life>().GetLife() <= 0)
-                        {
-                            InfoManager.Instance.AddPlayerCombo(nNumber);
-                            InfoManager.Instance.AddPlayerEnemy(nNumber);
-                        }
+                       if (hit.collider.gameObject.GetComponent<Life>().GetLife() <= 0)
+                       {
+                           InfoManager.Instance.AddPlayerCombo(nNumber);
+                           InfoManager.Instance.AddPlayerEnemy(nNumber);
+                       }
                     }
                 }
 
-                m_Tank.FartingFarts(-0.5f);
+                m_Tank.FartingFarts(-0.3f);
                 break;
 
             case AllManager.STATE_SCENE.STATE_RESULT:

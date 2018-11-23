@@ -9,6 +9,9 @@ public class TitleManager : MonoBehaviour {
     GameObject m_TitleUI;
 
     [SerializeField]
+    GameObject m_Display2TitleUI;
+
+    [SerializeField]
     GameObject TitleCamera;
 
     public AudioSource m_Bgm;           // BGM
@@ -39,6 +42,7 @@ public class TitleManager : MonoBehaviour {
         {
             if (m_TitleUI.GetComponent<CanvasGroup>().alpha > 0)
             {
+                m_Display2TitleUI.GetComponent<CanvasGroup>().alpha -= 0.05f;
                 m_TitleUI.GetComponent<CanvasGroup>().alpha -= 0.05f;
             }
             else if (m_TitleUI.GetComponent<CanvasGroup>().alpha <= 0)

@@ -31,5 +31,7 @@ public class Crops : MonoBehaviour {
     private void OnDestroy()
     {
         m_Soil.transform.parent = transform.parent;
+        m_Soil.GetComponent<Soil>().enabled = true;
+        m_Soil.GetComponent<Soil>().m_bDead = true;
     }
 }

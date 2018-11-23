@@ -25,8 +25,18 @@ public class ResultManager : MonoBehaviour {
 			return;
 		}
 
+        if (m_ResultUI.GetComponent<CanvasGroup>().alpha < 1)
+        {
+            m_ResultUI.GetComponent<CanvasGroup>().alpha += 0.05f;
+        }
+        else if (m_ResultUI.GetComponent<CanvasGroup>().alpha >= 1)
+        {
+            m_ResultUI.GetComponent<CanvasGroup>().alpha = 1;
+        }
+
+
         // キー押したら
-		if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
 		{
             m_ResultUI.SetActive(false);
             m_Bgm.Stop();                                                           // BGMストップ

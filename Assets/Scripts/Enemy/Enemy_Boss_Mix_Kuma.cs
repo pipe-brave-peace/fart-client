@@ -20,6 +20,9 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
     bool Test_LastAttack = false;
 
     [SerializeField]
+    PlayerAll m_PlayerAll;
+
+    [SerializeField]
     TextMesh    Debug_State_Text;
     [Header("吼える場所")]
     [SerializeField]
@@ -44,6 +47,10 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
     GameObject m_AttackEffect;      // クマのジャマのエフェクト
     [SerializeField]
     GameObject m_BuffEffect;        // オナラ匂いのエフェクト
+    [SerializeField]
+    GameObject m_BlowEffect;
+    [SerializeField]
+    GameObject m_EscapeEffect;        // 退却時汗のエフェクト
 
     private Enemy_State     m_State;            // 状態
     private NavMeshAgent    m_Nav;              // ナビメッシュ
@@ -62,7 +69,7 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
     private GameObject      m_CryEffect;        // 吼えるのエフェクト
     private bool            m_isEatDamage;      // 農作物を荒らす時に攻撃された？
 
-    private bool            m_isLastAttack;     // ラストアタックチャンス？
+    public bool            m_isLastAttack;     // ラストアタックチャンス？
 
     public bool isLastAttack() { return m_isLastAttack; }
 
@@ -346,11 +353,11 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
                     // プレイヤーバズーカ発射したら気絶する
                     // テスト
                     // オナラゲージがMAX？
-                    if (Test_MaxTank)
+                    if (m_PlayerAll.m_bTankMax)
                     {
                         CreateLastLife();
                     }
-                    if (!Test_LastAttack) break;
+                    if (!m_PlayerAll.m_bLastBuster) break;
                     if( m_LastLife != null) { Destroy(m_LastLife.gameObject); }
                     m_Animator.SetBool("ToFaint", true);
                     m_State.EnemySetState(Enemy_State.STATE.FAINT);
@@ -385,7 +392,23 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
             case Enemy_State.STATE.FAINT:   // 気絶
                 Debug_State_Text.text = "STATE:おっふ";
                 m_State.CanSet(false);
-                
+                m_Nav.enabled = false;
+
+                m_BlowEffect.SetActive(true);
+                m_EscapeEffect.SetActive(true);
+
+                Vector3 vec = transform.position;
+                vec = m_AttackObj.transform.position - vec;
+                vec = -Vector3.Normalize(vec);
+
+                gameObject.GetComponent<Rigidbody>().freezeRotation = false;
+
+                gameObject.GetComponent<Rigidbody>().AddTorque(Vector3.right * Mathf.PI * 100);
+
+
+                transform.position += new Vector3(vec.x, 1, vec.z) * 50f * Time.deltaTime;
+
+                m_BlowEffect.transform.localPosition = transform.localPosition;
 
                 return;
         }
