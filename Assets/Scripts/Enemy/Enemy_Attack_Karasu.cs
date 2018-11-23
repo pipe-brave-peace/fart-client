@@ -57,18 +57,19 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        // 状態遷移はできない
+        m_State.CanSet(false);
+        if( m_State.GetState() == Enemy_State.STATE.SPRAY ||
+            m_State.GetState() == Enemy_State.STATE.DAMAGE)
+        {
+            m_State.CanSet(true);
+            m_State.SetState(Enemy_State.STATE.MOVE);
+        }
         // 状態判定
         switch (m_State.GetState())
         {
             case Enemy_State.STATE.MOVE:     // 移動
                 //Debug_State_Text.text = "STATE:Move";  // テスト
-                // 状態遷移はできない
-                m_State.CanSet(false);
-
-                // 対象の位置の方向を向く
-                LookAtNoneY(m_TargetObj.transform.position);
-                // 目標へ移動
-                MoveHoming(m_TargetObj.transform.position, m_MoveSpeed);
                 
                 // 近い？
                 if (Vector3.Distance(transform.position, m_TargetObj.transform.position) <= 1.0f)
@@ -87,13 +88,17 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
                         // 作成したオブジェクトを子として登録
                         m_LifeList.transform.parent = transform;
                     }
+                    break;
                 }
+
+                // 対象の位置の方向を向く
+                LookAtNoneY(m_TargetObj.transform.position);
+                // 目標へ移動
+                MoveHoming(m_TargetObj.transform.position, m_MoveSpeed);
                 break;
 
             case Enemy_State.STATE.ATTACK:  // ジャマ
                 //Debug_State_Text.text = "STATE:ジャマジャマ";  // テスト
-                // 状態遷移はできない
-                m_State.CanSet(false);
                 // ライフリストのライフがなくなったら離脱する
                 if (m_LifeList.transform.childCount <= 0)
                 {
@@ -134,9 +139,7 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
 
             case Enemy_State.STATE.SATIETY:  // 満足
                 //ebug_State_Text.text = "STATE:満足";  // テスト
-
-                // 状態遷移はできない
-                m_State.CanSet(false);
+                
                 // 離脱の位置の方向に移動
                 LookAtNoneY(m_FadePos);
                 // 目標へ移動
@@ -165,9 +168,7 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
                 //Debug_State_Text.text = "STATE:FadeOut";  // テスト
-
-                // 状態遷移はもうできない
-                m_State.CanSet(false);
+                
                 // 汗のエフェクトを出す
                 m_EscapeEffect.SetActive(true);
                 // 離脱の位置の方向に移動
