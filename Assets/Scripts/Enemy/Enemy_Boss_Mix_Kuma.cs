@@ -22,8 +22,8 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
     [SerializeField]
     PlayerAll m_PlayerAll;
 
-    [SerializeField]
-    TextMesh    Debug_State_Text;
+    //[SerializeField]
+    //TextMesh    Debug_State_Text;
     [Header("吼える場所")]
     [SerializeField]
     GameObject  CryPoint;
@@ -153,7 +153,7 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
         switch (m_State.GetState())
         {
             case Enemy_State.STATE.MOVE:     // 移動
-                Debug_State_Text.text = "STATE:Move";
+                //Debug_State_Text.text = "STATE:Move";
                 
                 m_Animator.SetBool("ToMove", false);
 
@@ -204,7 +204,7 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.EAT:      // 食べる
-                Debug_State_Text.text = "STATE:食べているよ";
+                //Debug_State_Text.text = "STATE:食べているよ";
 
                 // 攻撃可能
                 m_State.CanSet(true);
@@ -233,7 +233,7 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
 
             case Enemy_State.STATE.CRY:
                 {
-                    Debug_State_Text.text = "STATE:がおぉぉ！！！";
+                    //Debug_State_Text.text = "STATE:がおぉぉ！！！";
 
                     if (m_LifeList != null) { Destroy(m_LifeList.gameObject); }
                     // 吼えるエフェクトの再生
@@ -253,7 +253,7 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
                 }
 
             case Enemy_State.STATE.ATTACK:      // 攻撃
-                Debug_State_Text.text = "STATE:喰らえ！！";
+                //Debug_State_Text.text = "STATE:喰らえ！！";
 
                 // アニメション終わった？
                 if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f && m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
@@ -269,7 +269,7 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.SPRAY:
-                Debug_State_Text.text = "STATE:見えねぇ！！";   // テスト
+                //Debug_State_Text.text = "STATE:見えねぇ！！";   // テスト
                 // フラグをスプレーを受けたに変更
                 m_isBuff = true;
                 // 匂いのエフェクトの再生
@@ -288,7 +288,7 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
-                Debug_State_Text.text = "STATE:痛えぇ！";
+                //Debug_State_Text.text = "STATE:痛えぇ！";
 
                 if (!m_isBuff)
                 {
@@ -319,7 +319,7 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.BACK:      // ダメージ
-                Debug_State_Text.text = "STATE:あぁ！！";
+                //Debug_State_Text.text = "STATE:あぁ！！";
 
                 // 後退処理
                 m_Nav.updateRotation = false;
@@ -347,7 +347,7 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
                 break;
                 
             case Enemy_State.STATE.FEAR:        // 怯む
-                Debug_State_Text.text = "STATE:回る回る";
+                //Debug_State_Text.text = "STATE:回る回る";
                 if (m_isLastAttack)
                 {
                     // プレイヤーバズーカ発射したら気絶する
@@ -390,7 +390,7 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.FAINT:   // 気絶
-                Debug_State_Text.text = "STATE:おっふ";
+                //Debug_State_Text.text = "STATE:おっふ";
                 m_State.CanSet(false);
                 m_Nav.enabled = false;
 

@@ -8,9 +8,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(Enemy_Score))]
 
 public class Enemy_Eat_Inosisi : MonoBehaviour {
-
-    [SerializeField]
-    GameObject m_PlayerObject;
+    
     [SerializeField]
     GameObject   m_FadePoint;           // 退却ポイント
     [SerializeField]
@@ -192,7 +190,7 @@ public class Enemy_Eat_Inosisi : MonoBehaviour {
                 m_Nav.enabled = false;
 
                 Vector3 pos = transform.position;
-                pos = m_PlayerObject.transform.position - pos;
+                pos = Camera.main.transform.position - pos;
                 pos = -Vector3.Normalize(pos);
 
                 gameObject.GetComponent<Rigidbody>().freezeRotation = false;
