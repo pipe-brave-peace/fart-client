@@ -79,7 +79,7 @@ public class PlayerAll : MonoBehaviour {
 
     int index = 0;
 
-    bool m_bIvent3;
+    public bool m_bIvent3;
 
     bool m_bIvent4;
 

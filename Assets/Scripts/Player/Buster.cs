@@ -143,7 +143,7 @@ public class Buster : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.F))
                 {
-                    if (!m_Tank.GetFurzFlg())
+                    //if (!m_Tank.GetFurzFlg())
                     {
                         BulletShot();
                     }
@@ -331,7 +331,7 @@ public class Buster : MonoBehaviour
                 break;
 
             case AllManager.STATE_SCENE.STATE_STAGE:
-                if (m_Tank.m_fTank > 0.7f) { return; }
+                if (m_Tank.m_fTank + 0.3f > 0.7f) { return; }
 
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 

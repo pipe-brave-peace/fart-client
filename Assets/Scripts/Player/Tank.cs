@@ -162,14 +162,17 @@ public class Tank : MonoBehaviour
     //オナラ貯める
     public void Farmer(float fChargeValue)
     {
-        if (m_bFurzFlg){ return; }
-        m_fTank -= fChargeValue;
-        m_bFurzFlg = true;
-        m_bFiring = false;
-        m_FurzValue = 0.0f;
-        m_ChargeValue = fChargeValue;
-        m_fUvRectX = 0.01f;
-        m_fMove = m_fOldMove;
+        if (m_PlayerAll.m_bIvent3)
+        {
+            if (m_bFurzFlg) { return; }
+            m_fTank -= fChargeValue;
+            m_bFurzFlg = true;
+            m_bFiring = false;
+            m_FurzValue = 0.0f;
+            m_ChargeValue = fChargeValue;
+            m_fUvRectX = 0.01f;
+            m_fMove = m_fOldMove;
+        }
     }
 
     //オナラ発射
