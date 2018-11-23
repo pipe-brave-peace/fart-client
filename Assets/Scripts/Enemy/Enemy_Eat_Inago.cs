@@ -97,30 +97,33 @@ public class Enemy_Eat_Inago : MonoBehaviour
         // 移動処理
         if (m_State.GetState() != Enemy_State.STATE.BACK)
         {
-            if (m_isTerrain)    // 着地
+            if (m_PlayerObject.GetComponent<PlayerAll>().m_bIvent5)
             {
-                m_Animator.Play("Jump", 0, 0.0f);
-                m_CntJump -= Time.deltaTime;
-                if (m_CntJump <= 0.0f)
+                if (m_isTerrain)    // 着地
                 {
-                    m_CntJump = m_JumpTiming;
-                    //対象の位置の方向を計算
-                    m_Move = m_TargetPos - transform.position;     // 目的へのベクトル
-                    m_Move.y = 0.0f;
-                    m_Move = m_Move.normalized * m_MoveSpeed;     // 目的へのベクトル
-                    m_Move.y = m_Jump;
-                    m_isTerrain = false;
+                    m_Animator.Play("Jump", 0, 0.0f);
+                    m_CntJump -= Time.deltaTime;
+                    if (m_CntJump <= 0.0f)
+                    {
+                        m_CntJump = m_JumpTiming;
+                        //対象の位置の方向を計算
+                        m_Move = m_TargetPos - transform.position;     // 目的へのベクトル
+                        m_Move.y = 0.0f;
+                        m_Move = m_Move.normalized * m_MoveSpeed;     // 目的へのベクトル
+                        m_Move.y = m_Jump;
+                        m_isTerrain = false;
+                    }
                 }
-            }
-            else                // ジャンプ中
-            {
-                m_Animator.Play("Jump");
-                m_Animator.speed = 0.7f;
-                LookAtNoneY(m_TargetPos);
-                m_CntJump = m_JumpTiming;
-                m_Move.y = Mathf.Max(m_Move.y - GRAVITY, -1.0f);
-                transform.position += m_Move;
-                m_Nav.enabled = false;
+                else                // ジャンプ中
+                {
+                    m_Animator.Play("Jump");
+                    m_Animator.speed = 0.7f;
+                    LookAtNoneY(m_TargetPos);
+                    m_CntJump = m_JumpTiming;
+                    m_Move.y = Mathf.Max(m_Move.y - GRAVITY, -1.0f);
+                    transform.position += m_Move;
+                    m_Nav.enabled = false;
+                }
             }
         }
         // 状態判定

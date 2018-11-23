@@ -49,6 +49,8 @@ public class Tank : MonoBehaviour
     [SerializeField]
     LED m_LED;
 
+    [SerializeField]
+    PhaseManager m_PhaseManager;
 
     public float m_fTank = 1;
 
@@ -133,6 +135,14 @@ public class Tank : MonoBehaviour
                 WidthAdjustment();
 
                 m_LED.Gage(m_Player.GetPlayerNumber(), m_FurzUI.uvRect.x);
+
+                if (m_PhaseManager.GetNowPhaseIndex() == 0)
+                {
+                    if (m_FurzUI.uvRect.x == 0)
+                    {
+                        m_PlayerAll.m_bTankMax = true;
+                    }
+                }
 
                 if (m_Boss.GetComponent<Enemy_Boss_Mix_Kuma>().m_isLastAttack)
                 {

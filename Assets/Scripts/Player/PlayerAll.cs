@@ -31,6 +31,9 @@ public class PlayerAll : MonoBehaviour {
     GameObject m_NarrationObject4;
 
     [SerializeField]
+    GameObject m_NarrationObject5;
+
+    [SerializeField]
     GameObject m_IventCamera1;
 
     [SerializeField]
@@ -76,6 +79,8 @@ public class PlayerAll : MonoBehaviour {
     bool m_bIvent3;
 
     bool m_bIvent4;
+
+    public bool m_bIvent5;
 
     int m_nTime = 150;
 
@@ -212,7 +217,7 @@ public class PlayerAll : MonoBehaviour {
                                 {
                                     m_Reticle[0].SetActive(true);
                                     m_Reticle[1].SetActive(true);
-                                    m_Operation[0].SetActive(true);
+                                    m_Operation[2].SetActive(true);
                                     m_nTime = m_nOldTime;
                                     m_IventAll[0].SetIventFlg(false);
                                     m_IventAll[1].SetIventFlg(false);
@@ -222,11 +227,24 @@ public class PlayerAll : MonoBehaviour {
                                 }
                             }
 
+                            if (!m_bIvent5)
+                            {
+                                if (m_bTankMax)
+                                {
+                                    m_Operation[2].SetActive(false);
+                                    m_Operation[0].SetActive(true);
+                                    m_NarrationObject5.SetActive(true);
+                                    m_bTankMax = false;
+                                    m_bIvent5 = true;
+                                }
+                            }
+
                            m_StageObject.SetActive(true);
                        }
 
                        if (m_PhaseManager.GetNowPhaseIndex() == 1)
                        {
+                            m_bTankMax = false;
                             if (!m_bIvent4)
                             {
                                 m_Operation[0].SetActive(false);
