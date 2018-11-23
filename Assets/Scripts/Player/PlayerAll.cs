@@ -6,8 +6,7 @@ using UnityEngine.UI;
 
 public class PlayerAll : MonoBehaviour {
 
-    [SerializeField]
-    NavMeshAgent m_Navigate = null;
+    public NavMeshAgent m_Navigate = null;
 
     [SerializeField]
     GameObject[] m_NavPoint;
@@ -75,7 +74,7 @@ public class PlayerAll : MonoBehaviour {
 
     public bool m_bLastBuster;
 
-    int nNumber = 0;
+    public int nNumber = 0;
 
     int index = 0;
 
@@ -352,55 +351,10 @@ public class PlayerAll : MonoBehaviour {
 
     void Vector()
     {
-        Vector3 dir = Vector3.zero;
 
-        if (nNumber == 12 || nNumber == 18 || nNumber == 23)
-        {
-            if (m_PhaseManager.GetNowPhaseIndex() == 4)
-            {
-                if (!m_bBossForcus[0])
-                {
-                    if (m_BossObject[0].GetComponent<Enemy_State>().GetState() == Enemy_State.STATE.ESCAPE)
-                    {
-                        m_bBossForcus[0] = true;
-                    }
-
-                    // 次の位置への方向を求める
-                    dir = m_BossObject[0].transform.position - transform.position;
-                }
-            }
-            else if (m_PhaseManager.GetNowPhaseIndex() == 5)
-            {
-                if (!m_bBossForcus[1])
-                {
-                    if (m_BossObject[1].GetComponent<Enemy_State>().GetState() == Enemy_State.STATE.ESCAPE)
-                    {
-                        m_bBossForcus[1] = true;
-                    }
-
-                    // 次の位置への方向を求める
-                    dir = m_BossObject[1].transform.position - transform.position;
-                }
-            }
-            else if (m_PhaseManager.GetNowPhaseIndex() == 6)
-            {
-                if (!m_bBossForcus[2])
-                {
-                    if (m_BossObject[2].GetComponent<Enemy_State>().GetState() == Enemy_State.STATE.ESCAPE)
-                    {
-                        m_bBossForcus[2] = true;
-                    }
-
-                    // 次の位置への方向を求める
-                    dir = m_BossObject[2].transform.position - transform.position;
-                }
-            }
-        }
-        else
-        {
-            // 次の位置への方向を求める
-            dir = m_rotPoint[nNumber].transform.position - transform.position;
-        }
+        // 次の位置への方向を求める
+        var dir = m_rotPoint[nNumber].transform.position - transform.position;
+          
 
         // 方向と現在の前方との角度を計算（スムーズに回転するように係数を掛ける）
         float smooth = Mathf.Min(1.0f, Time.deltaTime / 0.5f);

@@ -41,7 +41,7 @@ public class StageManager : MonoBehaviour {
     Enemy_State m_Boss;
 
     // ステージモード定義
-    enum STAGE_MODE
+    public enum STAGE_MODE
     {
         READY = 0,  // 準備段階
         GAME,       // ゲームプレイ
@@ -49,12 +49,18 @@ public class StageManager : MonoBehaviour {
         MAX
     }
 
+    [SerializeField]
     STAGE_MODE Mode;            // 現在のモード
 
     // ゲームモードの取得
     public bool isGameMode()
     {
         return (Mode == STAGE_MODE.GAME) ? true : false;
+    }
+
+    public void SetMode( STAGE_MODE mode)
+    {
+        Mode = mode;
     }
 
 	// 初期化
@@ -85,6 +91,19 @@ public class StageManager : MonoBehaviour {
             m_GameOver.SetActive(true);
             m_GameClear.SetActive(false);
         }
+
+        if (m_Stage_UI.GetComponent<CanvasGroup>().alpha < 1)
+        {
+            m_Display2Stage_UI.GetComponent<CanvasGroup>().alpha += 0.05f;
+
+            m_Stage_UI.GetComponent<CanvasGroup>().alpha += 0.05f;
+        }
+        else if (m_Stage_UI.GetComponent<CanvasGroup>().alpha >= 1)
+        {
+            m_Display2Stage_UI.GetComponent<CanvasGroup>().alpha = 1f;
+            m_Stage_UI.GetComponent<CanvasGroup>().alpha = 1;
+        }
+
         // 状態別処理
         switch (Mode)
         {
@@ -122,18 +141,6 @@ public class StageManager : MonoBehaviour {
         if (m_NarrationObject.GetComponent<UI_Narration>().GetTurn())
         {
             m_IventUI.SetIventFlg(false);
-        }
-
-        if (m_Stage_UI.GetComponent<CanvasGroup>().alpha < 1)
-        {
-            m_Display2Stage_UI.GetComponent<CanvasGroup>().alpha += 0.05f;
-
-            m_Stage_UI.GetComponent<CanvasGroup>().alpha += 0.05f;
-        }
-        else if (m_Stage_UI.GetComponent<CanvasGroup>().alpha >= 1)
-        {
-            m_Display2Stage_UI.GetComponent<CanvasGroup>().alpha = 1f;
-            m_Stage_UI.GetComponent<CanvasGroup>().alpha = 1;
         }
 
         if (m_NarrationObject.GetComponent<UI_Narration>().GetTurn())

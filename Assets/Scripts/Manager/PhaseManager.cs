@@ -41,6 +41,7 @@ public class PhaseManager : MonoBehaviour {
         m_NowPhase.SetActive(true);
     }
 
+    public void SetNowPhaseIndex(int index) { m_PhaseIndex = index; SetPhase(index); }
     public int GetNowPhaseIndex() { return m_PhaseIndex; }
     public void Play() { m_Use = true; }
     public void Stop() { m_Use = false; }
