@@ -68,6 +68,9 @@ public class PlayerAll : MonoBehaviour {
     [SerializeField]
     PlayerWalk m_PlayerWalk;
 
+    [SerializeField]
+    Phase1 m_Phase;
+
     public bool m_bTankMax;
 
     public bool m_bLastBuster;
@@ -199,6 +202,8 @@ public class PlayerAll : MonoBehaviour {
 
                         if (m_PhaseManager.GetNowPhaseIndex() == 0)
                        {
+                            m_StageObject.SetActive(true);
+
                             if (!m_bIvent3)
                             {
                                 m_NarrationObject3.SetActive(true);
@@ -231,15 +236,30 @@ public class PlayerAll : MonoBehaviour {
                             {
                                 if (m_bTankMax)
                                 {
+                                   for (int i = 0; i < m_Phase.GetEnemy().Count; i++)
+                                   {
+                                       GameObject enemy = m_Phase.GetEnemy()[i].Enemy;
+                                       enemy.transform.GetChild(0).GetComponent<Enemy_Eat_Inago>().m_isStop = false;
+                                   }
+
                                     m_Operation[2].SetActive(false);
                                     m_Operation[0].SetActive(true);
                                     m_NarrationObject5.SetActive(true);
                                     m_bTankMax = false;
                                     m_bIvent5 = true;
                                 }
+                                else
+                                {
+                                    if (m_Phase != null)
+                                    {
+                                        for (int i = 0; i < m_Phase.GetEnemy().Count; i++)
+                                        {
+                                            GameObject enemy = m_Phase.GetEnemy()[i].Enemy;
+                                            enemy.transform.GetChild(0).GetComponent<Enemy_Eat_Inago>().m_isStop = true;
+                                        }
+                                    }
+                                }
                             }
-
-                           m_StageObject.SetActive(true);
                        }
 
                        if (m_PhaseManager.GetNowPhaseIndex() == 1)

@@ -17,8 +17,6 @@ public class Enemy_Eat_Inago : MonoBehaviour
     //[SerializeField]
     //TextMesh     Debug_State_Text;
     [SerializeField]
-    GameObject m_PlayerObject;
-    [SerializeField]
     GameObject   m_FadePoint;           // 退却ポイント
     [SerializeField]
     GameObject[] m_NavCrops;                // 農作物リスト
@@ -55,6 +53,7 @@ public class Enemy_Eat_Inago : MonoBehaviour
     private Vector3     m_FadePos;          // 退却座標
     private Color       m_FadeColor;        // 退却時の色の変化用
     private bool        m_isTerrain;        // 着地判断
+    public bool        m_isStop;        // ストップしてるか
     // 初期化
     void Start()
     {
@@ -97,7 +96,7 @@ public class Enemy_Eat_Inago : MonoBehaviour
         // 移動処理
         if (m_State.GetState() != Enemy_State.STATE.BACK)
         {
-            if (m_PlayerObject.GetComponent<PlayerAll>().m_bIvent5)
+            if (!m_isStop)
             {
                 if (m_isTerrain)    // 着地
                 {
@@ -238,7 +237,7 @@ public class Enemy_Eat_Inago : MonoBehaviour
                 // 後退処理
                 m_Nav.updateRotation = false;
                 Vector3 pos = transform.position;
-                pos = m_PlayerObject.transform.position - pos;
+                pos = Camera.main.transform.position - pos;
                 pos = -10.0f * Vector3.Normalize(pos);
                 pos += transform.position;
                 MoveHoming(pos);

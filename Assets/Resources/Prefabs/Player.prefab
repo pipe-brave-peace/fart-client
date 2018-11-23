@@ -7266,8 +7266,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_PlayerWalk: {fileID: 114105673942376234}
+  m_Phase: {fileID: 0}
   m_bTankMax: 0
   m_bLastBuster: 0
+  m_bIvent5: 0
   m_bBossForcus: 000000
 --- !u!114 &114441364911683300
 MonoBehaviour:
