@@ -40,7 +40,7 @@ public class ResultManager : MonoBehaviour {
 		{
             m_ResultUI.SetActive(false);
             m_Bgm.Stop();                                                           // BGMストップ
-			SoundManager.Instance.PlaySE (SoundManager.SE_TYPE.PUSH_BUTTON);        // 効果音プレイー
+			//SoundManager.Instance.PlaySE (SoundManager.SE_TYPE.PUSH_BUTTON);        // 効果音プレイー
             ModeManager.Instance.SetChangeScene(ModeManager.SCENE_TYPE.GAME);
             AllManager.Instance.SetStateScene(AllManager.STATE_SCENE.STATE_TITLE);     // シーンの切り替え
         }

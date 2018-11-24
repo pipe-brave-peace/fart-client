@@ -5,8 +5,9 @@ using UnityEngine.UI;
 using Cinemachine;
 
 public class StageManager : MonoBehaviour {
-    
-    public AudioSource m_Bgm;           // BGM
+
+    [SerializeField]
+    AudioSource[] m_Bgm;           // BGM
 
     [SerializeField]
     GameObject m_Stage_Object;
@@ -38,7 +39,10 @@ public class StageManager : MonoBehaviour {
     PhaseManager m_PhaseManager;
 
     [SerializeField]
-    Enemy_State m_Boss;
+    Enemy_State m_BossEat;
+
+    [SerializeField]
+    Enemy_State m_BossMix;
 
     // ステージモード定義
     public enum STAGE_MODE
@@ -51,6 +55,10 @@ public class StageManager : MonoBehaviour {
 
     [SerializeField]
     STAGE_MODE Mode;            // 現在のモード
+
+    bool m_bUse;
+
+    bool m_bBossBGM;
 
     // ゲームモードの取得
     public bool isGameMode()
@@ -71,7 +79,7 @@ public class StageManager : MonoBehaviour {
         m_Stage_UI.SetActive(true);
 
         Mode = STAGE_MODE.READY;
-        m_Bgm.Play ();
+        m_Bgm[0].Play ();
 
         m_GameClear.SetActive(false);
         m_GameOver.SetActive(false);
@@ -79,10 +87,30 @@ public class StageManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        // テスト
-        if (m_Boss.GetState() == Enemy_State.STATE.FAINT)
+
+        if (!m_bBossBGM)
         {
-            m_ResultCamera.SetActive(true);
+            //if (m_BossEat.gameObject.active)
+            //{
+            //    m_Bgm[0].Stop();
+            //}
+            //
+            //if (m_BossEat.GetState() == Enemy_State.STATE.CRY)
+            //{
+            //    if (!m_bUse)
+            //    {
+            //        m_Bgm[1].Play();
+            //        m_bUse = true;
+            //        m_bBossBGM = true;
+            //    }
+            //
+            //}
+        }
+
+        // テスト
+        if (m_BossMix.GetState() == Enemy_State.STATE.FAINT)
+        {
+            //m_ResultCamera.SetActive(true);
             m_GameClear.SetActive(true);
             m_GameOver.SetActive(false);
         }
@@ -165,8 +193,8 @@ public class StageManager : MonoBehaviour {
     // リザルトへの処理
     public void ModeToResult()
     {
-        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.PUSH_BUTTON);
-        m_Bgm.Stop();
+        //SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.PUSH_BUTTON);
+        m_Bgm[1].Stop();
 
         if (m_Stage_UI.GetComponent<CanvasGroup>().alpha > 0)
         {

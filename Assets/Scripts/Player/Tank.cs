@@ -164,6 +164,10 @@ public class Tank : MonoBehaviour
     {
         if (m_PlayerAll.m_bIvent3)
         {
+            if (m_FurzUI.uvRect.x <= 0 || m_FurzUI.uvRect.x >= 1)
+            {
+                SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.ONARA_STORE);
+            }
             if (m_bFurzFlg) { return; }
             m_fTank -= fChargeValue;
             m_bFurzFlg = true;

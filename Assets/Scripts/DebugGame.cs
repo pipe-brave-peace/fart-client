@@ -69,7 +69,7 @@ public class DebugGame : MonoBehaviour {
                     m_PlayerAll.nNumber = m_nWarpPoint[m_nPhaseWarp];
                     m_Player.transform.position = m_PhasePoint[m_nPhaseWarp].transform.position;
                     m_bUse = true;
-                    
+                    m_PlayerAll.m_bIvent3 = true;
                     m_PlayerAll.m_Navigate.enabled = true;
                 }
                 else

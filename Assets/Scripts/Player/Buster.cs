@@ -333,6 +333,8 @@ public class Buster : MonoBehaviour
             case AllManager.STATE_SCENE.STATE_STAGE:
                 if (m_Tank.m_fTank + 0.3f > 0.7f) { return; }
 
+                SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.ONARA_BAZOOKA);
+
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
                 GameObject buster_effect = Instantiate(m_ExplosionObject, transform.position, Quaternion.identity) as GameObject;
@@ -397,6 +399,8 @@ public class Buster : MonoBehaviour
 
             case AllManager.STATE_SCENE.STATE_STAGE:
                 if (m_FartsUI.uvRect.x >= 0.99f) { return; }
+
+                SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.ONARA_SPRAY);
 
                 m_Tank.FartingFarts(-0.01f);
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_Operation2_Enemy : MonoBehaviour
 {
@@ -23,6 +24,12 @@ public class UI_Operation2_Enemy : MonoBehaviour
     [SerializeField]
     GameObject SmokeOn_UI;
 
+    [SerializeField]
+    Sprite[] m_Sprite;
+
+    [SerializeField]
+    Image m_Image;
+
     public bool m_bSmokeOn;
 
     public bool m_bBusterOn;
@@ -32,6 +39,7 @@ public class UI_Operation2_Enemy : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        m_Image.sprite = m_Sprite[0];
         OldPos = rect.localPosition;
     }
 
@@ -67,13 +75,15 @@ public class UI_Operation2_Enemy : MonoBehaviour
             SmokeOn_UI.SetActive(true);
             if (m_bBusterOn)
             {
-                Damege.SetActive(true);
+                m_Image.sprite = m_Sprite[1];
+                
                 if (rect.localPosition.y > -300)
                 {
                     rect.localPosition -= new Vector3(0, 6, 0);
                 }
                 else if (rect.localPosition.y <= -300)
                 {
+                    m_Image.sprite = m_Sprite[0];
                     Damege.SetActive(false);
                     SmokeOn_UI.SetActive(false);
                     m_bBusterOn = false;

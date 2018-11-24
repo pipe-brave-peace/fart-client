@@ -10,6 +10,7 @@ using System.Linq;
 
 public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
 
+    private const int FOOTSTEP_SOUND_TIME = 50;
     private const float FEAR_TIME   = 5.0f;
     private const float BACK_TIME   = 1.0f;
     private const float CRY_TIME    = 1.0f;
@@ -55,6 +56,10 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
     private GameObject      m_LifeList;         // ライフ照準のリスト
     private GameObject      m_CryEffect;        // 吼えるのエフェクト
 
+    private int m_FootStepSoundTime;
+    private bool m_bCrySoundOn;
+    private bool m_bConfSoundOn;
+
     // 初期化
     void Start()
     {
@@ -65,6 +70,7 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
         m_Animator   = GetComponent<Animator>();
 
         // 変数の初期化
+        m_FootStepSoundTime = 0;
         m_State.CanSet(false);
         m_AttackObj      = m_TargetObj;
         m_NavMoveSpeed   = m_Nav.speed;
@@ -111,6 +117,15 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
             }
             else
             {
+                if (m_FootStepSoundTime > 0)
+                {
+                    m_FootStepSoundTime--;
+                }
+                else  if(m_FootStepSoundTime <= 0)
+                {
+                    m_FootStepSoundTime = FOOTSTEP_SOUND_TIME;
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.BEAR_FOOTSTEP);
+                }
                 // 目標へ移動
                 MoveHoming(CryPoint.transform.position);
             }
@@ -183,12 +198,19 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
                         CreateCryEffect();
                     }
 
+                    if (!m_bCrySoundOn)
+                    {
+                        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.BEAR_ROAR);
+                        m_bCrySoundOn = true;
+                    }
+
                     // アニメション終わった？
                     if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f && m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
                     {
                         m_State.EnemySetState(Enemy_State.STATE.MOVE);
                         m_Animator.SetBool("ToCry", false);
                         m_Nav.updatePosition = true;
+                        m_bCrySoundOn = false;
                     }
                     break;
                 }
@@ -196,11 +218,13 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
             case Enemy_State.STATE.ATTACK:      // 攻撃
                 //Debug_State_Text.text = "STATE:喰らえ！！";
 
+
+
                 // アニメション終わった？
                 if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f && m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
                 {
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.BEAR_ATTACK);
                     GameObject effet = Instantiate(m_AttackEffect, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as GameObject;
-
                     m_TargetObj = SerchPoint();
                     m_State.EnemySetState(Enemy_State.STATE.MOVE);
                     m_Animator.SetBool("ToAttack", false);
@@ -233,11 +257,19 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
                 break;
                 
             case Enemy_State.STATE.FEAR:        // 怯む
-                //Debug_State_Text.text = "STATE:怖いよ、怖いよぉ～";
-                
+                 //Debug_State_Text.text = "STATE:怖いよ、怖いよぉ～";
+                                               
+                if (!m_bConfSoundOn)
+                {
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.BEAR_CONFUSION);
+                    m_bConfSoundOn = true;
+                }
+
                 m_FearTimer -= Time.deltaTime;
                 if( m_FearTimer <= 0.0f)
                 {
+                    SoundManager.Instance.StopSE(SoundManager.SE_TYPE.BEAR_CONFUSION);
+                    m_bConfSoundOn = false;
                     m_FearTimer = FEAR_TIME;
                     m_State.EnemySetState(Enemy_State.STATE.CRY);
                     AnimatorFuraguInit();

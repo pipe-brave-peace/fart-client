@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_Operation1_Enemy : MonoBehaviour {
 
@@ -19,6 +20,12 @@ public class UI_Operation1_Enemy : MonoBehaviour {
     [SerializeField]
     bool m_bUse;
 
+    [SerializeField]
+    Sprite[] m_Sprite;
+
+    [SerializeField]
+    Image m_Image;
+
     public bool m_bEnemyStop;
 
     public bool m_bSmokeOn;
@@ -27,11 +34,15 @@ public class UI_Operation1_Enemy : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        m_Image.sprite = m_Sprite[0];
+
         OldPos = rect.localPosition;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+
 
         if (!m_bUse)
         {
@@ -70,12 +81,7 @@ public class UI_Operation1_Enemy : MonoBehaviour {
 
         if (m_bSmokeOn)
         {
-            Damege.SetActive(true);
-
-            if (rect.rotation.y <= 1)
-            {
-                rect.rotation = new Quaternion(rect.rotation.x, -180, 0, rect.rotation.w);
-            }
+            m_Image.sprite = m_Sprite[1];
 
             if (rect.localPosition.x > OldPos.x)
             {
@@ -83,6 +89,7 @@ public class UI_Operation1_Enemy : MonoBehaviour {
             }
             else if (rect.localPosition.x <= OldPos.x)
             {
+                m_Image.sprite = m_Sprite[0];
                 Damege.SetActive(false);
                 m_bSmokeOn = false;
                 m_bEnemyStop= false;

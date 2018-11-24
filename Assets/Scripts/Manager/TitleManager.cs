@@ -33,7 +33,7 @@ public class TitleManager : MonoBehaviour {
 	    // キー押し判定
 		if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
 		{
-            SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.PUSH_BUTTON);
+            //SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.PUSH_BUTTON);
             m_bUse = true;
         }
 

@@ -22,6 +22,9 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
     [SerializeField]
     PlayerAll m_PlayerAll;
 
+    [SerializeField]
+    IventOn m_IventOn;
+
     //[SerializeField]
     //TextMesh    Debug_State_Text;
     [Header("吼える場所")]
@@ -304,6 +307,7 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
                 }
                 // フラグをスプレーを受けてないに変更
                 m_isBuff = false;
+                m_BuffEffect.SetActive(false);
                 m_isEatDamage = true;
                 // 体力を減らす
                 SubLife(1.0f);
@@ -391,6 +395,9 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
 
             case Enemy_State.STATE.FAINT:   // 気絶
                 //Debug_State_Text.text = "STATE:おっふ";
+
+                m_IventOn.m_bBossEndFlg = true;
+
                 m_State.CanSet(false);
                 m_Nav.enabled = false;
 
@@ -402,6 +409,7 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
                 vec = -Vector3.Normalize(vec);
 
                 gameObject.GetComponent<Rigidbody>().freezeRotation = false;
+                gameObject.GetComponent<Rigidbody>().isKinematic = false;
 
                 gameObject.GetComponent<Rigidbody>().AddTorque(Vector3.right * Mathf.PI * 100);
 
