@@ -173,7 +173,9 @@ public class Enemy_Eat_Inago : MonoBehaviour
                 //Debug_State_Text.text = "STATE:満腹";
 
                 // 目標に着いた？
-                if (Vector3.Distance(m_TargetPos, transform.position) <= 10.0f)
+                Vector2 pos1 = new Vector2(transform.position.x, transform.position.z);
+                Vector2 pos2 = new Vector2(m_TargetPos.x, m_TargetPos.z);
+                if (Vector2.Distance(pos1, pos2) <= 1.0f)
                 {
                     // 自分を消す
                     Destroy(transform.parent.gameObject);
