@@ -139,17 +139,7 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
                     Destroy(m_LifeList.gameObject);
                     break;
                 }
-                // 遠い？
-                if (Vector3.Distance(transform.position, m_TargetObj.transform.position) > 1.0f)
-                {
-                    // 移動状態に変更
-                    m_State.CanSet(true);
-                    m_State.SetState(Enemy_State.STATE.MOVE);
-                    m_Animator.SetBool("MoveToAttack", false);
-                    break;
-                }
                 // 目標へ移動
-                //MoveHoming(m_TargetObj.transform.position, m_MoveSpeed*0.01f);
                 transform.position = m_TargetObj.transform.position;
                 LookAtNoneY(Camera.main.transform.position);
                 break;
