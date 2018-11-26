@@ -174,8 +174,12 @@ void Start()
         switch (m_State.GetState())
         {
             case Enemy_State.STATE.MOVE:     // 移動
-                //Debug_State_Text.text = "STATE:Move";
-                
+                                             //Debug_State_Text.text = "STATE:Move";
+
+                // スコアセット
+                Enemy_Score score = GetComponent<Enemy_Score>();
+                score.SetScore(Score_List.Enemy.Kuma);
+
                 m_Animator.SetBool("ToMove", false);
 
                 // 目標がなくなった？

@@ -14,6 +14,8 @@ public class Gas : MonoBehaviour {
     [SerializeField]
     int m_nTime = 0;
 
+    int nNumber;
+
     // Use this for initialization
     void Start()
     {
@@ -38,6 +40,8 @@ public class Gas : MonoBehaviour {
         }
     }
 
+    public void SetNumber(int n) { nNumber = 0;  }
+
     void OnTriggerEnter(Collider col)
     {
         if (col.gameObject.tag == "Enemy")
@@ -45,6 +49,13 @@ public class Gas : MonoBehaviour {
             if (col.GetComponent<Enemy_State>().GetState() != Enemy_State.STATE.SPRAY)
             {
                 col.GetComponent<Enemy_State>().SetState(Enemy_State.STATE.SPRAY);
+            }
+
+            if (col.gameObject.GetComponent<Life>().GetLife() <= 0)
+            {
+                InfoManager.Instance.AddPlayerScore(nNumber, col.gameObject.GetComponent<Enemy_Score>().GetScore());
+                InfoManager.Instance.AddPlayerCombo(nNumber);
+                InfoManager.Instance.AddPlayerEnemy(nNumber);
             }
         }
 

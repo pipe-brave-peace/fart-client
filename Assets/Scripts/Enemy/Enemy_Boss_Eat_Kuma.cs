@@ -150,7 +150,11 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
         switch (m_State.GetState())
         {
             case Enemy_State.STATE.MOVE:     // 移動
-                //Debug_State_Text.text = "STATE:Move";
+                                             //Debug_State_Text.text = "STATE:Move";
+
+                // スコアセット
+                Enemy_Score score = GetComponent<Enemy_Score>();
+                score.SetScore(Score_List.Enemy.Kuma);
 
                 // 攻撃不可
                 m_State.CanSet(false);

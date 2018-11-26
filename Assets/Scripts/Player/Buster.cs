@@ -419,6 +419,18 @@ public class Buster : MonoBehaviour
                 {
                     m_LED.Bazooka();
 
+                    int nNumber = m_Player.GetPlayerNumber();
+
+                    var LifeParent = hit.collider.gameObject.transform.parent.gameObject;
+                    var EnemyParent = hit.collider.gameObject.transform.parent.gameObject.transform.parent.gameObject;
+
+                    if (LifeParent.transform.childCount == 1)
+                    {
+                        InfoManager.Instance.AddPlayerScore(nNumber, EnemyParent.GetComponent<Enemy_Score>().GetScore());
+                        InfoManager.Instance.AddPlayerCombo(nNumber);
+                        InfoManager.Instance.AddPlayerEnemy(nNumber);
+                    }
+
                     if (m_PlayerAll.m_bTankMax)
                     {
                         m_bBuster = true;
@@ -471,6 +483,8 @@ public class Buster : MonoBehaviour
                 GameObject newBullet = Instantiate(m_GasBulletObject, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
 
                 Vector3 force = transform.forward * m_VecPow;
+
+                newBullet.GetComponent<Gas>().SetNumber(m_Player.GetPlayerNumber());
 
                 newBullet.GetComponent<Rigidbody>().AddForce(-force, ForceMode.Impulse);
                 break;
