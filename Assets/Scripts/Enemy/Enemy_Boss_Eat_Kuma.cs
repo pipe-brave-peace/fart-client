@@ -15,6 +15,9 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
     private const float CRY_TIME = 1.0f;
 
     [SerializeField]
+    GameObject ConfObject;
+
+    [SerializeField]
     GameObject m_PlayerObj;
     //[SerializeField]
     //TextMesh Debug_State_Text;
@@ -288,7 +291,9 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.FEAR:        // 怯む
-                 //Debug_State_Text.text = "STATE:怖いよ、怖いよぉ～";
+                                                //Debug_State_Text.text = "STATE:怖いよ、怖いよぉ～";
+
+                ConfObject.SetActive(true);
 
                 if (!m_bConfSoundOn)
                 {
@@ -303,6 +308,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                 m_FearTimer -= Time.deltaTime;
                 if( m_FearTimer <= 0.0f)
                 {
+                    ConfObject.SetActive(false);
                     m_bConfSoundOn = false;
                     SoundManager.Instance.StopSE(SoundManager.SE_TYPE.BEAR_CONFUSION);
                     m_FearTimer = FEAR_TIME;
@@ -318,7 +324,9 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.ESCAPE:   // 逃げる
-                //Debug_State_Text.text = "STATE:FadeOut";
+                                             //Debug_State_Text.text = "STATE:FadeOut";
+                ConfObject.SetActive(false);
+
 
                 // 攻撃不能
                 m_State.CanSet(false);

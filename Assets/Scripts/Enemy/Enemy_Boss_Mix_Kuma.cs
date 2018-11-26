@@ -28,6 +28,9 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
     [SerializeField]
     StageManager m_StageManager;
 
+    [SerializeField]
+    GameObject ConfObject;
+
     //[SerializeField]
     //TextMesh    Debug_State_Text;
     [Header("吼える場所")]
@@ -393,7 +396,9 @@ void Start()
                 break;
                 
             case Enemy_State.STATE.FEAR:        // 怯む
-                 //Debug_State_Text.text = "STATE:回る回る";
+                                                //Debug_State_Text.text = "STATE:回る回る";
+
+                ConfObject.SetActive(true);
 
                 if (!m_bConfSoundOn)
                 {
@@ -416,6 +421,7 @@ void Start()
                     m_Animator.SetBool("ToFaint", true);
                     m_State.EnemySetState(Enemy_State.STATE.FAINT);
                     m_Nav.enabled = false;
+                    ConfObject.SetActive(false);
                     SoundManager.Instance.StopSE(SoundManager.SE_TYPE.BEAR_CONFUSION);
                     SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.BEAR_DOWN);
                     break;
@@ -424,6 +430,7 @@ void Start()
                 m_FearTimer -= Time.deltaTime;
                 if( m_FearTimer <= 0.0f)
                 {
+                    ConfObject.SetActive(false);
                     SoundManager.Instance.StopSE(SoundManager.SE_TYPE.BEAR_CONFUSION);
                     m_FearTimer = FEAR_TIME;
                     if (m_isEatDamage)
@@ -453,6 +460,8 @@ void Start()
                 m_Nav.enabled = false;
 
                 m_EscapeEffect.SetActive(true);
+
+                ConfObject.SetActive(false);
 
                 Vector3 vec = transform.position;
                 vec = m_AttackObj.transform.position - vec;

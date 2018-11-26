@@ -353,7 +353,10 @@ public class Enemy_Eat_Inago : MonoBehaviour
         if (col.gameObject.tag == "Terrain")
         {
             m_isTerrain = true;
-            m_Nav.enabled = true;
+            if (m_Nav != null)
+            {
+                m_Nav.enabled = true;
+            }
             m_Move = new Vector3(0.0f, 0.0f, 0.0f);
         }
     }
