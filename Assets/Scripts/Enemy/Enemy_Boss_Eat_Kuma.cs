@@ -171,13 +171,16 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                 MoveHoming(m_TargetObj.transform.position);
 
                 // 近い？
-                if (DistanceNoneY(m_TargetObj.transform.position, 1.0f))
+                if (DistanceNoneY(m_TargetObj.transform.position, 5.0f))
                 {
                     // 食べる状態に変更
                     m_State.CanSet(true);
                     m_State.SetState(Enemy_State.STATE.EAT);
                     m_Animator.SetBool("ToEat", true);
                     MoveHoming(transform.position);     // 止まる
+                    Vector3 target_pos = m_TargetObj.transform.position;
+                    target_pos.y = transform.position.y;       // y軸無視
+                    transform.LookAt(target_pos);
                 }
                 break;
 
@@ -322,6 +325,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
 
                 // 攻撃不能
                 m_State.CanSet(false);
+                AnimatorFuraguInit();
 
                 // 汗のエフェクトを出す
                 m_EscapeEffect.SetActive(true);
