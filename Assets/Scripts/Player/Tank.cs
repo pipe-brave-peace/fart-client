@@ -83,7 +83,7 @@ public class Tank : MonoBehaviour
 
         m_fUvRectX = 0.01f;
 
-        m_joycons = NintendoManager.Instance.j;
+        m_joycons = JoyconManager.Instance.j;
 
         int count = 0;
 

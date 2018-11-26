@@ -40,8 +40,6 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
 
     [Header("以下編集しないこと！")]
     [SerializeField]
-    SkinnedMeshRenderer m_Color;        // 自分の色
-    [SerializeField]
     GameObject m_AttackEffect;      // クマのジャマのエフェクト
     [SerializeField]
     GameObject m_EscapeEffect;      // 退却時汗のエフェクト
@@ -61,7 +59,6 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
     private float           m_BackTimer;        // 後退するカウント
     private GameObject      m_LifeList;         // ライフ照準のリスト
     private GameObject      m_CryEffect;        // 吼えるのエフェクト
-    private Color m_FadeColor;    // 退却時の色の変化用
 
     private int m_FootStepSoundTime;
     private bool m_bCrySoundOn;
@@ -78,7 +75,6 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
         m_Animator   = GetComponent<Animator>();
 
         // 変数の初期化
-        m_FadeColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);      // 現在の色をセット
         m_FootStepSoundTime = 0;
         m_State.CanSet(false);
         m_AttackObj      = m_TargetObj;
@@ -309,15 +305,8 @@ public class Enemy_Boss_Attack_Kuma : MonoBehaviour {
                 // 汗のエフェクトを出す
                 m_EscapeEffect.SetActive(true);
 
-                // 消えていく
-                m_FadeColor.a -= 0.02f;
-                m_Color.material.SetColor("_MainColor", m_FadeColor);
-
                 // 離脱の位置の方向に移動
                 MoveHoming(m_FadePos);
-
-                // 汗を止める
-                if (m_FadeColor.a <= 0.3f) { m_EscapeEffect.SetActive(false);}
 
                 // クマオブジェクトを消す
                 if (DistanceNoneY(m_FadePos, 1.0f)) { Destroy(transform.parent.gameObject); }

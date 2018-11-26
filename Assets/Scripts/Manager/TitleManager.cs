@@ -33,7 +33,7 @@ public class TitleManager : MonoBehaviour {
     // Use this for initialization
     void Start () {
 
-        m_joycons = NintendoManager.Instance.j;
+        m_joycons = JoyconManager.Instance.j;
 
         int count = 0;
 

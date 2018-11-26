@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Cinemachine;
+using WiimoteApi;
 
 public class StageManager : MonoBehaviour {
 
@@ -84,9 +85,11 @@ public class StageManager : MonoBehaviour {
 	// 初期化
 	void Start () {
 
-        m_joycons = NintendoManager.Instance.j;
+        m_joycons = JoyconManager.Instance.j;
 
         int count = 0;
+
+        WiimoteManager.FindWiimotes();
 
         for (int i = 0; i < m_joycons.Count; i++)
         {

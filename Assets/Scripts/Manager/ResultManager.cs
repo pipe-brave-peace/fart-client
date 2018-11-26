@@ -20,7 +20,7 @@ public class ResultManager : MonoBehaviour {
     // 初期化
     void Start () {
 
-        m_joycons = NintendoManager.Instance.j;
+        m_joycons = JoyconManager.Instance.j;
 
         int count = 0;
 

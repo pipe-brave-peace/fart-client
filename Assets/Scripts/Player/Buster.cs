@@ -86,7 +86,7 @@ public class Buster : MonoBehaviour
 
         m_nOldTime = m_nTime;
 
-        m_joycons = NintendoManager.Instance.j;
+        m_joycons = JoyconManager.Instance.j;
 
         int count = 0;
 
@@ -114,14 +114,14 @@ public class Buster : MonoBehaviour
 
         Debug.Log(m_Tank.m_fTank);
 
-        if (NintendoManager.Instance.w != null)
+        if (WiimoteManager.Wiimotes != null)
         {
-            if (NintendoManager.Instance.w.Count > 0)
+            if (WiimoteManager.Wiimotes.Count > 0)
             {
-                wiimote1 = NintendoManager.Instance.w[0];
-                if (NintendoManager.Instance.w.Count > 1)
+                wiimote1 = WiimoteManager.Wiimotes[0];
+                if (WiimoteManager.Wiimotes.Count > 1)
                 {
-                    wiimote2 = NintendoManager.Instance.w[1];
+                    wiimote2 = WiimoteManager.Wiimotes[1];
                 }
             }
 
