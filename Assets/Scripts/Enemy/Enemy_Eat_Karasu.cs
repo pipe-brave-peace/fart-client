@@ -41,6 +41,8 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
     private int         m_MoveMode;     // 移動モード：0、上に飛ぶ　1、目標に移動　2、着地
     private float       m_MoveUpTimer;  // 上に飛ぶ時間
 
+    private bool m_bSplaySound;
+
     // Use this for initialization
     void Start()
     {
@@ -170,6 +172,12 @@ public class Enemy_Eat_Karasu : MonoBehaviour {
                 m_isBuff = true;
                 // 匂いのエフェクトの再生
                 m_BuffEffect.SetActive(true);
+
+                if (!m_bSplaySound)
+                {
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.ONARASPLAY_HIT);
+                    m_bSplaySound = true;
+                }
 
                 // 直前が食事状態なら
                 if (m_State.GetStateOld() == Enemy_State.STATE.EAT)

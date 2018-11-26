@@ -10,9 +10,12 @@ using System.Linq;
 
 public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
 
+    private const int FOOTSTEP_SOUND_TIME = 50;
     private const float FEAR_TIME = 5.0f;
     private const float CRY_TIME = 1.0f;
 
+    [SerializeField]
+    GameObject m_PlayerObj;
     //[SerializeField]
     //TextMesh Debug_State_Text;
     [Header("吼える場所")]
@@ -33,6 +36,8 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
 
     [Header("以下編集しないこと！")]
     [SerializeField]
+    SkinnedMeshRenderer m_Color;        // 自分の色
+    [SerializeField]
     GameObject m_DamageEffect;      // 弾の爆発エフェクト
     [SerializeField]
     GameObject m_EscapeEffect;      // 退却時汗のエフェクト
@@ -50,6 +55,13 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
     private bool            m_isBuff;           // オナラスプレー受けたかどうか
     private float           m_FearTimer;        // 怯む時間
     private GameObject      m_CryEffect;        // 吼えるのエフェクト
+    private Color m_FadeColor;    // 退却時の色の変化用
+
+    private int m_FootStepSoundTime;
+    private bool m_bCrySoundOn;
+    private bool m_bConfSoundOn;
+
+    private bool m_bSplaySound;
 
     // 初期化
     void Start()
@@ -60,6 +72,8 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
         m_Animator   = GetComponent<Animator>();
 
         // 変数の初期化
+        m_FadeColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);      // 現在の色をセット
+        m_FootStepSoundTime = 0;
         m_CropIndex     = 0;
         m_isCry         = false;
         m_CryTimer      = CRY_TIME;
@@ -105,10 +119,11 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
             if (DistanceNoneY(CryPoint.transform.position, 1.0f))
             {
                 m_Nav.updatePosition = false;
-                MoveHoming(Camera.main.transform.position);
+                MoveHoming(m_PlayerObj.transform.position);
                 m_CryTimer -= Time.deltaTime;
                 if( m_CryTimer <= 0.0f)
                 {
+                    m_CryTimer = CRY_TIME;
                     m_isCry = true;
                     m_State.CanSet(true);
                     m_State.SetState(Enemy_State.STATE.CRY);
@@ -117,6 +132,15 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
             }
             else
             {
+                if (m_FootStepSoundTime > 0)
+                {
+                    m_FootStepSoundTime--;
+                }
+                else if (m_FootStepSoundTime <= 0)
+                {
+                    m_FootStepSoundTime = FOOTSTEP_SOUND_TIME;
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.BEAR_FOOTSTEP);
+                }
                 // 目標へ移動
                 MoveHoming(CryPoint.transform.position);
             }
@@ -186,6 +210,12 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                         CreateCryEffect();
                     }
 
+                    if (!m_bCrySoundOn)
+                    {
+                        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.BEAR_ROAR);
+                        m_bCrySoundOn = true;
+                    }
+
                     // アニメション終わった？
                     if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f && m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
                     {
@@ -201,6 +231,13 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                 //Debug_State_Text.text = "STATE:見えねぇ！！";   // テスト
                 // フラグをスプレーを受けたに変更
                 m_isBuff = true;
+
+                if (!m_bSplaySound)
+                {
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.ONARASPLAY_HIT);
+                    m_bSplaySound = true;
+                }
+
                 // 匂いのエフェクトの再生
                 m_BuffEffect.SetActive(true);
 
@@ -217,7 +254,7 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.DAMAGE:      // ダメージ状態
-                //Debug_State_Text.text = "STATE:痛えぇ！";
+                                                //Debug_State_Text.text = "STATE:痛えぇ！";
 
                 if (!m_isBuff)
                 {
@@ -236,6 +273,10 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
 
                 // エフェクトの生成
                 GameObject damage_effect = Instantiate(m_DamageEffect, transform.position, Quaternion.identity) as GameObject;
+                // 匂いのエフェクトの再生
+                m_BuffEffect.SetActive(false);
+
+                SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.BEAR_SHOUT);
 
                 // 怯む
                 m_State.SetState(Enemy_State.STATE.FEAR);
@@ -243,7 +284,14 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.FEAR:        // 怯む
-                //Debug_State_Text.text = "STATE:怖いよ、怖いよぉ～";
+                 //Debug_State_Text.text = "STATE:怖いよ、怖いよぉ～";
+
+                if (!m_bConfSoundOn)
+                {
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.BEAR_CONFUSION);
+                    SoundManager.Instance.LoopSE(SoundManager.SE_TYPE.BEAR_CONFUSION);
+                    m_bConfSoundOn = true;
+                }
 
                 // 攻撃不能
                 m_State.CanSet(false);
@@ -251,6 +299,8 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                 m_FearTimer -= Time.deltaTime;
                 if( m_FearTimer <= 0.0f)
                 {
+                    m_bConfSoundOn = false;
+                    SoundManager.Instance.StopSE(SoundManager.SE_TYPE.BEAR_CONFUSION);
                     m_FearTimer = FEAR_TIME;
                     m_State.CanSet(true);
                     m_State.SetState(Enemy_State.STATE.MOVE);
@@ -272,8 +322,15 @@ public class Enemy_Boss_Eat_Kuma : MonoBehaviour {
                 // 汗のエフェクトを出す
                 m_EscapeEffect.SetActive(true);
 
+                // 消えていく
+                m_FadeColor.a -= 0.02f;
+                m_Color.material.SetColor("_MainColor", m_FadeColor);
+
                 // 離脱の位置の方向に移動
                 MoveHoming(m_FadePos);
+
+                // 汗を止める
+                if (m_FadeColor.a <= 0.3f) { m_EscapeEffect.SetActive(false); }
 
                 // クマオブジェクトを消す
                 if (DistanceNoneY(m_FadePos, 1.0f)) { Destroy(transform.parent.gameObject); }

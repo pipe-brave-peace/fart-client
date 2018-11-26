@@ -23,6 +23,12 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
         ONARA_STORE,
         VEGETABLES_EAT,
         ONARA_SPRAY,
+        BEAR_DOWN,
+        BEAR_SHOUT,
+        NARATION_OPEN,
+        GAME_CLEAR,
+        ONARASPLAY_HIT,
+        GAME_OVER,
         MAX
 	}
 	readonly private static int MAX_SE_AUDIOSOURCE_NUM = 20;
@@ -66,11 +72,18 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
 	}
 
     /// <summary>
+    /// SEループ
+    /// </summary>
+    public void LoopSE(SE_TYPE type)
+    {
+        m_SEAudioSource[(int)type].loop = true;
+    }
+
+    /// <summary>
     /// SE止まる
     /// </summary>
     public void StopSE(SE_TYPE type)
     {
-        //m_SEAudioSource[(int)type].clip = m_SE[(int)type];
         m_SEAudioSource[(int)type].Stop();
     }
 }

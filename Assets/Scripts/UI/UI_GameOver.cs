@@ -22,6 +22,8 @@ public class UI_GameOver : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.GAME_OVER);
+
         // 背景の初期化
         m_BG_Size.x = 0.0f;
         m_BG_Size.y = 0.5f;

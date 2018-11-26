@@ -53,12 +53,22 @@ public class StageManager : MonoBehaviour {
         MAX
     }
 
+    private List<Joycon> m_joycons;
+
+    private Joycon m_joyconR1;
+    private Joycon m_joyconR2;
+
     [SerializeField]
     STAGE_MODE Mode;            // 現在のモード
 
     bool m_bUse;
 
-    bool m_bBossBGM;
+    public bool m_bBossBGM;
+
+    public bool m_bGameClear;
+    public bool m_bGameOver;
+
+    bool m_bResult;
 
     // ゲームモードの取得
     public bool isGameMode()
@@ -73,6 +83,27 @@ public class StageManager : MonoBehaviour {
 
 	// 初期化
 	void Start () {
+
+        m_joycons = NintendoManager.Instance.j;
+
+        int count = 0;
+
+        for (int i = 0; i < m_joycons.Count; i++)
+        {
+            if (!m_joycons[i].isLeft)
+            {
+                if (count == 0)
+                {
+                    m_joyconR1 = m_joycons[i];
+                }
+                else
+                {
+                    m_joyconR2 = m_joycons[i];
+                }
+                count++;
+            }
+        }
+
         AllManager.Instance.SetStateScene(AllManager.STATE_SCENE.STATE_STAGE);
 
         //m_Stage_Object.SetActive(true);
@@ -88,48 +119,36 @@ public class StageManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (!m_bBossBGM)
+        if (m_bBossBGM)
         {
-            //if (m_BossEat.gameObject.active)
-            //{
-            //    m_Bgm[0].Stop();
-            //}
-            //
-            //if (m_BossEat.GetState() == Enemy_State.STATE.CRY)
-            //{
-            //    if (!m_bUse)
-            //    {
-            //        m_Bgm[1].Play();
-            //        m_bUse = true;
-            //        m_bBossBGM = true;
-            //    }
-            //
-            //}
+             m_Bgm[0].Stop();
+            m_bBossBGM = false;
+        }
+
+        if (m_BossEat.GetState() == Enemy_State.STATE.CRY)
+        {
+            if (!m_bUse)
+            {
+                m_Bgm[1].Play();
+                m_bUse = true;
+            }
         }
 
         // テスト
-        if (m_BossMix.GetState() == Enemy_State.STATE.FAINT)
+        if (m_bGameClear && !m_bGameOver)
         {
-            //m_ResultCamera.SetActive(true);
+            m_ResultCamera.SetActive(true);
             m_GameClear.SetActive(true);
             m_GameOver.SetActive(false);
+            // 次のモードに移行
+            Mode = STAGE_MODE.TO_RESULT;
         }
-        if (Input.GetKeyDown(KeyCode.O))
+        if (m_bGameOver && !m_bGameClear)
         {
             m_GameOver.SetActive(true);
             m_GameClear.SetActive(false);
-        }
-
-        if (m_Stage_UI.GetComponent<CanvasGroup>().alpha < 1)
-        {
-            m_Display2Stage_UI.GetComponent<CanvasGroup>().alpha += 0.05f;
-
-            m_Stage_UI.GetComponent<CanvasGroup>().alpha += 0.05f;
-        }
-        else if (m_Stage_UI.GetComponent<CanvasGroup>().alpha >= 1)
-        {
-            m_Display2Stage_UI.GetComponent<CanvasGroup>().alpha = 1f;
-            m_Stage_UI.GetComponent<CanvasGroup>().alpha = 1;
+            // 次のモードに移行
+            Mode = STAGE_MODE.TO_RESULT;
         }
 
         // 状態別処理
@@ -152,8 +171,20 @@ public class StageManager : MonoBehaviour {
     // スタート時処理
     void ModeStart()
     {
+        if (m_Stage_UI.GetComponent<CanvasGroup>().alpha < 1)
+        {
+            m_Display2Stage_UI.GetComponent<CanvasGroup>().alpha += 0.05f;
+
+            m_Stage_UI.GetComponent<CanvasGroup>().alpha += 0.05f;
+        }
+        else if (m_Stage_UI.GetComponent<CanvasGroup>().alpha >= 1)
+        {
+            m_Display2Stage_UI.GetComponent<CanvasGroup>().alpha = 1f;
+            m_Stage_UI.GetComponent<CanvasGroup>().alpha = 1;
+        }
+
         // フェード時実行しない
-        if( !FadeManager.Instance.IsFadeInEnd())
+        if ( !FadeManager.Instance.IsFadeInEnd())
         {
             return;
         }
@@ -193,23 +224,54 @@ public class StageManager : MonoBehaviour {
     // リザルトへの処理
     public void ModeToResult()
     {
-        //SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.PUSH_BUTTON);
-        m_Bgm[1].Stop();
 
-        if (m_Stage_UI.GetComponent<CanvasGroup>().alpha > 0)
+        // キー押し判定
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
         {
-            m_Stage_UI.GetComponent<CanvasGroup>().alpha -= 0.05f;
+            SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.PUSH_BUTTON);
+            m_bResult = true;
         }
-        else if (m_Stage_UI.GetComponent<CanvasGroup>().alpha <= 0)
+
+        if (m_joyconR1 != null)
         {
-            // シーン遷移処理
-            AllManager.Instance.SetStateScene(AllManager.STATE_SCENE.STATE_RESULT);
+            if (m_joyconR1.GetButtonDown(Joycon.Button.SHOULDER_1))
+            {
+                SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.PUSH_BUTTON);
+                m_bResult = true;
+            }
+        }
 
-            m_Stage_Object.SetActive(false);
-            m_Stage_UI.SetActive(false);
+        if (m_joyconR2 != null)
+        {
+            if (m_joyconR2.GetButtonDown(Joycon.Button.SHOULDER_1))
+            {
+                SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.PUSH_BUTTON);
+                m_bResult = true;
+            }
+        }
 
-            // 次のモードに移行
-            Mode = STAGE_MODE.MAX;
+        if (m_bResult)
+        {
+            SoundManager.Instance.StopSE(SoundManager.SE_TYPE.GAME_OVER);
+            SoundManager.Instance.StopSE(SoundManager.SE_TYPE.GAME_CLEAR);
+
+            m_Bgm[1].Stop();
+
+            if (m_Stage_UI.GetComponent<CanvasGroup>().alpha > 0)
+            {
+                m_Stage_UI.GetComponent<CanvasGroup>().alpha -= 0.1f;
+            }
+            else if (m_Stage_UI.GetComponent<CanvasGroup>().alpha <= 0)
+            {
+                // シーン遷移処理
+                AllManager.Instance.SetStateScene(AllManager.STATE_SCENE.STATE_RESULT);
+
+                m_Stage_Object.SetActive(false);
+                m_Stage_UI.SetActive(false);
+
+                // 次のモードに移行
+                Mode = STAGE_MODE.MAX;
+            }
         }
     }
 }

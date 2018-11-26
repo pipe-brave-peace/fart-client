@@ -20,9 +20,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4700210337878032}
   - component: {fileID: 114053474194487318}
-  - component: {fileID: 114847087446241854}
-  - component: {fileID: 114978982157692106}
   - component: {fileID: 114855151224077718}
+  - component: {fileID: 114599881827341080}
   m_Layer: 0
   m_Name: SceneManager
   m_TagString: Untagged
@@ -176,10 +175,10 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: eacb5e2edf1a3904d83d208805560b62, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 1
+  m_PlayOnAwake: 0
+  m_Volume: 0.6
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -257,7 +256,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 27d7e97c35723af418a612ac12d69ecb, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.55
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -528,7 +527,21 @@ MonoBehaviour:
   m_TitleUI: {fileID: 0}
   m_Display2TitleUI: {fileID: 0}
   TitleCamera: {fileID: 0}
+  m_LED: {fileID: 0}
   m_Bgm: {fileID: 82979625293209162}
+--- !u!114 &114599881827341080
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1005489564816046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1ea22d5eb4841428b14a32cb8ba15d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnableIMU: 1
+  EnableLocalize: 1
 --- !u!114 &114839071295900898
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -553,19 +566,12 @@ MonoBehaviour:
   m_GameClear: {fileID: 0}
   m_GameOver: {fileID: 0}
   m_PhaseManager: {fileID: 0}
-  m_Boss: {fileID: 0}
+  m_BossEat: {fileID: 0}
+  m_BossMix: {fileID: 0}
   Mode: 0
---- !u!114 &114847087446241854
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1005489564816046}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92432c07aa7849042a3a5d3a5b7d8145, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_bBossBGM: 0
+  m_bGameClear: 0
+  m_bGameOver: 0
 --- !u!114 &114855151224077718
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -578,16 +584,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _anglePerFrame: 0.025
---- !u!114 &114978982157692106
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1005489564816046}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d22378ef6f282404a9cbd1f9ed86cd40, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  EnableIMU: 1
-  EnableLocalize: 1

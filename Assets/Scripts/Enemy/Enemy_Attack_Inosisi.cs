@@ -42,6 +42,8 @@ public class Enemy_Attack_Inosisi : MonoBehaviour {
     private Animator        m_Animator;     // アニメション
     private Vector3         m_TargetPos;    //目標オブジェクト位置
 
+    private bool m_bSplaySound;
+
     // 初期化
     void Start()
     {
@@ -119,6 +121,7 @@ public class Enemy_Attack_Inosisi : MonoBehaviour {
 
                         // フラグを攻撃したに変更
                         m_isAttack = true;
+                        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.BOAR_ATTACK);
                         // 満足状態へ
                         m_State.SetState(Enemy_State.STATE.SATIETY);
                         // 通常スピード
@@ -139,6 +142,13 @@ public class Enemy_Attack_Inosisi : MonoBehaviour {
             case Enemy_State.STATE.SPRAY:      // スプレー状態
                 // フラグをスプレーを受けたに変更
                 m_isBuff = true;
+
+                if (!m_bSplaySound)
+                {
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.ONARASPLAY_HIT);
+                    m_bSplaySound = true;
+                }
+
                 // 匂いのエフェクトの再生
                 m_BuffEffect.SetActive(true);
 

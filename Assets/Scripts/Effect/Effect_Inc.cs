@@ -32,6 +32,8 @@ public class Effect_Inc : MonoBehaviour {
         m_Pos = m_Image.transform.position;               // 座標の記憶
         m_Image.sizeDelta = m_Size * 0.8f;                // 初期サイズの代入
         m_Color = m_ImageColor.color;                     // 色の記憶
+
+        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.BUG_ATTACK);
     }
 	
 	// Update is called once per frame

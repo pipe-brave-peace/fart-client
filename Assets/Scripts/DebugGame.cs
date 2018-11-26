@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DebugGame : MonoBehaviour {
 
@@ -37,6 +38,9 @@ public class DebugGame : MonoBehaviour {
     [SerializeField]
     bool m_bUse;
 
+    [SerializeField]
+    GameObject StageUI;
+
     // Use this for initialization
     void Start () {
         m_Stage.SetActive(true);
@@ -51,6 +55,7 @@ public class DebugGame : MonoBehaviour {
             case AllManager.STATE_SCENE.STATE_STAGE:
 
                 m_StageManager.SetMode(StageManager.STAGE_MODE.GAME);
+                StageUI.GetComponent<CanvasGroup>().alpha = 1;
 
                 if (!m_bUse)
                 {

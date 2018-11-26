@@ -29,6 +29,7 @@ public class Soil : MonoBehaviour {
 
             if (!m_bUse)
             {
+                SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.VEGETABLES_EAT);
                 m_bUse = true;
                 //Dead.Play();
             }

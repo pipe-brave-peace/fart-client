@@ -54,6 +54,8 @@ public class Result_InfoNum : MonoBehaviour {
     Text m_Player1_Text_Rank;
     Text m_Player2_Text_Rank;
 
+    bool m_bUse;
+
     // Use this for initialization
     void Start () {
         m_CntFrame = 0.0f;
@@ -95,6 +97,13 @@ public class Result_InfoNum : MonoBehaviour {
                 m_Player2_Text_Score.text = num.ToString();
                 if (m_CntFrame >= m_Time)
                 {
+                    if (m_bUse)
+                    {
+                        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.COUNT_ENTER);
+                        SoundManager.Instance.StopSE(SoundManager.SE_TYPE.COUNTING);
+                        m_bUse = false;
+                    }
+
                     m_Player1_Text_Score.text = InfoManager.Instance.GetPlayerInfo(0).GetScore().ToString();
                     m_Player2_Text_Score.text = InfoManager.Instance.GetPlayerInfo(1).GetScore().ToString();
                     m_Player1_Score.GetComponent<UI_CreateNum>().CreateNum();
@@ -103,6 +112,14 @@ public class Result_InfoNum : MonoBehaviour {
                     m_CntFrame = 0.0f;
                     m_Mode++;
                 }
+                else if (m_CntFrame < m_Time)
+                {
+                    if (!m_bUse)
+                    {
+                        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.COUNTING);
+                        m_bUse = true;
+                    }
+                }
                 break;
             case MODE.ENEMY:
                 num = Random.Range(10000, 99999);
@@ -110,12 +127,27 @@ public class Result_InfoNum : MonoBehaviour {
                 m_Player2_Text_Enemy.text = num.ToString();
                 if (m_CntFrame >= m_Time)
                 {
+                    if (m_bUse)
+                    {
+                        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.COUNT_ENTER);
+                        SoundManager.Instance.StopSE(SoundManager.SE_TYPE.COUNTING);
+                        m_bUse = false;
+                    }
+
                     m_Player1_Text_Enemy.text = InfoManager.Instance.GetPlayerInfo(0).GetEnemy().ToString();
                     m_Player2_Text_Enemy.text = InfoManager.Instance.GetPlayerInfo(1).GetEnemy().ToString();
                     m_Player1_Enemy.GetComponent<UI_CreateNum>().CreateNum();
                     m_Player2_Enemy.GetComponent<UI_CreateNum>().CreateNum();
                     m_CntFrame = 0.0f;
                     m_Mode++;
+                }
+                else if (m_CntFrame < m_Time)
+                {
+                    if (!m_bUse)
+                    {
+                        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.COUNTING);
+                        m_bUse = true;
+                    }
                 }
                 break;
             case MODE.COMBO:
@@ -124,12 +156,27 @@ public class Result_InfoNum : MonoBehaviour {
                 m_Player2_Text_Combo.text = num.ToString();
                 if (m_CntFrame >= m_Time)
                 {
+                    if (m_bUse)
+                    {
+                        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.COUNT_ENTER);
+                        SoundManager.Instance.StopSE(SoundManager.SE_TYPE.COUNTING);
+                        m_bUse = false;
+                    }
+
                     m_Player1_Text_Combo.text = InfoManager.Instance.GetPlayerInfo(0).GetCombo().ToString();
                     m_Player2_Text_Combo.text = InfoManager.Instance.GetPlayerInfo(1).GetCombo().ToString();
                     m_Player1_Combo.GetComponent<UI_CreateNum>().CreateNum();
                     m_Player2_Combo.GetComponent<UI_CreateNum>().CreateNum();
                     m_CntFrame = 0.0f;
                     m_Mode++;
+                }
+                else if (m_CntFrame < m_Time)
+                {
+                    if (!m_bUse)
+                    {
+                        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.COUNTING);
+                        m_bUse = true;
+                    }
                 }
                 break;
             case MODE.TOTAL_SCORE:
@@ -138,12 +185,27 @@ public class Result_InfoNum : MonoBehaviour {
                 m_Player2_Text_TotalScore.text = num.ToString();
                 if (m_CntFrame >= m_Time)
                 {
+                    if (m_bUse)
+                    {
+                        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.COUNT_ENTER);
+                        SoundManager.Instance.StopSE(SoundManager.SE_TYPE.COUNTING);
+                        m_bUse = false;
+                    }
+
                     m_Player1_Text_TotalScore.text = InfoManager.Instance.GetPlayerInfo(0).GetTotalScore().ToString();
                     m_Player2_Text_TotalScore.text = InfoManager.Instance.GetPlayerInfo(1).GetTotalScore().ToString();
                     m_Player1_TotalScore.GetComponent<UI_CreateNum>().CreateNum();
                     m_Player2_TotalScore.GetComponent<UI_CreateNum>().CreateNum();
                     m_CntFrame = 0.0f;
                     m_Mode++;
+                }
+                else if (m_CntFrame < m_Time)
+                {
+                    if (!m_bUse)
+                    {
+                        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.COUNTING);
+                        m_bUse = true;
+                    }
                 }
                 break;
             case MODE.RANK:
@@ -153,12 +215,27 @@ public class Result_InfoNum : MonoBehaviour {
 
                 if (m_CntFrame >= m_Time)
                 {
+                    if (m_bUse)
+                    {
+                        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.COUNT_ENTER);
+                        SoundManager.Instance.StopSE(SoundManager.SE_TYPE.COUNTING);
+                        m_bUse = false;
+                    }
+
                     m_Player1_Text_Rank.text = InfoManager.Instance.GetPlayerRank(0);
                     m_Player2_Text_Rank.text = InfoManager.Instance.GetPlayerRank(1);
                     m_Player1_Rank.GetComponent<UI_CreateNum>().CreateNum();
                     m_Player2_Rank.GetComponent<UI_CreateNum>().CreateNum();
                     m_CntFrame = 0.0f;
                     m_Mode++;
+                }
+                else if (m_CntFrame < m_Time)
+                {
+                    if (!m_bUse)
+                    {
+                        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.COUNTING);
+                        m_bUse = true;
+                    }
                 }
                 break;
             case MODE.MAX:

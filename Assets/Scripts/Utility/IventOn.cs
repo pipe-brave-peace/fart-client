@@ -42,6 +42,14 @@ public class IventOn : MonoBehaviour {
     [SerializeField]
     GameObject[] m_Reticle;
 
+    [SerializeField]
+    StageManager m_StageManager;
+
+    [SerializeField]
+    AudioSource m_BoosBGM;
+
+   public bool m_bFadeOut;
+
     bool m_bUse = false;
 
     bool m_bBossIventFlg;
@@ -150,6 +158,7 @@ public class IventOn : MonoBehaviour {
 
                 if (m_bBossEndFlg)
                 {
+                    m_BoosBGM.Stop();
                     m_Reticle[0].SetActive(false);
                     m_Reticle[1].SetActive(false);
                     m_IventAll[0].SetIventFlg(true);
@@ -159,6 +168,25 @@ public class IventOn : MonoBehaviour {
 
                     m_LastCamera.CameraVector(m_EnemyState.gameObject.transform.position);
                 }
+
+                if (m_bFadeOut)
+                {
+                    m_Reticle[0].SetActive(false);
+                    m_Reticle[1].SetActive(false);
+                    m_IventAll[0].SetIventFlg(true);
+                    m_IventAll[1].SetIventFlg(true);
+
+                    m_LastCamera.gameObject.SetActive(false);
+
+                    NarrationObject.SetActive(true);
+
+                    if (NarrationObject.GetComponent<UI_Narration>().GetTurn())
+                    {
+                        m_StageManager.m_bGameClear = true;
+                        m_bFadeOut = false;
+                    }
+                }
+
 
                 break;
         }
@@ -190,6 +218,7 @@ public class IventOn : MonoBehaviour {
                 case IVENTSTATE.IVENT_BOSS_START:
 
                     m_bBossIventFlg = true;
+                    m_StageManager.m_bBossBGM = true;
 
                     break;
 

@@ -54,6 +54,9 @@ public class Enemy_Eat_Inago : MonoBehaviour
     private Color       m_FadeColor;        // 退却時の色の変化用
     private bool        m_isTerrain;        // 着地判断
     public bool        m_isStop;        // ストップしてるか
+
+    private bool m_bSplaySound;
+
     // 初期化
     void Start()
     {
@@ -183,8 +186,14 @@ public class Enemy_Eat_Inago : MonoBehaviour
                 break;
 
             case Enemy_State.STATE.SPRAY:      // スプレー状態
-                //Debug_State_Text.text = "STATE:見えねぇ！！";
-                
+                                               //Debug_State_Text.text = "STATE:見えねぇ！！";
+
+                if (!m_bSplaySound)
+                {
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.ONARASPLAY_HIT);
+                    m_bSplaySound = true;
+                }
+
                 // 体力を減らす
                 m_Life.SubLife(1.0f);
 

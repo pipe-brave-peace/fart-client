@@ -17,6 +17,8 @@ public class UI_Narration : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.NARATION_OPEN);
+
         m_nOldTime = m_nTime;
 	}
 	

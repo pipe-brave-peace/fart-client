@@ -30,6 +30,8 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
     private Animator    m_Animator;     // アニメション
     private GameObject  m_LifeList;     // ライフ照準のリスト
 
+    bool m_bUse;
+
     // Use this for initialization
     void Start()
     {
@@ -98,10 +100,22 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.ATTACK:  // ジャマ
-                //Debug_State_Text.text = "STATE:ジャマジャマ";  // テスト
+                 //Debug_State_Text.text = "STATE:ジャマジャマ";  // テスト
+
+                if (!m_bUse)
+                {
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.CROW_FLY);
+                    SoundManager.Instance.LoopSE(SoundManager.SE_TYPE.CROW_FLY);
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.CROW_POP);
+                    m_bUse = true;
+                }
+
                 // ライフリストのライフがなくなったら離脱する
                 if (m_LifeList.transform.childCount <= 0)
                 {
+                    SoundManager.Instance.StopSE(SoundManager.SE_TYPE.CROW_FLY);
+                    SoundManager.Instance.StopSE(SoundManager.SE_TYPE.CROW_POP);
+
                     // 透明できる描画モードに変更
                     BlendModeUtils.SetBlendMode(m_Color.material, BlendModeUtils.Mode.Fade);
                    m_Color.material.SetColor("_MainColor", m_FadeColor);
@@ -115,6 +129,9 @@ public class Enemy_Attack_Karasu : MonoBehaviour {
                 m_FadeTimer -= Time.deltaTime;
                 if (m_FadeTimer <= 0.0f)
                 {
+                    SoundManager.Instance.StopSE(SoundManager.SE_TYPE.CROW_FLY);
+                    SoundManager.Instance.StopSE(SoundManager.SE_TYPE.CROW_POP);
+
                     // 満足状態に変更
                     m_State.CanSet(true);
                     m_State.SetState(Enemy_State.STATE.SATIETY);

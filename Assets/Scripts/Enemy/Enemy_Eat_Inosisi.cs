@@ -39,6 +39,8 @@ public class Enemy_Eat_Inosisi : MonoBehaviour {
     private bool            m_isBuff;       // オナラスプレー受けたかどうか
     private Animator        m_Animator;     // アニメション
 
+    private bool m_bSplaySound;
+
     // 初期化
     void Start()
     {
@@ -130,8 +132,14 @@ public class Enemy_Eat_Inosisi : MonoBehaviour {
                 // 匂いのエフェクトの再生
                 m_BuffEffect.SetActive(true);
 
+                if (!m_bSplaySound)
+                {
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.ONARASPLAY_HIT);
+                    m_bSplaySound = true;
+                }
+
                 // 直前が食事状態なら
-                if( m_State.GetStateOld() == Enemy_State.STATE.EAT)
+                if ( m_State.GetStateOld() == Enemy_State.STATE.EAT)
                 {
                     // 食事を続く
                     m_State.SetState(Enemy_State.STATE.EAT);

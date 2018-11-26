@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using WiimoteApi;
 
 public class Buster : MonoBehaviour
 {
@@ -48,6 +49,9 @@ public class Buster : MonoBehaviour
     [SerializeField]
     StageManager m_StageManager;
 
+    [SerializeField]
+    LED m_LED;
+
     public bool m_bBuster;
 
     int m_nOldTime;
@@ -57,15 +61,22 @@ public class Buster : MonoBehaviour
     bool m_bGasFlg = false;
 
     private List<Joycon> m_joycons;
+    private List<Wiimote> m_wiimotes;
 
-    private Joycon m_joyconR;
-    
+    private Wiimote wiimote1 = null;
+    private Wiimote wiimote2 = null;
+
+    private Joycon m_joyconR1;
+    private Joycon m_joyconR2;
+
     Vector2 point;
 
     bool m_bStart;
 
     [SerializeField]
     int m_nStartTime;
+
+    Quaternion OldRot;
 
     void Start()
     {
@@ -75,12 +86,59 @@ public class Buster : MonoBehaviour
 
         m_nOldTime = m_nTime;
 
-        m_joycons = JoyconManager.Instance.j;
-        m_joyconR = m_joycons.Find(c => !c.isLeft);
+        m_joycons = NintendoManager.Instance.j;
+
+        int count = 0;
+
+        OldRot = transform.rotation;
+
+        for (int i = 0; i < m_joycons.Count; i++)
+        {
+            if (!m_joycons[i].isLeft)
+            {
+                if (count == 0)
+                {
+                    m_joyconR1 = m_joycons[i];
+                }
+                else
+                {
+                    m_joyconR2 = m_joycons[i];
+                }
+                count++;
+            }
+        }
     }
 
     void Update()
     {
+
+        Debug.Log(m_Tank.m_fTank);
+
+        if (NintendoManager.Instance.w != null)
+        {
+            if (NintendoManager.Instance.w.Count > 0)
+            {
+                wiimote1 = NintendoManager.Instance.w[0];
+                if (NintendoManager.Instance.w.Count > 1)
+                {
+                    wiimote2 = NintendoManager.Instance.w[1];
+                }
+            }
+
+            int ret = 0;
+            do
+            {
+                if (wiimote1 != null)
+                {
+                    ret = wiimote1.ReadWiimoteData();
+                }
+                if (wiimote2 != null)
+                {
+                    wiimote2.ReadWiimoteData();
+                }
+            } while (ret > 0);
+        }
+
 
         Vector3 rayPos = new Vector3(m_ReticleUI.rectTransform.position.x, m_ReticleUI.rectTransform.position.y, m_ReticleUI.rectTransform.position.z);
 
@@ -107,43 +165,43 @@ public class Buster : MonoBehaviour
 
         if (m_Player.GetPlayerNumber() == 0)
         {
-            //if (m_WiimoteSharing.GetWiimote(0) != null)
-            //{
-            //    float[] pointer = m_WiimoteSharing.GetWiimote(0).Ir.GetPointingPosition();
-            //    point = new Vector2(pointer[0], pointer[1]);
-            //
-            //    if (!m_Player.GetStan())
-            //    {
-            //        if (m_WiimoteSharing.GetWiimote(0).Button.plus)
-            //        {
-            //            m_Tank.Farmer(0.5f);
-            //        }
-            //
-            //        if (m_WiimoteSharing.GetWiimote(0).Button.minus)
-            //        {
-            //            m_Tank.Farmer(0.1f);
-            //        }
-            //
-            //        if (m_WiimoteSharing.GetWiimote(0).Button.b)
-            //        {
-            //            if (!m_Tank.GetFurzFlg())
-            //            {
-            //                BulletShot();
-            //            }
-            //        }
-            //
-            //        if (m_WiimoteSharing.GetWiimote(0).Button.a)
-            //        {
-            //            GasShot();
-            //        }
-            //    }
-            //}
+            if (wiimote1 != null)
+            {
+                float[] pointer = wiimote1.Ir.GetPointingPosition();
+                point = new Vector2(pointer[0], pointer[1]);
+
+                if (!m_Player.GetStan())
+                {
+                    if (wiimote1.Button.plus)
+                    {
+                        m_Tank.Farmer(0.5f);
+                    }
+            
+                    if (wiimote1.Button.minus)
+                    {
+                        m_Tank.Farmer(0.1f);
+                    }
+            
+                    if (wiimote1.Button.b)
+                    {
+                        if (!m_Tank.GetFurzFlg())
+                        {
+                            BulletShot();
+                        }
+                    }
+            
+                    if (wiimote1.Button.a)
+                    {
+                        GasShot();
+                    }
+                }
+            }
 
             if (!m_Player.GetStan())
             {
                 if (Input.GetKeyDown(KeyCode.F))
                 {
-                    //if (!m_Tank.GetFurzFlg())
+                    if (!m_Tank.GetFurzFlg())
                     {
                         BulletShot();
                     }
@@ -202,11 +260,11 @@ public class Buster : MonoBehaviour
                 m_OldPoint = point;
             }
 
-            if (m_joyconR != null)
+            if (m_joyconR1 != null)
             {
                 if (!m_Player.GetStan())
                 {
-                    if (m_joyconR.GetButtonDown(Joycon.Button.SHOULDER_1))
+                    if (m_joyconR1.GetButtonDown(Joycon.Button.SHOULDER_1))
                     {
                         if (!m_Tank.GetFurzFlg())
                         {
@@ -218,42 +276,43 @@ public class Buster : MonoBehaviour
         }
         else if (m_Player.GetPlayerNumber() == 1)
         {
-            //if (m_WiimoteSharing.GetWiimote(1) != null)
-            //{
-            //    float[] pointer = m_WiimoteSharing.GetWiimote(1).Ir.GetPointingPosition();
-            //    point = new Vector2(pointer[0], pointer[1]);
-            //
-            //    if (!m_Player.GetStan())
-            //    {
-            //        if (m_WiimoteSharing.GetWiimote(1).Button.plus)
-            //        {
-            //            m_Tank.Farmer(0.5f);
-            //        }
-            //
-            //        if (m_WiimoteSharing.GetWiimote(1).Button.minus)
-            //        {
-            //            m_Tank.Farmer(0.1f);
-            //        }
-            //
-            //        if (m_WiimoteSharing.GetWiimote(1).Button.b)
-            //        {
-            //            if (!m_Tank.GetFurzFlg())
-            //            {
-            //                BulletShot();
-            //            }
-            //        }
-            //
-            //        if (m_WiimoteSharing.GetWiimote(1).Button.a)
-            //        {
-            //            GasShot();
-            //        }
-            //    }
-            //}
+            if (wiimote2 != null)
+            {
+                float[] pointer = wiimote2.Ir.GetPointingPosition();
+                point = new Vector2(pointer[0], pointer[1]);
 
+                if (!m_Player.GetStan())
+                {
+                    if (wiimote2.Button.plus)
+                    {
+                        m_Tank.Farmer(0.5f);
+                    }
 
-            Cursor.visible = false;
-            var position = Input.mousePosition;
-            m_ReticleUI.rectTransform.position = position;
+                    if (wiimote2.Button.minus)
+                    {
+                        m_Tank.Farmer(0.1f);
+                    }
+
+                    if (wiimote2.Button.b)
+                    {
+                        if (!m_Tank.GetFurzFlg())
+                        {
+                            BulletShot();
+                        }
+                    }
+
+                    if (wiimote2.Button.a)
+                    {
+                        GasShot();
+                    }
+                }
+            }
+            else
+            {
+                Cursor.visible = false;
+                var position = Input.mousePosition;
+                m_ReticleUI.rectTransform.position = position;
+            }
 
             if (point.x < 0)
             {
@@ -297,9 +356,9 @@ public class Buster : MonoBehaviour
                     m_Tank.Farmer(0.5f);
                 }
 
-                if (m_joyconR != null)
+                if (m_joyconR2 != null)
                 {
-                    if (m_joyconR.GetButtonDown(Joycon.Button.SHOULDER_1))
+                    if (m_joyconR2.GetButtonDown(Joycon.Button.SHOULDER_1))
                     {
                         if (!m_Tank.GetFurzFlg())
                         {
@@ -331,7 +390,7 @@ public class Buster : MonoBehaviour
                 break;
 
             case AllManager.STATE_SCENE.STATE_STAGE:
-                if (m_Tank.m_fTank + 0.3f > 0.7f) { return; }
+                if (m_Tank.m_fTank > 0.6f) { return; }
 
                 SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.ONARA_BAZOOKA);
 
@@ -350,13 +409,16 @@ public class Buster : MonoBehaviour
                 }
                 else if (m_Player.GetPlayerNumber() == 1)
                 {
-                    ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    ray = Camera.main.ScreenPointToRay(m_ReticleUI.rectTransform.position);
+                    //ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 }
 
                 RaycastHit hit;
 
                 if (Physics.Raycast(ray, out hit, 600f, LayerMask.GetMask("LifeReticle")))
                 {
+                    m_LED.Bazooka();
+
                     if (m_PlayerAll.m_bTankMax)
                     {
                         m_bBuster = true;
@@ -369,7 +431,9 @@ public class Buster : MonoBehaviour
                 {
                     if (hit.collider.gameObject.GetComponent<Enemy_State>().GetState() != Enemy_State.STATE.ESCAPE)
                     {
-                       int nNumber = m_Player.GetPlayerNumber();
+                        m_LED.Bazooka();
+
+                        int nNumber = m_Player.GetPlayerNumber();
 
                        InfoManager.Instance.AddPlayerScore(nNumber, hit.collider.gameObject.GetComponent<Enemy_Score>().GetScore());
                        hit.collider.gameObject.GetComponent<Enemy_State>().SetState(Enemy_State.STATE.DAMAGE);
@@ -413,6 +477,21 @@ public class Buster : MonoBehaviour
 
             case AllManager.STATE_SCENE.STATE_RESULT:
                 break;
+        }
+    }
+
+    public void BusterSet(bool buse)
+    {
+        if (buse)
+        {
+            if (transform.rotation.x > 0)
+            {
+                transform.Rotate(-10, 0, 0);
+            }
+        }
+        else
+        {
+            transform.rotation = OldRot;
         }
     }
 }

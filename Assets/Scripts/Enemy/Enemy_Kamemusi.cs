@@ -44,6 +44,8 @@ public class Enemy_Kamemusi : MonoBehaviour {
     private int          m_AttackMode;  // 攻撃するモード：０、準備　１、発射　２、クールタイム
     private float        m_AttackTimer; // 攻撃モード用カウント
 
+    private bool m_bSplaySound;
+
     // Use this for initialization
     void Start()
     {
@@ -149,6 +151,12 @@ public class Enemy_Kamemusi : MonoBehaviour {
 
                 // エフェクトの生成
                 m_BuffEffect.SetActive(true);
+
+                if (!m_bSplaySound)
+                {
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.ONARASPLAY_HIT);
+                    m_bSplaySound = true;
+                }
 
                 // 体力を減らす
                 m_Life.SubLife(1.0f);

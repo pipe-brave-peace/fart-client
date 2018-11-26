@@ -62,7 +62,8 @@ public class Tank : MonoBehaviour
 
     private List<Joycon> m_joycons;
 
-    private Joycon m_joyconL;
+    private Joycon m_joyconL1;
+    private Joycon m_joyconL2;
 
     private bool m_bFurzFlg = false;
 
@@ -82,9 +83,25 @@ public class Tank : MonoBehaviour
 
         m_fUvRectX = 0.01f;
 
-        m_joycons = JoyconManager.Instance.j;
+        m_joycons = NintendoManager.Instance.j;
 
-        m_joyconL = m_joycons.Find(c => c.isLeft);
+        int count = 0;
+
+        for (int i = 0; i < m_joycons.Count; i++)
+        {
+            if (m_joycons[i].isLeft)
+            {
+                if (count == 0)
+                {
+                    m_joyconL1 = m_joycons[i];
+                }
+                else
+                {
+                    m_joyconL2 = m_joycons[i];
+                }
+                count++;
+            }
+        }
     }
 
     // Update is called once per frame
@@ -97,44 +114,79 @@ public class Tank : MonoBehaviour
                 break;
 
             case AllManager.STATE_SCENE.STATE_STAGE:
-                Debug.Log(m_RectX);
 
-                if (m_joyconL != null)
+                if (m_Player.GetPlayerNumber() == 0)
                 {
-                    if (OldPos < -0.2f)
+                    if (m_joyconL1 != null)
                     {
-                        if (m_joyconL.GetGyro().y < -0.2f)
+                        if (OldPos < -0.2f)
                         {
-                            if (m_nTime > 0)
+                            if (m_joyconL1.GetGyro().y < -0.2f)
                             {
-                                m_nTime--;
-                            }
+                                if (m_nTime > 0)
+                                {
+                                    m_nTime--;
+                                }
 
-                            if (m_nTime <= 0)
+                                if (m_nTime <= 0)
+                                {
+                                    Farmer(0.5f);
+                                    m_nTime = m_nOldTime;
+                                }
+                            }
+                            else if (m_joyconL1.GetGyro().y < -0.1f)
                             {
-                                Farmer(0.5f);
+                                Farmer(0.001f);
                                 m_nTime = m_nOldTime;
                             }
                         }
-                        else if (m_joyconL.GetGyro().y < -0.1f)
+                        else
                         {
-                            Farmer(0.001f);
                             m_nTime = m_nOldTime;
                         }
-                    }
-                    else
-                    {
-                        m_nTime = m_nOldTime;
-                    }
 
-                    OldPos = m_joyconL.GetGyro().y;
+                        OldPos = m_joyconL1.GetGyro().y;
+                    }
+                }
+                else if (m_Player.GetPlayerNumber() == 1)
+                {
+                    if (m_joyconL2 != null)
+                    {
+                        if (OldPos < -0.2f)
+                        {
+                            if (m_joyconL2.GetGyro().y < -0.2f)
+                            {
+                                if (m_nTime > 0)
+                                {
+                                    m_nTime--;
+                                }
+
+                                if (m_nTime <= 0)
+                                {
+                                    Farmer(0.5f);
+                                    m_nTime = m_nOldTime;
+                                }
+                            }
+                            else if (m_joyconL2.GetGyro().y < -0.1f)
+                            {
+                                Farmer(0.001f);
+                                m_nTime = m_nOldTime;
+                            }
+                        }
+                        else
+                        {
+                            m_nTime = m_nOldTime;
+                        }
+
+                        OldPos = m_joyconL2.GetGyro().y;
+                    }
                 }
 
                 GaugeAdjustment();
 
                 WidthAdjustment();
 
-                m_LED.Gage(m_Player.GetPlayerNumber(), m_FurzUI.uvRect.x);
+                m_LED.Gage(m_Player.GetPlayerNumber(), m_RectX);
 
                 if (m_PhaseManager.GetNowPhaseIndex() == 0)
                 {
@@ -164,11 +216,11 @@ public class Tank : MonoBehaviour
     {
         if (m_PlayerAll.m_bIvent3)
         {
-            if (m_FurzUI.uvRect.x <= 0 || m_FurzUI.uvRect.x >= 1)
+            if (m_bFurzFlg) { return; }
+            if (m_FurzUI.uvRect.x > 0 && m_FurzUI.uvRect.x <= 1)
             {
                 SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.ONARA_STORE);
             }
-            if (m_bFurzFlg) { return; }
             m_fTank -= fChargeValue;
             m_bFurzFlg = true;
             m_bFiring = false;

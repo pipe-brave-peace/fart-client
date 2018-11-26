@@ -25,6 +25,9 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
     [SerializeField]
     IventOn m_IventOn;
 
+    [SerializeField]
+    StageManager m_StageManager;
+
     //[SerializeField]
     //TextMesh    Debug_State_Text;
     [Header("吼える場所")]
@@ -45,6 +48,8 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
 
     [Header("以下編集しないこと！")]
     [SerializeField]
+    SkinnedMeshRenderer m_Color;        // 自分の色
+    [SerializeField]
     GameObject m_DamageEffect;        // 弾の爆発エフェクト
     [SerializeField]
     GameObject m_AttackEffect;      // クマのジャマのエフェクト
@@ -54,6 +59,8 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
     GameObject m_BlowEffect;
     [SerializeField]
     GameObject m_EscapeEffect;        // 退却時汗のエフェクト
+    [SerializeField]
+    GameObject m_FlashEffect;
 
     private Enemy_State     m_State;            // 状態
     private NavMeshAgent    m_Nav;              // ナビメッシュ
@@ -71,13 +78,23 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
     private GameObject      m_LastLife;         // ラスト一撃のライフ照準
     private GameObject      m_CryEffect;        // 吼えるのエフェクト
     private bool            m_isEatDamage;      // 農作物を荒らす時に攻撃された？
+    private Color m_FadeColor;    // 退却時の色の変化用
 
     public bool            m_isLastAttack;     // ラストアタックチャンス？
 
     public bool isLastAttack() { return m_isLastAttack; }
 
-    // 初期化
-    void Start()
+    private bool m_bCrySoundOn;
+    private bool m_bConfSoundOn;
+
+    private bool m_bFlashEffect;
+
+    private bool m_bShoutSoundOn;
+
+    bool m_bSplaySound;
+
+// 初期化
+void Start()
     {
         // コンポーネントの取得
         m_State      = GetComponent<Enemy_State>();
@@ -86,6 +103,7 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
         m_Animator   = GetComponent<Animator>();
 
         // 変数の初期化
+        m_FadeColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);      // 現在の色をセット
         m_State.CanSet(false);
         m_NavMoveSpeed   = m_Nav.speed;
         m_isCry          = false;
@@ -245,6 +263,12 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
                         CreateCryEffect();
                     }
 
+                    if (!m_bCrySoundOn)
+                    {
+                        SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.BEAR_ROAR);
+                        m_bCrySoundOn = true;
+                    }
+
                     // アニメション終わった？
                     if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f && m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
                     {
@@ -263,7 +287,7 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
                 {
                     if (m_LifeList != null) { Destroy(m_LifeList.gameObject); }
                     GameObject effet = Instantiate(m_AttackEffect, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as GameObject;
-
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.BEAR_ATTACK);
                     m_TargetObj = SerchCrops(m_CropIndex);
                     m_State.EnemySetState(Enemy_State.STATE.MOVE);
                     m_Animator.SetBool("ToAttack", false);
@@ -277,6 +301,12 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
                 m_isBuff = true;
                 // 匂いのエフェクトの再生
                 m_BuffEffect.SetActive(true);
+
+                if (!m_bSplaySound)
+                {
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.ONARASPLAY_HIT);
+                    m_bSplaySound = true;
+                }
 
                 // 直前が食事状態なら
                 if (m_State.GetStateOld() == Enemy_State.STATE.EAT)
@@ -315,6 +345,8 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
                 // エフェクトの生成
                 GameObject damage_effect = Instantiate(m_DamageEffect, transform.position, Quaternion.identity) as GameObject;
 
+                SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.BEAR_SHOUT);
+
                 m_TargetObj = m_AttackObj;
                 // 怯む
                 m_State.EnemySetState(Enemy_State.STATE.FEAR);
@@ -323,7 +355,13 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
                 break;
 
             case Enemy_State.STATE.BACK:      // ダメージ
-                //Debug_State_Text.text = "STATE:あぁ！！";
+                                              //Debug_State_Text.text = "STATE:あぁ！！";
+
+                if (!m_bShoutSoundOn)
+                {
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.BEAR_SHOUT);
+                    m_bShoutSoundOn = true;
+                }
 
                 // 後退処理
                 m_Nav.updateRotation = false;
@@ -351,7 +389,15 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
                 break;
                 
             case Enemy_State.STATE.FEAR:        // 怯む
-                //Debug_State_Text.text = "STATE:回る回る";
+                 //Debug_State_Text.text = "STATE:回る回る";
+
+                if (!m_bConfSoundOn)
+                {
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.BEAR_CONFUSION);
+                    SoundManager.Instance.LoopSE(SoundManager.SE_TYPE.BEAR_CONFUSION);
+                    m_bConfSoundOn = true;
+                }
+
                 if (m_isLastAttack)
                 {
                     // プレイヤーバズーカ発射したら気絶する
@@ -366,12 +412,15 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
                     m_Animator.SetBool("ToFaint", true);
                     m_State.EnemySetState(Enemy_State.STATE.FAINT);
                     m_Nav.enabled = false;
+                    SoundManager.Instance.StopSE(SoundManager.SE_TYPE.BEAR_CONFUSION);
+                    SoundManager.Instance.PlaySE(SoundManager.SE_TYPE.BEAR_DOWN);
                     break;
                 }
                 
                 m_FearTimer -= Time.deltaTime;
                 if( m_FearTimer <= 0.0f)
                 {
+                    SoundManager.Instance.StopSE(SoundManager.SE_TYPE.BEAR_CONFUSION);
                     m_FearTimer = FEAR_TIME;
                     if (m_isEatDamage)
                     {
@@ -396,12 +445,9 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
             case Enemy_State.STATE.FAINT:   // 気絶
                 //Debug_State_Text.text = "STATE:おっふ";
 
-                m_IventOn.m_bBossEndFlg = true;
-
                 m_State.CanSet(false);
                 m_Nav.enabled = false;
 
-                m_BlowEffect.SetActive(true);
                 m_EscapeEffect.SetActive(true);
 
                 Vector3 vec = transform.position;
@@ -416,7 +462,27 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
 
                 transform.position += new Vector3(vec.x, 1, vec.z) * 50f * Time.deltaTime;
 
-                m_BlowEffect.transform.localPosition = transform.localPosition;
+                if (!m_bFlashEffect)
+                {
+                    m_IventOn.m_bBossEndFlg = true;
+                    m_BlowEffect.SetActive(true);
+                    m_BlowEffect.transform.localPosition = transform.localPosition;
+                }
+
+                // 消えていく
+                m_FadeColor.a -= 0.005f;
+                m_Color.material.SetColor("_MainColor", m_FadeColor);
+
+                if (m_FadeColor.a <= 0.0f)
+                {
+                    if (!m_bFlashEffect)
+                    {
+                        m_IventOn.m_bFadeOut = true;
+                        m_IventOn.m_bBossEndFlg = false;
+                        Destroy(m_BlowEffect);
+                        m_bFlashEffect = true;
+                    }
+                }
 
                 return;
         }
@@ -450,7 +516,7 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
             if (obs != null) { return obs; }
         }
         // ゲームオーバー
-
+        m_StageManager.m_bGameOver = true;
 
 
 
@@ -489,7 +555,7 @@ public class Enemy_Boss_Mix_Kuma : MonoBehaviour {
         if (m_NavCrops.Count <= 0)
         {
             // ゲームオーバー
-
+            m_StageManager.m_bGameOver = true;
 
 
 

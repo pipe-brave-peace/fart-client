@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using Cinemachine;
 
 public class PlayerAll : MonoBehaviour {
 
@@ -65,10 +66,16 @@ public class PlayerAll : MonoBehaviour {
     GameObject[] m_BossObject;
 
     [SerializeField]
+    UI_Operation_Text[] m_LastUI;
+
+    [SerializeField]
     PlayerWalk m_PlayerWalk;
 
     [SerializeField]
     Phase1 m_Phase;
+
+    [SerializeField]
+    CinemachineBrain m_Cinema;
 
     public bool m_bTankMax;
 
@@ -115,10 +122,44 @@ public class PlayerAll : MonoBehaviour {
                 break;
         
             case AllManager.STATE_SCENE.STATE_STAGE:
+
+                if (m_BossObject[2].GetComponent<Enemy_Boss_Mix_Kuma>().m_isLastAttack)
+                {
+                    if (!m_bTankMax)
+                    {
+                        m_LastUI[1].m_bOnText = false;
+                        m_LastUI[0].m_bOnText = true;
+                    }
+                }
+
+                if (m_bTankMax && m_PhaseManager.GetNowPhaseIndex() == 6)
+                {
+                    m_LastUI[1].m_bOnText = true;
+                    m_LastUI[0].m_bOnText = false;
+                }
+
+                if (m_bLastBuster)
+                {
+                    m_LastUI[1].m_bOnText = false;
+                    m_LastUI[0].m_bOnText = false;
+                }
+
                 if (!m_PlayerModelObject[0].GetComponent<PlayerModel>().m_bStart || !m_PlayerModelObject[1].GetComponent<PlayerModel>().m_bStart)
                 {
                     m_PlayerModelObject[0].GetComponent<PlayerModel>().m_bStart = true;
                     m_PlayerModelObject[1].GetComponent<PlayerModel>().m_bStart = true;
+                }
+
+                if (m_Cinema.IsBlending)
+                {
+                    if (m_Cinema.ActiveBlend.CamA.VirtualCameraGameObject.name == "CM vcam2")
+                    {
+                        if (m_Cinema.ActiveBlend.BlendWeight >= 0.5f)
+                        {
+                            m_PlayerModelObject[0].GetComponent<PlayerModel>().FadeOutModel(0.05f);
+                            m_PlayerModelObject[1].GetComponent<PlayerModel>().FadeOutModel(0.05f);
+                        }
+                    }
                 }
 
 
@@ -126,19 +167,45 @@ public class PlayerAll : MonoBehaviour {
 
                 if (nNumber == 12)
                 {
-                    m_PlayerModelObject[1].SetActive(true);
-                    m_PlayerModelObject[0].SetActive(true);
-                    m_PlayerModelObject[0].GetComponent<PlayerModel>().m_bStart = true;
-                    m_PlayerModelObject[1].GetComponent<PlayerModel>().m_bStart = true;
+                    if (m_Cinema.IsBlending)
+                    {
+                        if (m_Cinema.ActiveBlend.CamB.VirtualCameraGameObject.name == "CM vcam1")
+                        {
+                            if (m_Cinema.ActiveBlend.BlendWeight >= 0.5f)
+                            {
+                                m_PlayerModelObject[0].GetComponent<PlayerModel>().FadeOutModel(0.05f);
+                                m_PlayerModelObject[1].GetComponent<PlayerModel>().FadeOutModel(0.05f);
+                            }
+                            if (m_Cinema.ActiveBlend.BlendWeight >= 0.9f)
+                            {
+                                m_BusterObject[0].SetActive(true);
+                                m_BusterObject[1].SetActive(true);
+                                m_Buster[0].BusterSet(true);
+                                m_Buster[1].BusterSet(true);
+                            }
+                        }
+                        else if (m_Cinema.ActiveBlend.CamB.VirtualCameraGameObject.name == "CM vcam7")
+                        {
+                            m_Buster[0].BusterSet(false);
+                            m_Buster[1].BusterSet(false);
+                            m_BusterObject[0].SetActive(false);
+                            m_BusterObject[1].SetActive(false);
+                            m_PlayerModelObject[0].GetComponent<PlayerModel>().FadeInModel(1);
+                            m_PlayerModelObject[1].GetComponent<PlayerModel>().FadeInModel(1);
+                        }
+                    }
                 }
                 else
                 {
-                    m_PlayerModelObject[0].SetActive(false);
-                    m_PlayerModelObject[1].SetActive(false);
+                    m_PlayerModelObject[0].GetComponent<PlayerModel>().FadeOutModel(1);
+                    m_PlayerModelObject[1].GetComponent<PlayerModel>().FadeOutModel(1);
                 }
 
-                m_BusterObject[0].SetActive(true);
-                m_BusterObject[1].SetActive(true);
+                if (nNumber == 0)
+                {
+                    m_BusterObject[0].SetActive(true);
+                    m_BusterObject[1].SetActive(true);
+                }
 
                 if (m_Buster[0].m_bBuster)
                 {
