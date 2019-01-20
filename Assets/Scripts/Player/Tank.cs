@@ -83,23 +83,27 @@ public class Tank : MonoBehaviour
 
         m_fUvRectX = 0.01f;
 
-        m_joycons = JoyconManager.Instance.j;
-
-        int count = 0;
-
-        for (int i = 0; i < m_joycons.Count; i++)
+     //   if (JoyconManager.Instance != null)
         {
-            if (m_joycons[i].isLeft)
+
+            m_joycons = JoyconManager.Instance.j;
+
+            int count = 0;
+
+            for (int i = 0; i < m_joycons.Count; i++)
             {
-                if (count == 0)
+                if (m_joycons[i].isLeft)
                 {
-                    m_joyconL1 = m_joycons[i];
+                    if (count == 0)
+                    {
+                        m_joyconL1 = m_joycons[i];
+                    }
+                    else
+                    {
+                        m_joyconL2 = m_joycons[i];
+                    }
+                    count++;
                 }
-                else
-                {
-                    m_joyconL2 = m_joycons[i];
-                }
-                count++;
             }
         }
     }

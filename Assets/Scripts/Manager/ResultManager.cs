@@ -20,24 +20,29 @@ public class ResultManager : MonoBehaviour {
     // 初期化
     void Start () {
 
-        m_joycons = JoyconManager.Instance.j;
-
-        int count = 0;
-
-        for (int i = 0; i < m_joycons.Count; i++)
+       // if (JoyconManager.Instance != null)
         {
-            if (!m_joycons[i].isLeft)
+
+            m_joycons = JoyconManager.Instance.j;
+
+            int count = 0;
+
+            for (int i = 0; i < m_joycons.Count; i++)
             {
-                if (count == 0)
+                if (!m_joycons[i].isLeft)
                 {
-                    m_joyconR1 = m_joycons[i];
+                    if (count == 0)
+                    {
+                        m_joyconR1 = m_joycons[i];
+                    }
+                    else
+                    {
+                        m_joyconR2 = m_joycons[i];
+                    }
+                    count++;
                 }
-                else
-                {
-                    m_joyconR2 = m_joycons[i];
-                }
-                count++;
             }
+
         }
 
         // BGMプレイー

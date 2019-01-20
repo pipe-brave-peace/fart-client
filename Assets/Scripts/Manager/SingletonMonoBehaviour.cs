@@ -9,7 +9,7 @@ public class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBehaviour
 				instance = (T)FindObjectOfType(typeof(T));
 
 				if (instance == null) {
-					Debug.LogError (typeof(T) + "is nothing");
+					Debug.Log (typeof(T) + "is nothing");
 				}
 			}
 
